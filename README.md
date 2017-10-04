@@ -18,11 +18,16 @@ Todas las clases empezaran por mayuscula y cada parabra dentro de ellas también
  class FatDog;
 ~~~
 
-Los nombres de las variables empezarán por minúscula, y cada palabra adicional por mayusculamayuscula:
+Los nombres de las variables empezarán por minúscula, y cada palabra adicional por mayuscula:
    
 ~~~
 float radius;
 Vector3 distanceToCenter;
 ~~~
   
-Los nombres de los métodos serán igual que las variables, primera letra minuscula y cada parabra adicional mayuscula.
+Los nombres de los métodos serán diferentes que las variables, primera letra mayúscula y cada parabra adicional mayuscula:
+
+~~~
+vector.Normalize();
+circle.CalculateRadius();
+~~~
