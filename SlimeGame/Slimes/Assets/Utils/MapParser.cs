@@ -2,32 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapParser : MonoBehaviour {
+public static class MapParser {
 
-	// Use this for initialization
-	void Start () {
-		ReadMap ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		Debug.Log("Update of MapParser...", gameObject);
-	}
-
-	void ReadMap() {
-		int[][] map;
-
-		string path = "Assets/Resources/map.txt";
+	public static int[][] ReadMap(MapTypes mapType) {
+		string path = MapTypesCtrl.GetPath(mapType);
 
 		System.IO.StreamReader reader = new System.IO.StreamReader (path);
-		string line = reader.ReadLine ();
-		while (line != null) {
-			string[] elements = line.Split (' ');
-			if (elements.Length > 0) {
-				// Convertim string a enter i l'afegim al array.
+		string content = reader.ReadToEnd ();
+		reader.Close ();
+
+		string[] lines = content.Split ("\n" [0]);
+		int rows = lines.Length;
+
+		int[][] map = new int[rows][];
+
+		for(int i = 0; i < rows; i++){
+			string[] elements = lines [i].Split(' ');
+			map [i] = new int[elements.Length];
+			for(int j = 0; j < elements.Length; j++){
+				map [i] [j] = int.Parse(elements [j]);
 			}
-			line = reader.ReadLine ();
 		}
-		reader.Close();
+
+		return map;
 	}
 }
