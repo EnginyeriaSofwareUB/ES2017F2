@@ -41,11 +41,11 @@ public class Matrix : ScriptableObject {
 		int middleRow = (int)((matrix.Count) / 2);
 		int firstY = -middleRow;
 		int middleCell = (int)(matrix [middleRow].Count / 2); 
-		int firstX = middleRow-middleCell-1;
+		int firstX = middleRow-middleCell-(int)((matrix.Count)/4);
+		if((matrix.Count)%4 ==1)firstX += 1;
 		shifted = 0;
 		if (matrix[0].Count<matrix[1].Count){
 			shifted = 1;
-			firstX = 0;
 		}
 		for (int y = 0; y < matrix.Count; y++) {
 			int hexY = firstY+y;
@@ -64,6 +64,7 @@ public class Matrix : ScriptableObject {
 
 			}
 		}
+		Debug.Log("La del mig és "+map[0][0].type+" la matriu es: "+matrix.Count+"x"+Math.Max(matrix[0].Count,matrix[1].Count));
 
 	}
 	public List<Tile> getNeighbours(int x, int y){
@@ -101,11 +102,12 @@ public class Matrix : ScriptableObject {
 	}
 	public void print(){        
 		int count = 0;
+		Debug.Log("Matrix: ");
 		foreach(int y in map.Keys){
 			String s = "";
 			if(count%2!=shifted) s+="     ";
 			foreach(int x in map[y].Keys){
-				s+="("+x+","+y+")";
+				s+="("+x+","+y+","+map[y][x].type+")";
 			}            
 			Debug.Log(s);
 			count++;
