@@ -8,22 +8,24 @@ public class SlimeMovement : MonoBehaviour {
 	private List<Vector2> bufferPositions = null;
 	private int indexBuffer;
 
-	public float secondsXmovement = 1; //1 segon
+	public float secondsXmovement = 1; //1 segon, pero es pot determinar des de unity
 	private float startTime;
 
 	void Start(){
+		/*Exemple de recorregut:
 		List<Vector2> list = new List<Vector2> ();
 		list.Add(new Vector2(4,4));
 		list.Add(new Vector2(4,-4));
 		list.Add(new Vector2(-4,-4));
 		list.Add(new Vector2(-4,4));
 
-		SetBufferAndPlay (list);
+		SetBufferAndPlay (list);*/
 	}
 	
 	// Update is called once per frame
 
 	void Update(){
+		//si tenim recorregut a fer:
 		if (bufferPositions != null && bufferPositions.Count>0) {
 			float i = (Time.time - startTime) / secondsXmovement;
 			transform.position = Vector2.Lerp (startPos, endPos, i);
@@ -40,6 +42,7 @@ public class SlimeMovement : MonoBehaviour {
 		}
 	}
 
+	//funcio per determinar el recorregut que ha de ser Slime i iniciar recorregut
 	void SetBufferAndPlay(List<Vector2> buffer){
 		if (buffer != null && buffer.Count > 0) {
 			bufferPositions = buffer;
