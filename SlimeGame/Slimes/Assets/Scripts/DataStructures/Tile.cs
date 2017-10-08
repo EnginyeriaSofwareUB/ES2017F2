@@ -18,4 +18,8 @@ public class Tile {
 	void Update () {
 		
 	}
+
+	public string ToString(){
+		return ((int)type).ToString();
+	}
 }
