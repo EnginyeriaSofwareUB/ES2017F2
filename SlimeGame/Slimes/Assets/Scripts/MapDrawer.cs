@@ -11,6 +11,7 @@ public class MapDrawer : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
+		testDrawer ();
 		
 	}
 	
@@ -58,6 +59,7 @@ public class MapDrawer : MonoBehaviour {
 				list.Add (new TestClass (new Vector2((float)i,(float)j)));
 			}
 		}
+		instantiateMap (list);
 	}
 
 	private class TestClass: MapCoordinates{
