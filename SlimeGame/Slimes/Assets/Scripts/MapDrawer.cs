@@ -14,7 +14,7 @@ public class MapDrawer {
 		
 	public static void instantiateMap(System.Collections.IEnumerable map){
 
-		Sprite sprite = Resources.Load<Sprite>("testTileFlat");
+		Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);
 		diagonalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
 		verticalOffset = new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));

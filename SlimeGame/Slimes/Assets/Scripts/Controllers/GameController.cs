@@ -9,10 +9,21 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		MapDrawer.InitTest ();
+		instantiateSlime ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	private void instantiateSlime(){
+		GameObject slime = new GameObject ("Slime");
+		slime.AddComponent<SpriteRenderer> ();
+		slime.tag = "Slime";
+		slime.AddComponent<Slime> ();
+		slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Test/slime");
+		slime.GetComponent<SpriteRenderer> ().sortingOrder = 1;
+		slime.AddComponent<BoxCollider2D> ();
 	}
 }
