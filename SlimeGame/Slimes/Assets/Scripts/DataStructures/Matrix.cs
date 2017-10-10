@@ -4,40 +4,11 @@ using UnityEngine;
 using System;
 
 public class Matrix : ScriptableObject {
-	// senar x senar
-	//x+y+z=0
-	/*
-	 * 
-	 * 
-	0 0 1 1 1 1 0 0          
-	 0 1 1 1 1 1 0           
-	0 1 1 1 1 1 1 0          
-	 1 1 1 1 1 1 1      =    
-	0 1 1 1 1 1 1 0          
-	 0 1 1 1 1 1 0           
-	0 0 1 1 1 1 0 0          
-	     (0,-3) (1,-3) (2,-3) (3,-3)
-      (--,--) (0,-2) (1,-2) (2,-2) (--,--)
-    (--,--) (-1,-1) (0,-1) (2,-3) (3,-3) (0,-3) (--,--)
 	
-   */
-	/*
-	0 0 1 1 1 1 1 1 0 0 [0,0,1,1,1,1,1,1,0,0]
-	 0 1 1 1 1 1 1 1 0  [0,1,1,1,1,1,1,1,0] 
-	0 1 1 1 1 1 1 1 1 0 [0,1,1,1,1,1,1,1,1,0]
-	 1 1 1 1 1 1 1 1 1  [1,1,1,1,1,1,1,1,1]
-	0 1 1 1 1 1 1 1 1 0  [0,1,1,1,1,1,1,1,1,0]
-	 0 1 1 1 1 1 1 1 0   [0,1,1,1,1,1,1,1,0],
-	0 0 1 1 1 1 1 1 0 0
-
-	*/
-	//public enum TileType {Null, Sand, Water}
-	//public createNewNode(int x, int y)
-
-	private Dictionary<int, Dictionary<int,Tile>> map;
+	private Dictionary<int, Dictionary<int,TileData>> map;
 	private int shifted;
-	public Matrix(List<List<TileTypeEnum>> matrix){
-		map = new Dictionary<int, Dictionary<int,Tile>> ();
+	public Matrix(List<List<TileType>> matrix){
+		map = new Dictionary<int, Dictionary<int,TileData>> ();
 		int middleRow = (int)((matrix.Count) / 2);
 		int firstY = -middleRow;
 		int middleCell = (int)(matrix [middleRow].Count / 2); 
@@ -49,16 +20,16 @@ public class Matrix : ScriptableObject {
 		}
 		for (int y = 0; y < matrix.Count; y++) {
 			int hexY = firstY+y;
-			map [hexY] = new Dictionary<int,Tile> (); 
-			List<TileTypeEnum> row = matrix[y];
+			map [hexY] = new Dictionary<int,TileData> (); 
+			List<TileType> row = matrix[y];
 			if (y % 2 == shifted) {
 				firstX -= 1;
 			}
 			for (int x = 0; x < row.Count; x++) {
 				
 				int hexX = firstX+x;
-				if (row[x] != TileTypeEnum.Null) {
-					Tile tile = new Tile(row[x]);
+				if (row[x] != TileType.Null) {
+					TileData tile = new TileData(row[x], new Vector2(hexX,hexY));
 					map [hexY] [hexX] = tile;
 				}
 
@@ -67,13 +38,13 @@ public class Matrix : ScriptableObject {
 		Debug.Log("La del mig és "+map[0][0].type+" la matriu es: "+matrix.Count+"x"+Math.Max(matrix[0].Count,matrix[1].Count));
 
 	}
-	public List<Tile> getNeighbours(int x, int y){
-		List<Tile> neighbours = new List<Tile> ();
+	public List<TileData> getNeighbours(int x, int y){
+		List<TileData> neighbours = new List<TileData> ();
 		List<Vector2> directions = new List<Vector2> {
 			new Vector2 (0, -1),new Vector2 (1, -1), new Vector2 (1, 0),new Vector2 (0, 1),new Vector2 (-1,1),new Vector2 (-1, 0)
 		};
 		foreach(Vector2 vec in directions){
-			Tile tile = getTile (x + (int)vec.x, y + (int)vec.y);
+			TileData tile = getTile (x + (int)vec.x, y + (int)vec.y);
 
 			if (tile != null) {
 				neighbours.Add (tile);
@@ -86,15 +57,15 @@ public class Matrix : ScriptableObject {
 	public Boolean isThereTile(int x,int y){
 		Boolean b;
 		try{
-			Tile tile = map [y][x];
+			TileData tile = map [y][x];
 			b=true;
 		}catch(Exception ex){
 			b = false;
 		}
 		return b;
 	}
-	public Tile getTile(int x, int y){
-		Tile tile = null;
+	public TileData getTile(int x, int y){
+		TileData tile = null;
 		if (isThereTile (x, y)) {
 			tile = map [y][x];
 		}
@@ -127,5 +98,15 @@ public class Matrix : ScriptableObject {
 	}
 	public static int cube_distance(Vector3 v1, Vector3 v2){
 		return (int)Math.Max(Math.Max(Math.Abs(v1.x-v2.x),Math.Abs(v1.y-v2.y)),Math.Abs(v1.z-v2.z));
+	}
+	public List<TileData> coordinateRange(int x, int y, int range){
+		List<TileData> tiles = new List<TileData>();
+		for(int i=-range;i<=range;i++){
+			for(int j=Math.Max(-range,-i-range);j<=Math.Min(range, -i+range);j++){
+				TileData tile = getTile(x+i, y+j);
+				if(tile!=null)tiles.Add(tile);
+			}
+		}
+		return tiles;
 	}
 }

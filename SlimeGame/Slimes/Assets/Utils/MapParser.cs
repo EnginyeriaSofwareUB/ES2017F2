@@ -27,7 +27,7 @@ public static class MapParser {
 		return map;
 	}*/
 
-	public static List<List<TileTypeEnum>> ReadMap(MapTypes mapType) {
+	public static List<List<TileType>> ReadMap(MapTypes mapType) {
 		string path = MapTypesCtrl.GetPath(mapType);
 
 		System.IO.StreamReader reader = new System.IO.StreamReader (path);
@@ -37,13 +37,13 @@ public static class MapParser {
 		string[] lines = content.Split ("\n" [0]);
 		int rows = lines.Length;
 
-		List<List<TileTypeEnum>> map = new List<List<TileTypeEnum>>();
+		List<List<TileType>> map = new List<List<TileType>>();
 
 		for(int i = 0; i < rows; i++){
 			string[] elements = lines [i].Split(' ');
-			List<TileTypeEnum> row = new List<TileTypeEnum>();
+			List<TileType> row = new List<TileType>();
 			for(int j = 0; j < elements.Length; j++){
-				row.Add((TileTypeEnum)int.Parse(elements [j]));
+				row.Add((TileType)int.Parse(elements [j]));
 			}
 			map.Add (row);
 		}

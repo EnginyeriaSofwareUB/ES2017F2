@@ -1,4 +1,4 @@
-﻿public enum TileTypeEnum {
+﻿public enum TileType {
 	Null,
 	Sand,
 	Water

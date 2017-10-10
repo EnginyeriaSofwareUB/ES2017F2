@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour,MapDrawer.MapCoordinates {
-
+	public TileData data;
 	// Use this for initialization
 	void Start () {
 		
@@ -15,6 +15,6 @@ public class Tile : MonoBehaviour,MapDrawer.MapCoordinates {
 	}
 
 	public Vector2 getPosition(){
-		return Vector2.zero;
+		return data.hexPosition;
 	}
 }
