@@ -8,7 +8,6 @@ public class MapDrawer {
 	private static Vector2 diagonalOffset;
 	private static Vector2 verticalOffset;
 
-	// Use this for initialization
 	public static void InitTest () {
 		testDrawer ();
 	}
