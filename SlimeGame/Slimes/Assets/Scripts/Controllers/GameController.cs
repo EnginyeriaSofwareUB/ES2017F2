@@ -8,7 +8,10 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		MapDrawer.InitTest ();
+		//MapDrawer.InitTest ();
+		
+		
+		MapDrawer.instantiateMap(Matrix.createMatrix(MapParser.ReadMap(MapTypes.Small)));
 		instantiateSlime ();
 	}
 	

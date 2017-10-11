@@ -1,5 +1,5 @@
 using UnityEngine;
-public class TileData {
+public class TileData:MapDrawer.MapCoordinates{
 	public TileType type;
     public Vector2 hexPosition;
     //Tile tile;
@@ -10,5 +10,8 @@ public class TileData {
 
 	override public string ToString(){
 		return ((int)type).ToString()+" ("+hexPosition.x+","+hexPosition.y+")";
+	}
+	public Vector2 getPosition(){
+		return hexPosition;
 	}
 }

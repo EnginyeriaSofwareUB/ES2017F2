@@ -12,9 +12,9 @@ public class test : MonoBehaviour {
 		//for(
 			int y = 9; //y<15;y+=2){			
 			matrix = getNewMatrix(y,5,0);
-			realmatrix = new Matrix(matrix);
-		    realmatrix.ToString();	
-			foreach(TileData tile in realmatrix.coordinateRange(3,2,2)) Debug.Log(tile.ToString());
+			//realmatrix = new Matrix(matrix);
+		    //realmatrix.ToString();	
+			//foreach(TileData tile in realmatrix.coordinateRange(3,2,2)) Debug.Log(tile.ToString());
 			
 			/*matrix = getNewMatrix(y,7,1);
 			realmatrix = new Matrix(matrix);

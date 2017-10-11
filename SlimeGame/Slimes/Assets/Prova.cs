@@ -16,8 +16,8 @@ public class Prova : MonoBehaviour {
 			}
 		}*/
 
-		Matrix realmatrix = new Matrix(map);
-		realmatrix.ToString();		
+		//Matrix realmatrix = new Matrix(map);
+		//realmatrix.ToString();		
 
 	}
 	

@@ -16,8 +16,8 @@ public class MapDrawer {
 
 		Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);
-		diagonalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
-		verticalOffset = new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
+		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
+		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 
 		foreach (MapCoordinates tile in map) {
 			Vector2 tileWorldPosition = new Vector2 ();
@@ -35,7 +35,10 @@ public class MapDrawer {
 			newTile.AddComponent<SpriteRenderer> ();
 			newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
-			newTile.transform.position = new Vector3 (tileWorldPosition.x, -tileWorldPosition.y, 0f); 
+			//rotacion de 60
+			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f); 
+			
+			newTile.transform.position =vec;
 		}
 
 	}

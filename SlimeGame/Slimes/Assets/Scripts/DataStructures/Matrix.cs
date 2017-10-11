@@ -5,9 +5,10 @@ using System;
 
 public class Matrix : ScriptableObject {
 	
-	private Dictionary<int, Dictionary<int,TileData>> map;
-	private int shifted;
-	public Matrix(List<List<TileType>> matrix){
+	private static Dictionary<int, Dictionary<int,TileData>> map;
+	private static int shifted;
+	public static List<TileData> createMatrix(List<List<TileType>> matrix){
+		List<TileData> l = new List<TileData>();
 		map = new Dictionary<int, Dictionary<int,TileData>> ();
 		int middleRow = (int)((matrix.Count) / 2);
 		int firstY = -middleRow;
@@ -31,12 +32,13 @@ public class Matrix : ScriptableObject {
 				if (row[x] != TileType.Null) {
 					TileData tile = new TileData(row[x], new Vector2(hexX,hexY));
 					map [hexY] [hexX] = tile;
+					l.Add(tile);
 				}
 
 			}
 		}
 		Debug.Log("La del mig és "+map[0][0].type+" la matriu es: "+matrix.Count+"x"+Math.Max(matrix[0].Count,matrix[1].Count));
-
+		return l;
 	}
 	public List<TileData> getNeighbours(int x, int y){
 		List<TileData> neighbours = new List<TileData> ();
