@@ -23,10 +23,13 @@ public class MapDrawer {
 			Vector2 tileWorldPosition = new Vector2 ();
 			int x = (int)tile.getPosition().x;
 			int y = (int)tile.getPosition().y;
+			/*
 			if (x % 2 == 1 && x!=0) {
 				tileWorldPosition += diagonalOffset;	 
 			}
-			tileWorldPosition += x/2 * verticalOffset;
+			*/
+			tileWorldPosition += x * diagonalOffset;	 
+			//tileWorldPosition += x/2 * verticalOffset;
 			tileWorldPosition += y * horizontalOffset;
 			GameObject newTile = new GameObject ("Tile ("+x+","+y+")");
 			newTile.AddComponent<SpriteRenderer> ();
@@ -50,8 +53,8 @@ public class MapDrawer {
 	***/
 	private static void testDrawer(){
 		List<TestClass> list = new List<TestClass> ();
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
+		for (int i = -5; i < 5; i++) {
+			for (int j = -5; j < 5; j++) {
 				list.Add (new TestClass (new Vector2((float)i,(float)j)));
 			}
 		}
