@@ -5,13 +5,12 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
 
 	private GameObject selectedItem;
-
+	private Matrix matrix;
 	// Use this for initialization
 	void Start () {
 		//MapDrawer.InitTest ();
-		
-		
-		MapDrawer.instantiateMap(Matrix.createMatrix(MapParser.ReadMap(MapTypes.Small)));
+		matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
+		MapDrawer.instantiateMap(matrix.getIterable());
 		instantiateSlime ();
 	}
 	

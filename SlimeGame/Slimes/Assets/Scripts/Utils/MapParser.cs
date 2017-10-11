@@ -18,6 +18,9 @@ public static class MapParser {
 		List<List<TileType>> map = new List<List<TileType>>();
 
 		for(int i = 0; i < rows; i++){
+			if(lines[i][0]==' '){
+				lines[i] = lines[i].Substring(1,lines[i].Length-1);
+			}
 			string[] elements = lines [i].Split(' ');
 			List<TileType> row = new List<TileType>();
 			for(int j = 0; j < elements.Length; j++){
