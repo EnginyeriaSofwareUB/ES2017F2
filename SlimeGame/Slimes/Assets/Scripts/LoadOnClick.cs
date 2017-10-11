@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadOnClick : MonoBehaviour {
 
+	//Cargar una escena a partir de su numero de escena
 	public void LoadScene(int sceneNumber){
 		SceneManager.LoadScene(sceneNumber);
 	}	
