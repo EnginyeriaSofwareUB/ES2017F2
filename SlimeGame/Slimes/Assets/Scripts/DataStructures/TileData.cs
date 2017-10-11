@@ -8,7 +8,7 @@ public class TileData {
 		type = typeEnum;
 	}
 
-	public string ToString(){
+	override public string ToString(){
 		return ((int)type).ToString()+" ("+hexPosition.x+","+hexPosition.y+")";
 	}
 }

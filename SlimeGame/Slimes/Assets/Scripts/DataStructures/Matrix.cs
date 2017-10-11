@@ -71,18 +71,22 @@ public class Matrix : ScriptableObject {
 		}
 		return tile;
 	}
-	public void print(){        
+	
+	override public string ToString(){        
 		int count = 0;
 		Debug.Log("Matrix: ");
+		String final = "";
 		foreach(int y in map.Keys){
 			String s = "";
 			if(count%2!=shifted) s+="     ";
 			foreach(int x in map[y].Keys){
 				s+="("+x+","+y+","+map[y][x].type+")";
 			}            
-			Debug.Log(s);
+			//Debug.Log(s);
+			final+=s+"\n";
 			count++;
 		}
+		return final;
 	}
 	public static Vector3 axial_to_cube(Vector2 vec){
 		int xC = (int)vec.x;
