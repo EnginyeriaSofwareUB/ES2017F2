@@ -43,7 +43,7 @@ public class SlimeMovement : MonoBehaviour {
 	}
 
 	//funcio per determinar el recorregut que ha de ser Slime i iniciar recorregut
-	void SetBufferAndPlay(List<Vector2> buffer){
+	public void SetBufferAndPlay(List<Vector2> buffer){
 		if (buffer != null && buffer.Count > 0) {
 			bufferPositions = buffer;
 			startPos = transform.position;
