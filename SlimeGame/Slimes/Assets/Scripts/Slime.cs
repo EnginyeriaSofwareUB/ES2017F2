@@ -13,4 +13,8 @@ public class Slime : MonoBehaviour {
 	void Update () {
 		
 	}
+    public void OnMouseDown()
+    {
+        Debug.Log(this.name);
+    }
 }

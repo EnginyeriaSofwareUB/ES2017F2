@@ -17,4 +17,8 @@ public class Tile : MonoBehaviour,MapDrawer.MapCoordinates {
 	public Vector2 getPosition(){
 		return data.hexPosition;
 	}
+    public void OnMouseDown()
+    {
+        Debug.Log(this.name);
+    }
 }

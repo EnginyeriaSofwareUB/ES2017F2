@@ -29,7 +29,10 @@ public class MapDrawer {
 			tileWorldPosition += x/2 * verticalOffset;
 			tileWorldPosition += y * horizontalOffset;
 			GameObject newTile = new GameObject ("Tile ("+x+","+y+")");
+            newTile.tag = "Tile";                           //Add tag
 			newTile.AddComponent<SpriteRenderer> ();
+            newTile.AddComponent<Tile>();                   //Adding Script
+            newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
 			newTile.transform.position = new Vector3 (tileWorldPosition.x, -tileWorldPosition.y, 0f); 

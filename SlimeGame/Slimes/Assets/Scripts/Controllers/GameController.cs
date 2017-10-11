@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour {
 	void Start () {
 		MapDrawer.InitTest ();
 		instantiateSlime ();
+        selectedItem = new GameObject("Empty"); //Init selected item as Empty
 	}
 	
 	// Update is called once per frame
@@ -26,4 +27,19 @@ public class GameController : MonoBehaviour {
 		slime.GetComponent<SpriteRenderer> ().sortingOrder = 1;
 		slime.AddComponent<BoxCollider2D> ();
 	}
+
+    public GameObject GetSelectedItem()
+    {
+        return selectedItem;
+    }
+    public void SetSelectedItem(GameObject gameObject)
+    {
+        if (selectedItem.name.Equals("Empty"))
+            Destroy(selectedItem);
+        selectedItem = gameObject;
+    }
+    public void DeselectItem()
+    {
+        SetSelectedItem(new GameObject("Empty"));
+    }
 }
