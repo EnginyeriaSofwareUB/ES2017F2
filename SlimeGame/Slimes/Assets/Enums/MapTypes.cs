@@ -14,6 +14,9 @@ static class MapTypesCtrl{
 		case MapTypes.Small:
 			return root + "small.txt";
 
+		case MapTypes.Medium:
+			return root + "medium.txt";
+
 		case MapTypes.Big:
 			return root + "big.txt";
 
