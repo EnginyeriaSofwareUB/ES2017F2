@@ -4,13 +4,36 @@ using UnityEngine;
 
 public class InputController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    GameController controller;
 
+	void Start () {
+        controller = Camera.main.GetComponent<GameController>();
+    }
+	
+	void Update () {
+        //Boto esquerra del mouse
+        if (Input.GetMouseButtonDown(0))
+        {
+            //Obtinc els colliders que hi ha a la posicio del mouse
+            Collider2D[] colliders = Physics2D.OverlapPointAll(Camera.main.ScreenToWorldPoint(Input.mousePosition));   
+
+            foreach(Collider2D col in colliders)
+            {
+                if (col.gameObject.CompareTag("Slime"))
+                {
+                    //Seleccionar slime
+                    Debug.Log(col.gameObject.name);
+                    controller.SetSelectedItem(col.gameObject);
+                } else if (col.gameObject.CompareTag("Tile"))
+                {
+                    Debug.Log(col.gameObject.name);
+                }
+            }
+            //Boto dret del mouse
+        } else if (Input.GetMouseButtonDown(1))
+        {
+            //Deseleccionar
+            controller.DeselectItem();
+        }
 	}
 }

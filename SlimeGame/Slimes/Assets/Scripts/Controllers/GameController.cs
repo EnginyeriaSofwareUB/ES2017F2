@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour {
 		matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
 		MapDrawer.instantiateMap(matrix.getIterable());
 		instantiateSlime ();
+        selectedItem = new GameObject("Empty"); //Init selected item as Empty
 		moveSlimeTest();
 	}
 	
@@ -31,6 +32,21 @@ public class GameController : MonoBehaviour {
 		slime.AddComponent<SlimeMovement>();
 		
 	}
+
+    public GameObject GetSelectedItem()
+    {
+        return selectedItem;
+    }
+    public void SetSelectedItem(GameObject gameObject)
+    {
+        if (selectedItem.name.Equals("Empty"))
+            Destroy(selectedItem);
+        selectedItem = gameObject;
+    }
+    public void DeselectItem()
+    {
+        SetSelectedItem(new GameObject("Empty"));
+    }
 	private void moveSlimeTest(){
 		GameObject slime = GameObject.FindGameObjectWithTag("Slime");
 		slime.transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
