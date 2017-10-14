@@ -14,4 +14,7 @@ public class TileData:MapDrawer.MapCoordinates{
 	public Vector2 getPosition(){
 		return hexPosition;
 	}
+	public bool isBlocking(){
+		return type==TileType.Block; //or someone on it
+	}
 }

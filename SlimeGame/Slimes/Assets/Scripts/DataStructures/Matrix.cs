@@ -40,6 +40,14 @@ public class Matrix : ScriptableObject {
 		//Debug.Log("La del mig és "+map[0][0].type+" la matriu es: "+matrix.Count+"x"+Math.Max(matrix[0].Count,matrix[1].Count));
 		
 	}
+	/*
+	public List<TileData> cube_reachable(TileData startTile){
+		List<TileData> tiles = new List<TileData>();
+		tiles.Add(startTile)
+		return tiles;
+	}
+	 */
+	
 	public List<TileData> getIterable(){
 		List<TileData> l = new List<TileData>();
 		foreach(int x in map.Keys){
@@ -50,17 +58,19 @@ public class Matrix : ScriptableObject {
 		
 		return l;
 	}
-	public List<TileData> getNeighbours(int x, int y){
+	public List<TileData> getNeighbours(TileData original, Boolean blockingIncluded=false){
 		List<TileData> neighbours = new List<TileData> ();
 		List<Vector2> directions = new List<Vector2> {
 			new Vector2 (0, -1),new Vector2 (1, -1), new Vector2 (1, 0),new Vector2 (0, 1),new Vector2 (-1,1),new Vector2 (-1, 0)
 		};
+		int x = (int)original.getPosition().x;
+		int y = (int)original.getPosition().y;
 		foreach(Vector2 vec in directions){
+			
 			TileData tile = getTile (x + (int)vec.x, y + (int)vec.y);
-
-			if (tile != null) {
+			if (tile != null && (blockingIncluded || !tile.isBlocking())) {
 				neighbours.Add (tile);
-				Debug.Log("("+(x+(int)vec.x)+','+(y+(int)vec.y)+")");
+				//Debug.Log("("+(x+(int)vec.x)+','+(y+(int)vec.y)+")");
 			}
 		}
 		return neighbours;
@@ -116,7 +126,7 @@ public class Matrix : ScriptableObject {
 	public static int cube_distance(Vector3 v1, Vector3 v2){
 		return (int)Math.Max(Math.Max(Math.Abs(v1.x-v2.x),Math.Abs(v1.y-v2.y)),Math.Abs(v1.z-v2.z));
 	}
-	public List<TileData> coordinateRange(int x, int y, int range){
+	/*public List<TileData> coordinateRange(int x, int y, int range){
 		List<TileData> tiles = new List<TileData>();
 		for(int i=-range;i<=range;i++){
 			for(int j=Math.Max(-range,-i-range);j<=Math.Min(range, -i+range);j++){
@@ -125,6 +135,44 @@ public class Matrix : ScriptableObject {
 			}
 		}
 		return tiles;
-	}
+	}*/
 	
+	/*
+	returns a list in which list[k] is dictionary with all the possible moves of length k until k=range
+	 */
+	public List<Dictionary<TileData,List<TileData>>> coordinateRangeAndPath(int x, int y, int range){		
+		List<Dictionary<TileData,List<TileData>>> listdic = new List<Dictionary<TileData,List<TileData>>>();
+		Queue<QueueItem> queue = new Queue<QueueItem>();
+		TileData startTile = getTile(x,y);
+		List<TileData> visited = new List<TileData>();
+		if(startTile!=null){
+			//visited.Add(startTile);
+			Dictionary<TileData,List<TileData>> first = new Dictionary<TileData,List<TileData>>();
+			first[startTile]=new List<TileData>();
+			listdic.Add(first);
+			for(int i=1;i<=range;i++){
+				Dictionary<TileData,List<TileData>> imoves = new Dictionary<TileData,List<TileData>>();
+				foreach(TileData tile in listdic[i-1].Keys){
+					List<TileData> path = listdic[i-1][tile];
+					foreach(TileData neighbour in getNeighbours(tile)){
+						if(!visited.Contains(neighbour)){
+							visited.Add(neighbour);
+							imoves[neighbour] = new List<TileData>(path);
+							imoves[neighbour].Add(neighbour);
+						}
+					}
+				}
+				listdic.Add(imoves);
+			}
+			return listdic;
+		}else return null;		
+	}
+	private class QueueItem {
+		public TileData tile;
+		public List<TileData> path;
+		public QueueItem(TileData tile, List<TileData> path){
+			this.tile=tile;
+			this.path=path;
+		}
+	}
 }

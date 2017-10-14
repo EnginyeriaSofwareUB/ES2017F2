@@ -20,7 +20,8 @@ public class MapDrawer {
 		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 
 		foreach (MapCoordinates tile in map) {
-			Vector2 tileWorldPosition = new Vector2 ();
+			
+			Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 			int x = (int)tile.getPosition().x;
 			int y = (int)tile.getPosition().y;
 			/*
@@ -28,21 +29,28 @@ public class MapDrawer {
 				tileWorldPosition += diagonalOffset;	 
 			}
 			*/
-			tileWorldPosition += x * diagonalOffset;	 
-			//tileWorldPosition += x/2 * verticalOffset;
-			tileWorldPosition += y * horizontalOffset;
+			
 			GameObject newTile = new GameObject ("Tile ("+x+","+y+")");
 			newTile.AddComponent<SpriteRenderer> ();
 			newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
 			//rotacion de 60
+			
 			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f); 
 			
 			newTile.transform.position =vec;
 		}
 
 	}
-
+	public static Vector2 drawInternCoordenates(Vector2 axial){		
+		Vector2 tileWorldPosition = new Vector2 ();
+		int x = (int)axial.x;
+		int y = (int)axial.y;
+		tileWorldPosition += x * diagonalOffset;	 
+		tileWorldPosition += y * horizontalOffset;
+		tileWorldPosition.y=-tileWorldPosition.y;
+		return tileWorldPosition;
+	}
 	public interface MapCoordinates{
 
 		Vector2 getPosition();
