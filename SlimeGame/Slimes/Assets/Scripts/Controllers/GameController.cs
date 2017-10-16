@@ -140,11 +140,12 @@ public class GameController : MonoBehaviour
     }
     public void SetSelectedSlime(GameObject gameObject)
     {
-        if (selectedSlime.name.Equals("Empty"))
-            Destroy(selectedSlime);
         
-        if(!gameObject.tag.Equals("Slime") || getCurrentPlayer().IsSlimeOwner(gameObject))
+        
+        if(!gameObject.tag.Equals("Slime") || getCurrentPlayer().IsSlimeOwner(gameObject)){
+            if (selectedSlime.name.Equals("Empty")) Destroy(selectedSlime);
             selectedSlime = gameObject;
+        }
     }
     public void DeselectItem()
     {
