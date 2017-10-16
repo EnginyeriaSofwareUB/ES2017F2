@@ -140,6 +140,15 @@ public class Matrix : ScriptableObject {
 	/*
 	returns a list in which list[k] is dictionary with all the possible moves of length k until k=range
 	 */
+	public Dictionary<TileData,List<TileData>> possibleCoordinatesAndPath(int x, int y, int range){
+		Dictionary<TileData,List<TileData>> dic = new Dictionary<TileData,List<TileData>>();
+		foreach(Dictionary<TileData,List<TileData>> rangeDic in coordinateRangeAndPath(x,y,range)){
+			foreach(TileData key in rangeDic.Keys){
+				dic[key]=rangeDic[key];
+			}
+		}
+		return dic;
+	}
 	public List<Dictionary<TileData,List<TileData>>> coordinateRangeAndPath(int x, int y, int range){		
 		List<Dictionary<TileData,List<TileData>>> listdic = new List<Dictionary<TileData,List<TileData>>>();
 		Queue<QueueItem> queue = new Queue<QueueItem>();
