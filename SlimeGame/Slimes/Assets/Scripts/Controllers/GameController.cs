@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
     private List<Player> players;
     private int currentTurn;
     private int currentPlayer;
-    private ActionType turnAction;
+    private int playerActions;
 
 
     // Use this for initialization
@@ -22,7 +22,8 @@ public class GameController : MonoBehaviour
         //MapDrawer.InitTest ();
 
         players = new List<Player>();
-        players.Add(new Player("Jugador 1")); // Test with only 1 player
+        players.Add(new Player("Jugador 1", 2)); // Test with 2 players
+        players.Add(new Player("Jugador 2", 3)); // Test with 2 players
 
         matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
         MapDrawer.instantiateMap(matrix.getIterable());
@@ -32,38 +33,15 @@ public class GameController : MonoBehaviour
 
         currentTurn = 0;
         currentPlayer = 0;
-		turnAction = ActionType.Null;
+        playerActions = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
 		bool ended = IsGameEnded();
-        if (!ended && turnAction != ActionType.Null)
-        {
-			// Comprovem quina accio hem de realitzar.
-            switch (turnAction)
-            {
-                case ActionType.Attack:
-                    break;
-                case ActionType.Conquer:
-                    break;
-                case ActionType.Divide:
-                    break;
-                case ActionType.Eat:
-                    break;
-                case ActionType.Move:
-                    break;
-                default:
-                    break;
-            }
-			currentPlayer++;
-			if(currentPlayer == players.Count){
-				// Tots els jugadors han fet la seva accio, passem al seguent torn.
-				NextTurn();
-			}
-        }
-        else if(ended)
+
+        if(ended)
         {
             SceneManager.LoadScene("GameOver");
         }
@@ -72,7 +50,15 @@ public class GameController : MonoBehaviour
     void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 100, 20), "TURN:  " + (currentTurn + 1).ToString());
-        GUI.Label(new Rect(10, 30, 200, 40), "PLAYER:  " + players[currentPlayer].getName());
+        GUI.Label(new Rect(10, 30, 200, 40), "PLAYER:  " + getCurrentPlayer().getName());
+        GUI.Label(new Rect(10, 50, 200, 40), "ACTIONS:  " + (getCurrentPlayer().getActions()-playerActions));
+    }
+
+    /*
+    Retorna el jugador que li toca fer una acció.
+     */
+    private Player getCurrentPlayer(){
+        return players[currentPlayer];
     }
 
 	/*
@@ -83,14 +69,59 @@ public class GameController : MonoBehaviour
         return currentTurn >= MAX_TURNS;
     }
 
+    /*
+    Funció que es crida quan el jugador clica a una casella per moure's.
+     */
+    private void MovePlayer(int x, int y){
+        // Aquest 1 es el nombre d'accions que necessites per moure't.
+        if(UseActions(1)){
+            // CODI PER MOURE'L
+        }
+    }
+
+    /*
+    Funció que comprova si hi ha accions suficients i si n'hi ha les utilitza.
+     */
+    private bool UseActions(int numberOfActions){
+        if(playerActions + numberOfActions > getCurrentPlayer().getActions()) return false; // Accions insuficients
+
+        playerActions += numberOfActions;
+        
+        if(playerActions >= getCurrentPlayer().getActions()){
+            NextPlayer();
+        }
+
+        return true;
+    }
+
+    public void UseActionsPROVA(int numberOfActions){
+        playerActions += numberOfActions;
+        
+        if(playerActions >= getCurrentPlayer().getActions()){
+            NextPlayer();
+        }
+    }
+
+    /*
+	Funció que avança al seguent jugador.
+	 */
+    private void NextPlayer(){
+        currentPlayer++;
+        playerActions = 0;
+        if(currentPlayer >= players.Count){
+            // Tots els jugadors han fet la seva accio, passem al seguent torn.
+            NextTurn();
+        }
+    }
+
 	/*
 	Funció que avança al seguent torn.
 	 */
     public void NextTurn()
     {
 		currentPlayer = 0;
+        playerActions = 0;
         currentTurn++;
-        turnAction = ActionType.Null;
     }
 
     private void instantiateSlime()
