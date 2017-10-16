@@ -70,16 +70,6 @@ public class GameController : MonoBehaviour
     }
 
     /*
-    Funció que es crida quan el jugador clica a una casella per moure's.
-     */
-    private void MovePlayer(int x, int y){
-        // Aquest 1 es el nombre d'accions que necessites per moure't.
-        if(UseActions(1)){
-            // CODI PER MOURE'L
-        }
-    }
-
-    /*
     Funció que comprova si hi ha accions suficients i si n'hi ha les utilitza.
      */
     private bool UseActions(int numberOfActions){
@@ -157,26 +147,30 @@ public class GameController : MonoBehaviour
         slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         slime.GetComponent<Slime>().actualTile = matrix.getTile(0,0);
     }
+
     public void userHitOnTile(TileData tilehit){
-        GameObject slime = GameObject.FindGameObjectWithTag("Slime");
-        Vector2 positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
-        //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
-        //guardar a slime.possibleMovements i a aqui només executar
-        //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
-        //enlloc de:
-        Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
-        
-        if(listdic.ContainsKey(tilehit)){
-            List<Vector2> listvec = new List<Vector2>();
-            List<TileData> path = listdic[tilehit];
-            foreach (TileData tile in path)
-            {
-                listvec.Add(MapDrawer.drawInternCoordenates(tile.getPosition()));
+        // Aquest 1 es el nombre d'accions que necessites per moure't.
+        if(UseActions(1)){
+            GameObject slime = GameObject.FindGameObjectWithTag("Slime");
+            Vector2 positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+            //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
+            //guardar a slime.possibleMovements i a aqui només executar
+            //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
+            //enlloc de:
+            Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
+            
+            if(listdic.ContainsKey(tilehit)){
+                List<Vector2> listvec = new List<Vector2>();
+                List<TileData> path = listdic[tilehit];
+                foreach (TileData tile in path)
+                {
+                    listvec.Add(MapDrawer.drawInternCoordenates(tile.getPosition()));
+                }
+                slime.GetComponent<SlimeMovement>().SetBufferAndPlay(listvec);
+                slime.GetComponent<Slime>().actualTile=path[path.Count-1];
+                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
             }
-            slime.GetComponent<SlimeMovement>().SetBufferAndPlay(listvec);
-            slime.GetComponent<Slime>().actualTile=path[path.Count-1];
-            positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
-            positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
         }
     }
 }
