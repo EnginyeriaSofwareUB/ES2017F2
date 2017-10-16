@@ -27,8 +27,8 @@ public class GameController : MonoBehaviour
 
         matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
         MapDrawer.instantiateMap(matrix.getIterable());
-        instantiateSlime(players[0], 0, 0, "player1slime1");
-        instantiateSlime(players[1], 2, 2, "player2slime1");
+        instantiateSlime(players[0], 0, 0);
+        instantiateSlime(players[1], 2, 2);
         selectedSlime = new GameObject("Empty"); //Init selected item as Empty
 
         currentTurn = 0;
@@ -115,9 +115,10 @@ public class GameController : MonoBehaviour
         currentTurn++;
     }
 
-    private void instantiateSlime(Player pl, int x0, int y0, string tag)
+    private void instantiateSlime(Player pl, int x0, int y0)
     {
-        GameObject slime = new GameObject();
+              
+        GameObject slime = new GameObject("Slime "+(pl.GetNumSlimes()+1).ToString()+" - "+pl.GetName());
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
@@ -125,10 +126,11 @@ public class GameController : MonoBehaviour
         slime.GetComponent<SpriteRenderer>().sortingOrder = 1;
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
-
-        pl.AddSlime(slime);
-        
-        setupSlime(slime, x0, y0);
+        pl.AddSlime(slime);  
+        slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        Vector2 tileWorldPosition = MapDrawer.drawInternCoordenates(new Vector2(x0,y0));
+        slime.transform.position = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
+        slime.GetComponent<Slime>().actualTile = matrix.getTile(x0,y0);
 
     }
 
@@ -148,11 +150,7 @@ public class GameController : MonoBehaviour
     {
         SetSelectedSlime(new GameObject("Empty"));
     }
-    private void setupSlime(GameObject slime, int x0, int y0)
-    {
-        slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        slime.GetComponent<Slime>().actualTile = matrix.getTile(x0,y0);
-    }
+   
 
     public void userHitOnTile(TileData tilehit){
         GameObject slime = selectedSlime;

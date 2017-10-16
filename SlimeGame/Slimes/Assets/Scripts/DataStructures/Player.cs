@@ -31,7 +31,9 @@ public class Player {
 	public string GetName(){
 		return name;
 	}
-
+	public int GetNumSlimes(){
+		return slimes.Count;
+	}
 	public int GetActions(){
 		return this.actions;
 	}
