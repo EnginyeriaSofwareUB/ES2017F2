@@ -23,7 +23,7 @@ public class InputController : MonoBehaviour {
                 {
                     //Seleccionar slime
                     Debug.Log(col.gameObject.name);
-                    controller.SetSelectedItem(col.gameObject);
+                    controller.SetSelectedSlime(col.gameObject);
                 } else if (col.gameObject.CompareTag("Tile"))
                 {
                     Debug.Log(col.gameObject.name);
