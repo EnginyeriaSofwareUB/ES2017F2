@@ -17,4 +17,10 @@ public class Tile : MonoBehaviour,MapDrawer.MapCoordinates {
 	public Vector2 getPosition(){
 		return data.hexPosition;
 	}
+
+    //TODO modify when we have more attributes
+    public override string ToString()
+    {
+        return data.ToString();
+    }
 }

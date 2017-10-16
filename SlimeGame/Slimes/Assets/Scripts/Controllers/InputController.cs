@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class InputController : MonoBehaviour {
 
@@ -15,18 +16,29 @@ public class InputController : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             //Obtinc els colliders que hi ha a la posicio del mouse
-            Collider2D[] colliders = Physics2D.OverlapPointAll(Camera.main.ScreenToWorldPoint(Input.mousePosition));   
+            Collider2D[] colliders = Physics2D.OverlapPointAll(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
-            foreach(Collider2D col in colliders)
+            if (colliders.Length == 1)
             {
-                if (col.gameObject.CompareTag("Slime"))
+                //TODO show info
+                EditorUtility.DisplayDialog("Selected object", colliders[0].gameObject.ToString(),"OK");
+            }
+            else
+            {
+                foreach (Collider2D col in colliders)
                 {
-                    //Seleccionar slime
-                    Debug.Log(col.gameObject.name);
-                    controller.SetSelectedItem(col.gameObject);
-                } else if (col.gameObject.CompareTag("Tile"))
-                {
-                    Debug.Log(col.gameObject.name);
+                    if (col.gameObject.CompareTag("Slime"))
+                    {
+                        //Seleccionar slime
+                        Debug.Log(col.gameObject.name);
+                        controller.SetSelectedItem(col.gameObject);
+                        //TODO show 
+                        EditorUtility.DisplayDialog("Selected object", col.gameObject.ToString(), "OK");
+                    }
+                    else if (col.gameObject.CompareTag("Tile"))
+                    {
+                        Debug.Log(col.gameObject.name);
+                    }
                 }
             }
             //Boto dret del mouse
