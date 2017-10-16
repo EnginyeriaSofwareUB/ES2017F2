@@ -155,7 +155,7 @@ public class GameController : MonoBehaviour
 
     public void userHitOnTile(TileData tilehit){
         GameObject slime = selectedSlime;
-        if(!selectedSlime.name.Equals("Empty")){
+		if(!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving){
             Vector2 positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
             //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
             //guardar a slime.possibleMovements i a aqui només executar
