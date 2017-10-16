@@ -27,7 +27,8 @@ public class GameController : MonoBehaviour
 
         matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
         MapDrawer.instantiateMap(matrix.getIterable());
-        instantiateSlime();
+        instantiateSlime(players[0]);
+        instantiateSlime(players[1]);
         selectedItem = new GameObject("Empty"); //Init selected item as Empty
         setupSlime();
 
@@ -50,8 +51,8 @@ public class GameController : MonoBehaviour
     void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 100, 20), "TURN:  " + (currentTurn + 1).ToString());
-        GUI.Label(new Rect(10, 30, 200, 40), "PLAYER:  " + getCurrentPlayer().getName());
-        GUI.Label(new Rect(10, 50, 200, 40), "ACTIONS:  " + (getCurrentPlayer().getActions()-playerActions));
+        GUI.Label(new Rect(10, 30, 200, 40), "PLAYER:  " + getCurrentPlayer().GetName());
+        GUI.Label(new Rect(10, 50, 200, 40), "ACTIONS:  " + (getCurrentPlayer().GetActions()-playerActions));
     }
 
     /*
@@ -73,11 +74,11 @@ public class GameController : MonoBehaviour
     Funció que comprova si hi ha accions suficients i si n'hi ha les utilitza.
      */
     private bool UseActions(int numberOfActions){
-        if(playerActions + numberOfActions > getCurrentPlayer().getActions()) return false; // Accions insuficients
+        if(playerActions + numberOfActions > getCurrentPlayer().GetActions()) return false; // Accions insuficients
 
         playerActions += numberOfActions;
         
-        if(playerActions >= getCurrentPlayer().getActions()){
+        if(playerActions >= getCurrentPlayer().GetActions()){
             NextPlayer();
         }
 
@@ -87,7 +88,7 @@ public class GameController : MonoBehaviour
     public void UseActionsPROVA(int numberOfActions){
         playerActions += numberOfActions;
         
-        if(playerActions >= getCurrentPlayer().getActions()){
+        if(playerActions >= getCurrentPlayer().GetActions()){
             NextPlayer();
         }
     }
@@ -114,7 +115,7 @@ public class GameController : MonoBehaviour
         currentTurn++;
     }
 
-    private void instantiateSlime()
+    private void instantiateSlime(Player pl)
     {
         GameObject slime = new GameObject("Slime");
         slime.AddComponent<SpriteRenderer>();
@@ -124,6 +125,8 @@ public class GameController : MonoBehaviour
         slime.GetComponent<SpriteRenderer>().sortingOrder = 1;
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
+
+        pl.AddSlime(slime);
 
     }
 
@@ -135,7 +138,9 @@ public class GameController : MonoBehaviour
     {
         if (selectedItem.name.Equals("Empty"))
             Destroy(selectedItem);
-        selectedItem = gameObject;
+        
+        if(!gameObject.tag.Equals("Slime") || getCurrentPlayer().IsSlimeOwner(gameObject))
+            selectedItem = gameObject;
     }
     public void DeselectItem()
     {
