@@ -155,10 +155,10 @@ public class Matrix : ScriptableObject {
 		TileData startTile = getTile(x,y);
 		List<TileData> visited = new List<TileData>();
 		if(startTile!=null){
-			//visited.Add(startTile);
+			visited.Add(startTile);
 			Dictionary<TileData,List<TileData>> first = new Dictionary<TileData,List<TileData>>();
 			first[startTile]=new List<TileData>();
-			listdic.Add(first);
+			listdic.Add(first);			
 			for(int i=1;i<=range;i++){
 				Dictionary<TileData,List<TileData>> imoves = new Dictionary<TileData,List<TileData>>();
 				foreach(TileData tile in listdic[i-1].Keys){
@@ -173,6 +173,7 @@ public class Matrix : ScriptableObject {
 				}
 				listdic.Add(imoves);
 			}
+			listdic.Remove(first);
 			return listdic;
 		}else return null;		
 	}

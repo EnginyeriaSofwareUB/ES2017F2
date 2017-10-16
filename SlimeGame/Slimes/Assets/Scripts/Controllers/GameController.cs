@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour
 
     private const int MAX_TURNS = 5;
 
-    private GameObject selectedItem;
+    private GameObject selectedSlime;
     private Matrix matrix;
     private List<Player> players;
     private int currentTurn;
@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
         matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
         MapDrawer.instantiateMap(matrix.getIterable());
         instantiateSlime();
-        selectedItem = new GameObject("Empty"); //Init selected item as Empty
+        selectedSlime = new GameObject("Empty"); //Init selected item as Empty
         setupSlime();
 
         currentTurn = 0;
@@ -106,19 +106,19 @@ public class GameController : MonoBehaviour
 
     }
 
-    public GameObject GetSelectedItem()
+    public GameObject GetSelectedSlime()
     {
-        return selectedItem;
+        return selectedSlime;
     }
-    public void SetSelectedItem(GameObject gameObject)
+    public void SetSelectedSlime(GameObject gameObject)
     {
-        if (selectedItem.name.Equals("Empty"))
-            Destroy(selectedItem);
-        selectedItem = gameObject;
+        if (selectedSlime.name.Equals("Empty"))
+            Destroy(selectedSlime);
+        selectedSlime = gameObject;
     }
     public void DeselectItem()
     {
-        SetSelectedItem(new GameObject("Empty"));
+        SetSelectedSlime(new GameObject("Empty"));
     }
     private void setupSlime()
     {
@@ -127,25 +127,28 @@ public class GameController : MonoBehaviour
         slime.GetComponent<Slime>().actualTile = matrix.getTile(0,0);
     }
     public void userHitOnTile(TileData tilehit){
-        GameObject slime = GameObject.FindGameObjectWithTag("Slime");
-        Vector2 positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
-        //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
-        //guardar a slime.possibleMovements i a aqui només executar
-        //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
-        //enlloc de:
-        Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
-        
-        if(listdic.ContainsKey(tilehit)){
-            List<Vector2> listvec = new List<Vector2>();
-            List<TileData> path = listdic[tilehit];
-            foreach (TileData tile in path)
-            {
-                listvec.Add(MapDrawer.drawInternCoordenates(tile.getPosition()));
+        GameObject slime = selectedSlime;
+        if(!selectedSlime.name.Equals("Empty")){
+            Vector2 positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+            //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
+            //guardar a slime.possibleMovements i a aqui només executar
+            //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
+            //enlloc de:
+            Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
+            
+            if(listdic.ContainsKey(tilehit)){
+                List<Vector2> listvec = new List<Vector2>();
+                List<TileData> path = listdic[tilehit];
+                foreach (TileData tile in path)
+                {
+                    listvec.Add(MapDrawer.drawInternCoordenates(tile.getPosition()));
+                }
+                slime.GetComponent<SlimeMovement>().SetBufferAndPlay(listvec);
+                slime.GetComponent<Slime>().actualTile=path[path.Count-1];
+                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
             }
-            slime.GetComponent<SlimeMovement>().SetBufferAndPlay(listvec);
-            slime.GetComponent<Slime>().actualTile=path[path.Count-1];
-            positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
-            positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
         }
     }
+        
 }
