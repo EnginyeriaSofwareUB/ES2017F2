@@ -7,6 +7,7 @@ public class SlimeMovement : MonoBehaviour {
 	private Vector2 startPos, endPos;
 	private List<Vector2> bufferPositions = null;
 	private int indexBuffer;
+	public bool moving;
 
 	public float secondsXmovement = 1; //1 segon, pero es pot determinar des de unity
 	private float startTime;
@@ -20,6 +21,8 @@ public class SlimeMovement : MonoBehaviour {
 		list.Add(new Vector2(-4,4));
 
 		SetBufferAndPlay (list);*/
+
+		moving = false;
 	}
 	
 	// Update is called once per frame
@@ -34,6 +37,7 @@ public class SlimeMovement : MonoBehaviour {
 				indexBuffer++;
 				if (indexBuffer >= bufferPositions.Count) {
 					bufferPositions = null;
+					moving = false; //acaba el moviment
 				} else {
 					startPos = endPos;
 					endPos = bufferPositions [indexBuffer];
@@ -50,6 +54,7 @@ public class SlimeMovement : MonoBehaviour {
 			startTime = Time.time;
 			indexBuffer = 0;
 			endPos = bufferPositions [indexBuffer];
+			moving = true; //inici del moviment
 		}
 	}
 }
