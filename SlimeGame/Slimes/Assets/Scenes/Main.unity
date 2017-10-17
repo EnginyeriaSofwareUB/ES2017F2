@@ -142,8 +142,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -195.1, y: -194.20001}
-  m_SizeDelta: {x: 144.71, y: 33.6}
+  m_AnchoredPosition: {x: -221.12, y: -254.7}
+  m_SizeDelta: {x: 196.74, y: 34.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &327737645
 MonoBehaviour:
@@ -184,7 +184,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608162605}
+      - m_Target: {fileID: 1442114215}
         m_MethodName: showhidePanel
         m_Mode: 1
         m_Arguments:
@@ -318,7 +318,6 @@ GameObject:
   - component: {fileID: 608162600}
   - component: {fileID: 608162606}
   - component: {fileID: 608162607}
-  - component: {fileID: 608162605}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -396,18 +395,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &608162605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 608162599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72d449153d81cd84da9e1c34c9aaf1c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Panel: {fileID: 1442114211}
 --- !u!114 &608162606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,7 +429,7 @@ GameObject:
   - component: {fileID: 1101062988}
   - component: {fileID: 1101062987}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: canvasTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -535,6 +522,7 @@ GameObject:
   - component: {fileID: 1442114212}
   - component: {fileID: 1442114214}
   - component: {fileID: 1442114213}
+  - component: {fileID: 1442114215}
   m_Layer: 5
   m_Name: PanelTip
   m_TagString: Untagged
@@ -558,8 +546,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -195.1, y: -163.9}
-  m_SizeDelta: {x: -390.3, y: -327.8}
+  m_AnchoredPosition: {x: -221.1, y: -200.9}
+  m_SizeDelta: {x: -442.3, y: -401.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1442114213
 MonoBehaviour:
@@ -594,6 +582,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1442114211}
+--- !u!114 &1442114215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1442114211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72d449153d81cd84da9e1c34c9aaf1c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 0
 --- !u!1 &1788572559
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,8 +688,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.02999878, y: 16.199982}
-  m_SizeDelta: {x: 144.76, y: 45.2}
+  m_AnchoredPosition: {x: 0, y: 17.649998}
+  m_SizeDelta: {x: 196.7, y: 106.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1823128648
 MonoBehaviour:
@@ -723,7 +723,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Aqui text informaci\xF3 pel jugador"
+  m_Text: Aquest text s'edita a GameController
 --- !u!222 &1823128649
 CanvasRenderer:
   m_ObjectHideFlags: 0

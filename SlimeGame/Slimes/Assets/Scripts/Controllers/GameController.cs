@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
@@ -14,10 +15,10 @@ public class GameController : MonoBehaviour {
 		MapDrawer.instantiateMap(matrix.getIterable());
 		instantiateSlime ();
         selectedItem = new GameObject("Empty"); //Init selected item as Empty
-		/*panelTip = GameObject.Find("panelTip");
-		textTip = GameObject.Find ("textTip");
-		panelTip.AddComponent<DialogInfo> ();
-		panelTip.GetComponent<DialogInfo> ().Active (false);*/
+		panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
+		textTip = GameObject.Find ("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
+		panelTip.GetComponent<DialogInfo> ().Active (false);
+		textTip.GetComponent<Text> ().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
 
 	}
 	
