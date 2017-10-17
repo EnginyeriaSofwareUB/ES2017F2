@@ -14,4 +14,9 @@ public class Slime : MonoBehaviour {
 	void Update () {
 		
 	}
+    //TODO modify when we have more attributes
+    public override string ToString()
+    {
+        return "Insert some text here to describe the slime";
+    }
 }
