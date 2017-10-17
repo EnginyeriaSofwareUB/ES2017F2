@@ -81,7 +81,7 @@ public class Matrix : ScriptableObject {
 		try{
 			TileData tile = map [x][y];
 			b=true;
-		}catch(Exception ex){
+		}catch(Exception){
 			b = false;
 		}
 		return b;
@@ -151,7 +151,7 @@ public class Matrix : ScriptableObject {
 	}
 	public List<Dictionary<TileData,List<TileData>>> coordinateRangeAndPath(int x, int y, int range){		
 		List<Dictionary<TileData,List<TileData>>> listdic = new List<Dictionary<TileData,List<TileData>>>();
-		Queue<QueueItem> queue = new Queue<QueueItem>();
+		//Queue<QueueItem> queue = new Queue<QueueItem>();
 		TileData startTile = getTile(x,y);
 		List<TileData> visited = new List<TileData>();
 		if(startTile!=null){
