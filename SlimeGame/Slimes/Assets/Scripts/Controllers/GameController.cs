@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour
         players.Add(new Player("Jugador 1", 2)); // Test with 2 players
         players.Add(new Player("Jugador 2", 3)); // Test with 2 players
 
-        matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
+        matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
         MapDrawer.instantiateMap(matrix.getIterable());
         instantiateSlime("slime", players[0], 0, -1);
         instantiateSlime("slime", players[0], 1, 0);
