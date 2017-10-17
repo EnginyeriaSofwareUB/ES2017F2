@@ -6,9 +6,11 @@ using UnityEditor;
 public class InputController : MonoBehaviour {
 
     GameController controller;
+    UIController uiController;
 
 	void Start () {
         controller = Camera.main.GetComponent<GameController>();
+        uiController = Camera.main.GetComponent<UIController>();
     }
 	
 	void Update () {
@@ -20,8 +22,16 @@ public class InputController : MonoBehaviour {
 
             if (colliders.Length == 1)
             {
-                //TODO show info
-                EditorUtility.DisplayDialog("Selected object", colliders[0].gameObject.ToString(),"OK");
+                //Show info (depenent de si es una casella o un slime)
+                if (colliders[0].gameObject.CompareTag("Slime")){
+                    Slime slime = (Slime)colliders[0].GetComponent(typeof(Slime));
+                    uiController.ShowCanvasInfo(slime.ToString());
+                }
+                else
+                {
+                    Tile tile = (Tile)colliders[0].GetComponent(typeof(Tile));
+                    uiController.ShowCanvasInfo(tile.ToString());
+                }
             }
             else
             {
@@ -30,14 +40,14 @@ public class InputController : MonoBehaviour {
                     if (col.gameObject.CompareTag("Slime"))
                     {
                         //Seleccionar slime
-                        Debug.Log(col.gameObject.name);
                         controller.SetSelectedItem(col.gameObject);
-                        //TODO show 
-                        EditorUtility.DisplayDialog("Selected object", col.gameObject.ToString(), "OK");
+                        //show info
+                        Slime slime = (Slime) col.gameObject.GetComponent(typeof(Slime));
+                        uiController.ShowCanvasInfo(slime.ToString());
                     }
                     else if (col.gameObject.CompareTag("Tile"))
                     {
-                        Debug.Log(col.gameObject.name);
+                        //Debug.Log(col.gameObject.name);
                     }
                 }
             }
@@ -46,6 +56,7 @@ public class InputController : MonoBehaviour {
         {
             //Deseleccionar
             controller.DeselectItem();
+            uiController.DisableCanvas();
         }
 	}
 }

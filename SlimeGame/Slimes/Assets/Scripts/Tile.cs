@@ -21,6 +21,8 @@ public class Tile : MonoBehaviour,MapDrawer.MapCoordinates {
     //TODO modify when we have more attributes
     public override string ToString()
     {
-        return data.ToString();
+        return "Here will be info about tile when we got this";
+        //TODO Em peta perque data me diu que es NULL
+        //return data.ToString();
     }
 }
