@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour {
 
 	private GameObject selectedItem;
 	private Matrix matrix;
+	private GameObject panelTip,textTip;
 	// Use this for initialization
 	void Start () {
 		//MapDrawer.InitTest ();
@@ -13,6 +14,11 @@ public class GameController : MonoBehaviour {
 		MapDrawer.instantiateMap(matrix.getIterable());
 		instantiateSlime ();
         selectedItem = new GameObject("Empty"); //Init selected item as Empty
+		/*panelTip = GameObject.Find("panelTip");
+		textTip = GameObject.Find ("textTip");
+		panelTip.AddComponent<DialogInfo> ();
+		panelTip.GetComponent<DialogInfo> ().Active (false);*/
+
 	}
 	
 	// Update is called once per frame
