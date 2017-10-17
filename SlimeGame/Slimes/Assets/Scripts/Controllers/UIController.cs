@@ -28,6 +28,7 @@ public class UIController : MonoBehaviour {
         Text t = canvasInfo.GetComponentInChildren<Text>();
         t.text = info;
     }
+
     //Desactiva el canvas
     public void DisableCanvas()
     {

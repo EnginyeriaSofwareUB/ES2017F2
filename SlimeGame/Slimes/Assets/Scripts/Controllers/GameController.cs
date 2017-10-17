@@ -8,12 +8,12 @@ public class GameController : MonoBehaviour
 
     private const int MAX_TURNS = 5;
 
-    private GameObject selectedItem;
+    private GameObject selectedSlime;
     private Matrix matrix;
     private List<Player> players;
     private int currentTurn;
     private int currentPlayer;
-    private ActionType turnAction;
+    private int playerActions;
 
 
     // Use this for initialization
@@ -22,48 +22,26 @@ public class GameController : MonoBehaviour
         //MapDrawer.InitTest ();
 
         players = new List<Player>();
-        players.Add(new Player("Jugador 1")); // Test with only 1 player
+        players.Add(new Player("Jugador 1", 2)); // Test with 2 players
+        players.Add(new Player("Jugador 2", 3)); // Test with 2 players
 
         matrix = new Matrix(MapParser.ReadMap(MapTypes.Small));
         MapDrawer.instantiateMap(matrix.getIterable());
-        instantiateSlime();
-        selectedItem = new GameObject("Empty"); //Init selected item as Empty
-        moveSlimeTest();
+        instantiateSlime(players[0], 0, 0);
+        instantiateSlime(players[1], 2, 2);
+        selectedSlime = new GameObject("Empty"); //Init selected item as Empty
 
         currentTurn = 0;
         currentPlayer = 0;
-		turnAction = ActionType.Null;
+        playerActions = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
 		bool ended = IsGameEnded();
-        if (!ended && turnAction != ActionType.Null)
-        {
-			// Comprovem quina accio hem de realitzar.
-            switch (turnAction)
-            {
-                case ActionType.Attack:
-                    break;
-                case ActionType.Conquer:
-                    break;
-                case ActionType.Divide:
-                    break;
-                case ActionType.Eat:
-                    break;
-                case ActionType.Move:
-                    break;
-                default:
-                    break;
-            }
-			currentPlayer++;
-			if(currentPlayer == players.Count){
-				// Tots els jugadors han fet la seva accio, passem al seguent torn.
-				NextTurn();
-			}
-        }
-        else if(ended)
+
+        if(ended)
         {
             SceneManager.LoadScene("GameOver");
         }
@@ -72,7 +50,15 @@ public class GameController : MonoBehaviour
     void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 100, 20), "TURN:  " + (currentTurn + 1).ToString());
-        GUI.Label(new Rect(10, 30, 200, 40), "PLAYER:  " + players[currentPlayer].getName());
+        GUI.Label(new Rect(10, 30, 200, 40), "PLAYER:  " + getCurrentPlayer().GetName());
+        GUI.Label(new Rect(10, 50, 200, 40), "ACTIONS:  " + (getCurrentPlayer().GetActions()-playerActions));
+    }
+
+    /*
+    Retorna el jugador que li toca fer una acció.
+     */
+    private Player getCurrentPlayer(){
+        return players[currentPlayer];
     }
 
 	/*
@@ -83,19 +69,56 @@ public class GameController : MonoBehaviour
         return currentTurn >= MAX_TURNS;
     }
 
+    /*
+    Funció que comprova si hi ha accions suficients i si n'hi ha les utilitza.
+     */
+    private bool UseActions(int numberOfActions){
+        if(playerActions + numberOfActions > getCurrentPlayer().GetActions()) return false; // Accions insuficients
+
+        playerActions += numberOfActions;
+        
+        if(playerActions >= getCurrentPlayer().GetActions()){
+            NextPlayer();
+        }
+
+        return true;
+    }
+
+    public void UseActionsPROVA(int numberOfActions){
+        playerActions += numberOfActions;
+        
+        if(playerActions >= getCurrentPlayer().GetActions()){
+            NextPlayer();
+        }
+    }
+
+    /*
+	Funció que avança al seguent jugador.
+	 */
+    private void NextPlayer(){
+        currentPlayer++;
+        playerActions = 0;
+        DeselectItem();
+        if(currentPlayer >= players.Count){
+            // Tots els jugadors han fet la seva accio, passem al seguent torn.
+            NextTurn();
+        }
+    }
+
 	/*
 	Funció que avança al seguent torn.
 	 */
     public void NextTurn()
     {
 		currentPlayer = 0;
+        playerActions = 0;
         currentTurn++;
-        turnAction = ActionType.Null;
     }
 
-    private void instantiateSlime()
+    private void instantiateSlime(Player pl, int x0, int y0)
     {
-        GameObject slime = new GameObject("Slime");
+              
+        GameObject slime = new GameObject("Slime "+(pl.GetNumSlimes()+1).ToString()+" - "+pl.GetName());
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
@@ -103,37 +126,56 @@ public class GameController : MonoBehaviour
         slime.GetComponent<SpriteRenderer>().sortingOrder = 1;
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
+        pl.AddSlime(slime);  
+        slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        Vector2 tileWorldPosition = MapDrawer.drawInternCoordenates(new Vector2(x0,y0));
+        slime.transform.position = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
+        slime.GetComponent<Slime>().actualTile = matrix.getTile(x0,y0);
 
     }
 
-    public GameObject GetSelectedItem()
+    public GameObject GetSelectedSlime()
     {
-        return selectedItem;
+        return selectedSlime;
     }
-    public void SetSelectedItem(GameObject gameObject)
+    public void SetSelectedSlime(GameObject gameObject)
     {
-        if (selectedItem.name.Equals("Empty"))
-            Destroy(selectedItem);
-        selectedItem = gameObject;
+        
+        
+        if(!gameObject.tag.Equals("Slime") || getCurrentPlayer().IsSlimeOwner(gameObject)){
+            if (selectedSlime.name.Equals("Empty")) Destroy(selectedSlime);
+            selectedSlime = gameObject;
+        }
     }
     public void DeselectItem()
     {
-        SetSelectedItem(new GameObject("Empty"));
+        SetSelectedSlime(new GameObject("Empty"));
     }
-    private void moveSlimeTest()
-    {
-        GameObject slime = GameObject.FindGameObjectWithTag("Slime");
-        slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        List<Dictionary<TileData, List<TileData>>> listdic = matrix.coordinateRangeAndPath(0, 0, 4);
-        List<Vector2> listvec = new List<Vector2>();
-        IEnumerator<TileData> enumerator = listdic[4].Keys.GetEnumerator();
-        enumerator.MoveNext();
-        enumerator.MoveNext();
-        foreach (TileData tile in listdic[4][enumerator.Current])
-        {
-            listvec.Add(MapDrawer.drawInternCoordenates(tile.getPosition()));
-        }
+   
 
-        slime.GetComponent<SlimeMovement>().SetBufferAndPlay(listvec);
+    public void userHitOnTile(TileData tilehit){
+        GameObject slime = selectedSlime;
+		if(!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving){
+            Vector2 positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+            //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
+            //guardar a slime.possibleMovements i a aqui només executar
+            //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
+            //enlloc de:
+            Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
+            
+            if(listdic.ContainsKey(tilehit) && UseActions(1)){
+                List<Vector2> listvec = new List<Vector2>();
+                List<TileData> path = listdic[tilehit];
+                foreach (TileData tile in path)
+                {
+                    listvec.Add(MapDrawer.drawInternCoordenates(tile.getPosition()));
+                }
+                slime.GetComponent<SlimeMovement>().SetBufferAndPlay(listvec);
+                slime.GetComponent<Slime>().actualTile=path[path.Count-1];
+                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+            }
+        }
     }
+        
 }

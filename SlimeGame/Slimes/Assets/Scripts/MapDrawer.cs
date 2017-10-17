@@ -19,7 +19,7 @@ public class MapDrawer {
 		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
 		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 
-		foreach (MapCoordinates tile in map) {
+		foreach (TileData tile in map) {
 			
 			Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 			int x = (int)tile.getPosition().x;
@@ -36,6 +36,7 @@ public class MapDrawer {
             newTile.AddComponent<Tile>();                   //Adding Script
             newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
+			newTile.GetComponent<Tile>().data = tile;
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
 			//rotacion de 60
 			

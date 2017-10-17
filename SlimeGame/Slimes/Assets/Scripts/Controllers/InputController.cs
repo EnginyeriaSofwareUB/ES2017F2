@@ -40,14 +40,17 @@ public class InputController : MonoBehaviour {
                     if (col.gameObject.CompareTag("Slime"))
                     {
                         //Seleccionar slime
-                        controller.SetSelectedItem(col.gameObject);
+                        controller.SetSelectedSlime(col.gameObject);
                         //show info
-                        Slime slime = (Slime) col.gameObject.GetComponent(typeof(Slime));
+                        Slime slime = (Slime)col.gameObject.GetComponent(typeof(Slime));
                         uiController.ShowCanvasInfo(slime.ToString());
                     }
                     else if (col.gameObject.CompareTag("Tile"))
                     {
-                        //Debug.Log(col.gameObject.name);
+                        Debug.Log(col.gameObject.name);
+                        Tile tile = col.gameObject.GetComponent<Tile>();
+                        //Vector2 position = tile.getPosition();
+                        controller.userHitOnTile(tile.data);
                     }
                 }
             }
