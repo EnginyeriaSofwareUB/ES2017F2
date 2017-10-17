@@ -10,9 +10,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="600"
-   height="700"
-   viewBox="0 0 158.75001 185.20833"
+   width="332.7446"
+   height="362.3392"
+   viewBox="0 0 88.038683 95.868914"
    version="1.1"
    id="svg1599"
    inkscape:version="0.92.2 (unknown)"
@@ -362,11 +362,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49146915"
-     inkscape:cx="435.72531"
-     inkscape:cy="190.13027"
+     inkscape:zoom="0.66666667"
+     inkscape:cx="126.91647"
+     inkscape:cy="193.16644"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer6"
      showgrid="false"
      inkscape:window-width="1309"
      inkscape:window-height="747"
@@ -394,7 +394,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -402,13 +402,37 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Figure_5"
+     style="display:none;opacity:1"
+     transform="translate(-113.25878,-188.05137)" />
+  <g
+     inkscape:label="Figure_4"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:none;opacity:1"
+     transform="translate(-113.25878,-188.05137)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Figure_1"
+     style="display:none;opacity:1"
+     transform="translate(-77.897862,-129.05018)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Figure_2"
+     style="display:none;opacity:1"
+     transform="translate(-77.897862,-129.05018)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="Figure_3"
      style="display:inline;opacity:1"
-     transform="translate(-79.57121,-101.00905)"
-     sodipodi:insensitive="true">
+     transform="translate(-33.687566,-65.492964)">
     <g
+       style="display:inline;opacity:1"
        id="layer1-0"
        inkscape:label="Layer 1"
-       transform="translate(46.136179,89.281065)"
+       transform="matrix(0.58406793,0,0,0.58406793,9.5505377,46.056736)"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
       <g
@@ -523,18 +547,10 @@
         </g>
       </g>
     </g>
-  </g>
-  <g
-     inkscape:label="Figure_4"
-     inkscape:groupmode="layer"
-     id="layer1"
-     style="display:inline;opacity:1"
-     transform="translate(-79.57121,-101.00905)"
-     sodipodi:insensitive="true">
     <g
        id="g4924-0"
-       style="display:inline"
-       transform="translate(43.210759,80.3672)"
+       style="display:inline;opacity:1"
+       transform="matrix(0.58406793,0,0,0.58406793,7.8418931,40.850433)"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
       <g
@@ -651,18 +667,10 @@
            sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccc" />
       </g>
     </g>
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer4"
-     inkscape:label="Figure_1"
-     style="display:inline;opacity:1"
-     transform="translate(-44.210296,-42.007857)"
-     sodipodi:insensitive="true">
     <g
-       style="display:inline"
+       style="display:inline;opacity:1"
        id="g4924"
-       transform="translate(7.6702465,21.280696)"
+       transform="matrix(0.58406793,0,0,0.58406793,7.7369968,40.800605)"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
       <g
@@ -775,18 +783,10 @@
            sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccc" />
       </g>
     </g>
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer5"
-     inkscape:label="Figure_2"
-     style="display:inline;opacity:1"
-     transform="translate(-44.210296,-42.007857)"
-     sodipodi:insensitive="true">
     <g
-       style="display:inline"
+       style="display:inline;opacity:1"
        id="g4924-7"
-       transform="translate(7.6470745,20.884972)"
+       transform="matrix(0.58406793,0,0,0.58406793,7.7234622,40.569475)"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
       <g
@@ -922,24 +922,18 @@
            sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccc" />
       </g>
     </g>
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer6"
-     inkscape:label="Figure_3"
-     style="display:inline;opacity:1"
-     transform="translate(0,21.549363)"
-     sodipodi:insensitive="true">
     <g
        style="display:inline;opacity:1"
        id="layer1-6"
        inkscape:label="Layer 1"
-       transform="translate(-33.267495,-33.437567)"
+       transform="matrix(0.58406793,0,0,0.58406793,9.6483901,45.963155)"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
       <g
          transform="translate(-3.175,-8.9958333)"
-         id="g9178-3">
+         id="g9178-3"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96">
         <g
            id="g1075-20"
            transform="translate(14.567463,-9.9485114)">
