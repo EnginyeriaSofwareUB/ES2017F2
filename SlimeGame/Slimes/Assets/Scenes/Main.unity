@@ -513,7 +513,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 847363f12342a894d80021dd8d0f0d49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
 --- !u!1001 &628384145
 Prefab:
   m_ObjectHideFlags: 0
@@ -651,26 +650,11 @@ GameObject:
   - component: {fileID: 919944794}
   m_Layer: 5
   m_Name: TextInfo
-=======
---- !u!1 &833752616
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 833752617}
-  - component: {fileID: 833752619}
-  - component: {fileID: 833752618}
-  m_Layer: 5
-  m_Name: Text
->>>>>>> development
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
 --- !u!224 &919944793
 RectTransform:
   m_ObjectHideFlags: 0
@@ -678,19 +662,10 @@ RectTransform:
     type: 2}
   m_PrefabInternal: {fileID: 628384145}
   m_GameObject: {fileID: 919944792}
-=======
---- !u!224 &833752617
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 833752616}
->>>>>>> development
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-<<<<<<< HEAD
   m_Father: {fileID: 1930700911}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -706,33 +681,13 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 628384145}
   m_GameObject: {fileID: 919944792}
-=======
-  m_Father: {fileID: 8595346}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &833752618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 833752616}
->>>>>>> development
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-<<<<<<< HEAD
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-=======
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
->>>>>>> development
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -746,17 +701,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-<<<<<<< HEAD
-    m_Alignment: 0
-=======
     m_Alignment: 4
->>>>>>> development
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-<<<<<<< HEAD
   m_Text: New Text
 --- !u!222 &919944795
 CanvasRenderer:
@@ -765,17 +715,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 628384145}
   m_GameObject: {fileID: 919944792}
-=======
-  m_Text: 'NEXT ACTION
-
-'
---- !u!222 &833752619
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 833752616}
->>>>>>> development
 --- !u!1 &1229551357
 GameObject:
   m_ObjectHideFlags: 0
