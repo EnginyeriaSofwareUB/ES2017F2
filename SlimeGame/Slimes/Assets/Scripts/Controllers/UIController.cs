@@ -9,7 +9,7 @@ public class UIController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        canvasInfo = GameObject.Find("CanvasInfo");
+        canvasInfo = GameObject.Find("Dialog");
         DisableCanvas();
 
         //Si clica OK desactiva el canvas

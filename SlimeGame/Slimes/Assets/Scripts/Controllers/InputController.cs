@@ -32,6 +32,7 @@ public class InputController : MonoBehaviour
                     //show info
                     Slime slime = (Slime)col.gameObject.GetComponent(typeof(Slime));
                     uiController.ShowCanvasInfo(slime.ToString());
+					return;
                 }
                 else if (col.gameObject.CompareTag("Tile"))
                 {
