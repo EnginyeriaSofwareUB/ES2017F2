@@ -170,12 +170,14 @@ public class GameController : MonoBehaviour
     }
     public void DeselectItem()
     {
+        Debug.Log("deselecting");
         SetSelectedSlime(new GameObject("Empty"));
     }
 
 
     public void userHitOnTile(TileData tilehit)
     {
+        Debug.Log("userHitOnTile");
         GameObject slime = selectedSlime;
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
