@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Matrix : ScriptableObject {
+public class Matrix {
 	
 	private Dictionary<int, Dictionary<int,TileData>> map;
 	private int shifted;

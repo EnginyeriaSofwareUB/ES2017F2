@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		Text go = GameObject.Find("DebugText").GetComponent<Text>();
+
         //MapDrawer.InitTest ();
 		panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
 		textTip = GameObject.Find ("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
@@ -30,15 +32,15 @@ public class GameController : MonoBehaviour
         players = new List<Player>();
         players.Add(new Player("Jugador 1", 2)); // Test with 2 players
         players.Add(new Player("Jugador 2", 3)); // Test with 2 players
+		go.text = "gameController";
+		matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
 
-        matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
         MapDrawer.instantiateMap(matrix.getIterable());
         instantiateSlime("slime", players[0], 0, -1);
         instantiateSlime("slime", players[0], 1, 0);
         instantiateSlime("slime2", players[1], 2, 2);
         instantiateSlime("slime2", players[1], -1, 2);
         selectedSlime = new GameObject("Empty"); //Init selected item as Empty
-
         currentTurn = 0;
         currentPlayer = 0;
         playerActions = 0;

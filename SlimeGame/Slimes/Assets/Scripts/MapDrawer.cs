@@ -38,8 +38,8 @@ public class MapDrawer {
             newTile.tag = "Tile";                           //Add tag
 			newTile.AddComponent<SpriteRenderer> ();
             newTile.AddComponent<Tile>();                   //Adding Script
-            newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
+			newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<Tile>().data = tile;
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
 			//rotacion de 60
