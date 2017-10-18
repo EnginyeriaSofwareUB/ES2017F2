@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile : MonoBehaviour,MapDrawer.MapCoordinates {
+public class Tile : MonoBehaviour {
 	public TileData data;
 	// Use this for initialization
 	void Start () {

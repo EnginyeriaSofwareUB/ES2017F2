@@ -17,4 +17,8 @@ public class TileData:MapDrawer.MapCoordinates{
 	public bool isBlocking(){
 		return type==TileType.Block; //or someone on it
 	}
+
+	public TileType getTileType(){
+		return type;
+	}
 }

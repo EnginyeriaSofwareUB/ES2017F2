@@ -15,6 +15,10 @@ public class MapDrawer {
 	public static void instantiateMap(System.Collections.IEnumerable map){
 
 		Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
+		Hashtable sprites = new Hashtable ();
+		sprites.Add(TileType.Block, Resources.Load<Sprite>("Test/testTileFlat2"));
+		sprites.Add(TileType.Sand, Resources.Load<Sprite>("Test/testTileFlat3"));
+		sprites.Add(TileType.Water, Resources.Load<Sprite>("Test/testTileFlat"));
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);
 		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
 		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
@@ -35,7 +39,7 @@ public class MapDrawer {
 			newTile.AddComponent<SpriteRenderer> ();
             newTile.AddComponent<Tile>();                   //Adding Script
             newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
-			newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
+			newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
 			newTile.GetComponent<Tile>().data = tile;
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
 			//rotacion de 60
@@ -58,7 +62,7 @@ public class MapDrawer {
 	public interface MapCoordinates{
 
 		Vector2 getPosition();
-
+		TileType getTileType();
 	}
 
 
@@ -85,6 +89,11 @@ public class MapDrawer {
 		public Vector2 getPosition(){
 			return position;
 		}
+
+		public TileType getTileType (){
+			return TileType.Sand;
+		}
+
 	}
 
 }
