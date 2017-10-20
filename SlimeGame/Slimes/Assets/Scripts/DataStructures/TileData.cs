@@ -1,11 +1,14 @@
 using UnityEngine;
 public class TileData:MapDrawer.MapCoordinates{
-	public TileType type;
-    public Vector2 hexPosition;
+	private TileType type;
+    private Vector2 hexPosition;
+	private Vector2 realWorldPosition;
+	public GameObject slimeOnTop;
     //Tile tile;
 	public TileData(TileType typeEnum, Vector2 position){
 		hexPosition = position;
 		type = typeEnum;
+		slimeOnTop=null;
 	}
 
 	override public string ToString(){
@@ -15,10 +18,19 @@ public class TileData:MapDrawer.MapCoordinates{
 		return hexPosition;
 	}
 	public bool isBlocking(){
-		return type==TileType.Block; //or someone on it
+		return type==TileType.Block||slimeOnTop!=null; //or someone on it
 	}
 
 	public TileType getTileType(){
 		return type;
+	}
+	public void SetSlimeOnTop(GameObject slimeTop){
+		this.slimeOnTop=slimeTop;
+	}
+	public void SetRealWorldPosition(Vector2 vec){
+		realWorldPosition=vec;
+	}
+	public Vector2 GetRealWorldPosition(){
+		return realWorldPosition;
 	}
 }

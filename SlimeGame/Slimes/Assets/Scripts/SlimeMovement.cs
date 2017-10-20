@@ -5,7 +5,7 @@ using UnityEngine;
 public class SlimeMovement : MonoBehaviour {
 
 	private Vector2 startPos, endPos;
-	private List<Vector2> bufferPositions = null;
+	private List<TileData> bufferPositions = null;
 	private int indexBuffer;
 	public bool moving;
 
@@ -35,26 +35,31 @@ public class SlimeMovement : MonoBehaviour {
 			if (i >= 1) {
 				startTime = Time.time;
 				indexBuffer++;
+				//gameObject.GetComponent<Slime>().SetActualTile(bufferPositions [indexBuffer]);
 				if (indexBuffer >= bufferPositions.Count) {
 					bufferPositions = null;
 					moving = false; //acaba el moviment
+					
 				} else {
 					startPos = endPos;
-					endPos = bufferPositions [indexBuffer];
+					endPos = bufferPositions [indexBuffer].GetRealWorldPosition();
+					
 				}
+				
 			}
 		}
 	}
 
 	//funcio per determinar el recorregut que ha de ser Slime i iniciar recorregut
-	public void SetBufferAndPlay(List<Vector2> buffer){
+	public void SetBufferAndPlay(List<TileData> buffer){
 		if (buffer != null && buffer.Count > 0) {
 			bufferPositions = buffer;
 			startPos = transform.position;
 			startTime = Time.time;
 			indexBuffer = 0;
-			endPos = bufferPositions [indexBuffer];
+			endPos = bufferPositions [indexBuffer].GetRealWorldPosition();
 			moving = true; //inici del moviment
+			gameObject.GetComponent<Slime>().SetActualTile(buffer [buffer.Count-1]);
 		}
 	}
 }

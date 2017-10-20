@@ -148,9 +148,10 @@ public class GameController : MonoBehaviour
         slime.AddComponent<SlimeMovement>();
         pl.AddSlime(slime);
         slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        Vector2 tileWorldPosition = MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
+        TileData tile = matrix.getTile(x0, y0);
+        Vector2 tileWorldPosition = tile.GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
-        slime.GetComponent<Slime>().actualTile = matrix.getTile(x0, y0);
+        slime.GetComponent<Slime>().SetActualTile(tile);
 
     }
 
@@ -170,7 +171,7 @@ public class GameController : MonoBehaviour
             if (selectedSlime.tag.Equals("Slime") && !selectedSlime.GetComponent<Slime>().rangeUpdated)
             {
                 //Debug.Log("Updating range...");
-                Vector2 positionSlime = selectedSlime.GetComponent<Slime>().actualTile.getPosition();
+                Vector2 positionSlime = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
                 selectedSlime.GetComponent<Slime>().possibleMovements = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
                 selectedSlime.GetComponent<Slime>().rangeUpdated = true;
             }
@@ -189,7 +190,7 @@ public class GameController : MonoBehaviour
         GameObject slime = selectedSlime;
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
-            Vector2 positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+            Vector2 positionSlime = slime.GetComponent<Slime>().GetActualTile().getPosition();
             //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
             //guardar a slime.possibleMovements i a aqui només executar
             //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
@@ -198,17 +199,14 @@ public class GameController : MonoBehaviour
 
             if (listdic.ContainsKey(tilehit) && UseActions(1))
             {
-                List<Vector2> listvec = new List<Vector2>();
+                //List<Vector2> listvec = new List<Vector2>();
                 List<TileData> path = listdic[tilehit];
-                foreach (TileData tile in path)
-                {
-                    listvec.Add(MapDrawer.drawInternCoordenates(tile.getPosition()));
-                }
-                slime.GetComponent<SlimeMovement>().SetBufferAndPlay(listvec);
-                slime.GetComponent<Slime>().actualTile = path[path.Count - 1];
+                
+                slime.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
+                
                 slime.GetComponent<Slime>().rangeUpdated = false;
-                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
-                positionSlime = slime.GetComponent<Slime>().actualTile.getPosition();
+                //positionSlime = slime.GetComponent<Slime>().GetActualTile().getPosition();
+                
                 DeselectItem();
             }
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour {
-	public TileData data;
+	private TileData data;
 	// Use this for initialization
 	void Start () {
 		
@@ -15,7 +15,7 @@ public class Tile : MonoBehaviour {
 	}
 
 	public Vector2 getPosition(){
-		return data.hexPosition;
+		return data.getPosition();
 	}
 
     //TODO modify when we have more attributes
@@ -25,4 +25,11 @@ public class Tile : MonoBehaviour {
         //TODO Em peta perque data me diu que es NULL
         //return data.ToString();
     }
+	public TileData GetTileData(){
+		return data;
+	}
+	public void SetTileData(TileData data){
+		this.data=data;
+	}
+	
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
-	public TileData actualTile;
+	public  TileData actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
 	// Use this for initialization
@@ -20,4 +20,12 @@ public class Slime : MonoBehaviour {
     {
         return "Insert some text here to describe the slime";
     }
+	public void SetActualTile(TileData newTile){
+		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
+		actualTile=newTile;
+		actualTile.SetSlimeOnTop(gameObject);
+	}
+	public TileData GetActualTile(){
+		return actualTile;
+	}
 }

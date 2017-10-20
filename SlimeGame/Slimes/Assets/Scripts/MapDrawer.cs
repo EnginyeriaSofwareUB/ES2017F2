@@ -40,12 +40,11 @@ public class MapDrawer {
             newTile.AddComponent<Tile>();                   //Adding Script
 			newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
 			newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
-			newTile.GetComponent<Tile>().data = tile;
+			newTile.GetComponent<Tile>().SetTileData(tile);
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
 			//rotacion de 60
-			
-			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f); 
-			
+			tile.SetRealWorldPosition(tileWorldPosition);
+			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
 			newTile.transform.position =vec;
 		}
 

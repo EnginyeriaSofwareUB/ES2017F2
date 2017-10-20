@@ -38,7 +38,7 @@ public class InputController : MonoBehaviour
                     //Debug.Log(col.gameObject.name);
                     Tile tile = col.gameObject.GetComponent<Tile>();
                     //Vector2 position = tile.getPosition();
-                    controller.userHitOnTile(tile.data);
+                    controller.userHitOnTile(tile.GetTileData());
                     uiController.ShowCanvasInfo(tile.ToString());
                 }
             }
