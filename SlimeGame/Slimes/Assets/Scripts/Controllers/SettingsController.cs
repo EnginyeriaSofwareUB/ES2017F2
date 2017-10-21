@@ -5,50 +5,50 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class SettingsController : MonoBehaviour {
-	public float effects_volume_1, music_volume_1;
+	public bool effects, music;
 	// Use this for initialization
 	void Start () {
 		string jsonData = PlayerPrefs.GetString ("SettingsVolume");
 		if (jsonData != null) {
 			loadSettings (jsonData);
 		} else {
-			effects_volume_1 = 1;
-			music_volume_1 = 1;
+			effects = true;
+			music = true;
 			saveSettings ();
 		}
-		GameObject.Find ("VolumeEffects").GetComponent<Slider> ().value = effects_volume_1;
-		GameObject.Find ("VolumeMusic").GetComponent<Slider> ().value = music_volume_1;
+		GameObject.Find ("Effects").GetComponent<Toggle> ().isOn = effects;
+		GameObject.Find ("Music").GetComponent<Toggle> ().isOn = music;
+		//GameObject.Find ("Effects").GetComponent<Toggle> ().onValueChanged.AddListener(onClickToggle);
 	}
 
-	public void applySettings(){
-		effects_volume_1 = GameObject.Find ("VolumeEffects").GetComponent<Slider> ().value;
-		music_volume_1 = GameObject.Find ("VolumeMusic").GetComponent<Slider> ().value;
+	public void onClickToggle(){
+		GameObject[] list = GameObject.FindGameObjectsWithTag("Setting");
+		foreach(GameObject go in list){
+			if (go.name.Equals ("Effects")) {
+				effects = go.GetComponent<Toggle> ().isOn;
+			} else if (go.name.Equals ("Music")) {
+				music = go.GetComponent<Toggle> ().isOn;
+			}
+		}
 		saveSettings ();
-		returnScene ();
-	}
-
-	public void cancelSettings(){
-		returnScene ();
-	}
-
-	private void returnScene(){
-		SceneManager.LoadScene(1);
 	}
 
 	private void saveSettings(){
 		string jsonData = JsonUtility.ToJson (this);
+		Debug.Log ("Saving "+jsonData);
 		PlayerPrefs.SetString ("SettingsVolume", jsonData);
 		PlayerPrefs.Save ();
 	}
 
 	private void loadSettings(string jsonData){
 		SaveSettings loadedData = JsonUtility.FromJson<SaveSettings> (jsonData);
-		effects_volume_1 = loadedData.effects_volume_1;
-		music_volume_1 = loadedData.music_volume_1;
+		effects = loadedData.effects;
+		music = loadedData.music;
+		Debug.Log ("Loading: "+jsonData);
 	}
 }
 	
 public class SaveSettings{
-	public float effects_volume_1 = 1;
-	public float music_volume_1 = 1;
+	public bool effects = true;
+	public bool music = true;
 }
