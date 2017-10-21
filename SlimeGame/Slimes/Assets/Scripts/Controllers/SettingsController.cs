@@ -6,8 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class SettingsController : MonoBehaviour {
 	public bool effects, music;
+	private bool firstTime;
 	// Use this for initialization
 	void Start () {
+		firstTime = true;
+		GameObject.Find ("Effects").GetComponent<Toggle> ().onValueChanged.RemoveAllListeners ();
+		GameObject.Find ("Music").GetComponent<Toggle> ().onValueChanged.RemoveAllListeners ();
 		string jsonData = PlayerPrefs.GetString ("SettingsVolume");
 		if (jsonData != null) {
 			loadSettings (jsonData);
@@ -16,21 +20,24 @@ public class SettingsController : MonoBehaviour {
 			music = true;
 			saveSettings ();
 		}
+
 		GameObject.Find ("Effects").GetComponent<Toggle> ().isOn = effects;
 		GameObject.Find ("Music").GetComponent<Toggle> ().isOn = music;
-		//GameObject.Find ("Effects").GetComponent<Toggle> ().onValueChanged.AddListener(onClickToggle);
+		firstTime = false;
 	}
 
 	public void onClickToggle(){
-		GameObject[] list = GameObject.FindGameObjectsWithTag("Setting");
-		foreach(GameObject go in list){
-			if (go.name.Equals ("Effects")) {
-				effects = go.GetComponent<Toggle> ().isOn;
-			} else if (go.name.Equals ("Music")) {
-				music = go.GetComponent<Toggle> ().isOn;
+		if (!firstTime) {
+			GameObject[] list = GameObject.FindGameObjectsWithTag ("Setting");
+			foreach (GameObject go in list) {
+				if (go.name.Equals ("Effects")) {
+					effects = go.GetComponent<Toggle> ().isOn;
+				} else if (go.name.Equals ("Music")) {
+					music = go.GetComponent<Toggle> ().isOn;
+				}
 			}
+			saveSettings ();
 		}
-		saveSettings ();
 	}
 
 	private void saveSettings(){
