@@ -35,7 +35,7 @@ public class InputController : MonoBehaviour
                 }
                 else if (col.gameObject.CompareTag("Tile"))
                 {
-                    //Debug.Log(col.gameObject.name);
+                    Debug.Log(col.gameObject.name);
                     Tile tile = col.gameObject.GetComponent<Tile>();
                     //Vector2 position = tile.getPosition();
                     controller.userHitOnTile(tile.GetTileData());

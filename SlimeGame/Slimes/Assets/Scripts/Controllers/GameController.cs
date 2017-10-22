@@ -33,12 +33,12 @@ public class GameController : MonoBehaviour
         players.Add(new Player("Jugador 1", 2)); // Test with 2 players
         players.Add(new Player("Jugador 2", 3)); // Test with 2 players
 		go.text = "gameController";
-		matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-
+		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
+        matrix = new Matrix(15);
         MapDrawer.instantiateMap(matrix.getIterable());
         instantiateSlime("slime", players[0], 0, -1);
         instantiateSlime("slime", players[0], 1, 0);
-        instantiateSlime("slime2", players[1], 2, 2);
+        instantiateSlime("slime2", players[1], 1, 2);
         instantiateSlime("slime2", players[1], -1, 2);
         selectedSlime = new GameObject("Empty"); //Init selected item as Empty
         currentTurn = 0;
@@ -186,7 +186,7 @@ public class GameController : MonoBehaviour
 
     public void userHitOnTile(TileData tilehit)
     {
-        Debug.Log("userHitOnTile");
+        //Debug.Log("userHitOnTile");
         GameObject slime = selectedSlime;
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {

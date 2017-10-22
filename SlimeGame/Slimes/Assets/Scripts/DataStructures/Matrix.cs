@@ -8,7 +8,7 @@ public class Matrix {
 	private Dictionary<int, Dictionary<int,TileData>> map;
 	private int shifted;
 	public Matrix(List<List<TileType>> matrix){
-		
+		//input 		
 		map = new Dictionary<int, Dictionary<int,TileData>> ();
 		int middleRow = (int)((matrix.Count) / 2);
 		int firstX = -middleRow;
@@ -34,11 +34,36 @@ public class Matrix {
 					map [hexX] [hexY] = tile;
 					
 				}
-
 			}
 		}
-		//Debug.Log("La del mig és "+map[0][0].type+" la matriu es: "+matrix.Count+"x"+Math.Max(matrix[0].Count,matrix[1].Count));
-		
+	}
+	public Matrix(int diagonal){
+		map = new Dictionary<int, Dictionary<int,TileData>> ();
+		int maxim = (int)(diagonal/2);
+		int minim = -maxim;
+		for(int x = minim;x<=maxim;x++){
+			map [x] = new Dictionary<int,TileData> (); 
+			for(int y = minim;y<=maxim;y++){
+				if(y*x<=0 || Math.Abs(x)+Math.Abs(y)<=maxim){
+					TileData tile = new TileData(TileType.Null,new Vector2(x,y));
+					map[x][y]=tile;
+					
+				}
+				
+			}
+		}
+		/*Dictionary<TileType,float> dict = new Dictionary<TileType,float>();
+		dict[TileType.Block]=0.3f;
+		dict[TileType.Sand]=0.7f;*/
+		DistributeTiles();
+	}
+	
+	public List<TileData> GetTotalTiles(){
+		List<TileData> i = new List<TileData>();
+		foreach(int x in map.Keys){
+			i.AddRange(map[x].Values);
+		}
+		return i;
 	}
 	/*
 	public List<TileData> cube_reachable(TileData startTile){
@@ -120,7 +145,7 @@ public class Matrix {
 	public static Vector2 cube_to_axial(Vector3 vec){
 		return new Vector2(vec.x,vec.z);
 	}
-	public static int distance(Vector2 v1, Vector2 v2){
+	public static int GetDistance(Vector2 v1, Vector2 v2){
 		return cube_distance(axial_to_cube(v1),axial_to_cube(v2));
 	}
 	public static int cube_distance(Vector3 v1, Vector3 v2){
@@ -177,12 +202,59 @@ public class Matrix {
 			return listdic;
 		}else return null;		
 	}
-	private class QueueItem {
-		public TileData tile;
-		public List<TileData> path;
-		public QueueItem(TileData tile, List<TileData> path){
-			this.tile=tile;
-			this.path=path;
+	/*
+	float
+	 */
+	public void DistributeTiles(Dictionary<TileType,float> probabilitiesDic=null){
+		//list must sum up to 1
+		List<TileData> alltiles = GetTotalTiles();
+		int totalTiles =alltiles.Count;
+		if(probabilitiesDic==null){
+			probabilitiesDic = new Dictionary<TileType,float>();
 		}
+		if(probabilitiesDic.Keys.Count==0){
+			foreach(TileType type in Enum.GetValues(typeof(TileType))){
+				if(type!=TileType.Null){
+					probabilitiesDic[type]= 1f/(Enum.GetValues(typeof(TileType)).Length-1);
+				}
+			}
+		}
+		
+		int maxNumIslands = probabilitiesDic.Keys.Count*(totalTiles/(2*probabilitiesDic.Keys.Count));		
+		//int numIslands = 0;
+		List<TileData> centers = new List<TileData>();
+		Dictionary<TileType,int> typeNumCenters= new Dictionary<TileType,int>();
+		foreach(TileType type in probabilitiesDic.Keys){
+			typeNumCenters[type]=(int)Math.Round(probabilitiesDic[type]*maxNumIslands);
+			
+		}		
+		System.Random rnd = new System.Random();	
+		foreach(TileType type in typeNumCenters.Keys){
+			for(int i =0;i<typeNumCenters[type];i++){
+				
+				TileData tile = alltiles[rnd.Next(alltiles.Count)];
+				alltiles.Remove(tile);
+				centers.Add(tile);
+				tile.SetTileType(type);
+			}
+		}			
+		
+		while(alltiles.Count>0){
+			
+			TileData tile = alltiles[rnd.Next(alltiles.Count)];	
+			int minDistance = 9999;		
+			TileData nearestCenter = null;
+			foreach(TileData center in centers){
+				int dist = GetDistance(center.getPosition(),tile.getPosition());
+				if(minDistance>dist){
+					nearestCenter=center;
+					minDistance=dist;
+				}
+			}
+			//centers.Add(tile);
+			tile.SetTileType(nearestCenter.getTileType());
+			alltiles.Remove(tile);
+
+		} 
 	}
 }

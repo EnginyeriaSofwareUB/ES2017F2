@@ -24,6 +24,9 @@ public class TileData:MapDrawer.MapCoordinates{
 	public TileType getTileType(){
 		return type;
 	}
+	public void SetTileType(TileType type){
+		this.type= type;
+	}
 	public void SetSlimeOnTop(GameObject slimeTop){
 		this.slimeOnTop=slimeTop;
 	}
