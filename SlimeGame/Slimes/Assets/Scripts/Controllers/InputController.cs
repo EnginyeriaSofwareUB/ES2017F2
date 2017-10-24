@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,9 +8,17 @@ public class InputController : MonoBehaviour
 
     GameController controller;
     UIController uiController;
+    public int xLimit;
+    public int yLimit;
+    public int minZoom;
+    public int maxZoom;
 
     void Start()
     {
+        xLimit = 6;
+        yLimit = 6;
+        minZoom = 3;
+        maxZoom = 13;
         controller = Camera.main.GetComponent<GameController>();
         uiController = Camera.main.GetComponent<UIController>();
     }
@@ -50,6 +59,42 @@ public class InputController : MonoBehaviour
             //Deseleccionar
             controller.DeselectItem();
             uiController.DisableCanvas();
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0 && this.GetComponent<Camera>().orthographicSize > minZoom)
+        {
+            this.GetComponent<Camera>().orthographicSize --;
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0 && this.GetComponent<Camera>().orthographicSize < maxZoom)
+        {
+            this.GetComponent<Camera>().orthographicSize++;
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if(this.transform.position.y < yLimit)
+            {
+                this.transform.position += new Vector3(0, 1, 0);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (this.transform.position.y > -yLimit)
+            {
+                this.transform.position -= new Vector3(0, 1, 0);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (this.transform.position.x > -xLimit)
+            {
+                this.transform.position -= new Vector3(1, 0, 0);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (this.transform.position.x < xLimit)
+            {
+                this.transform.position += new Vector3(1, 0, 0);
+            }
         }
     }
 }
