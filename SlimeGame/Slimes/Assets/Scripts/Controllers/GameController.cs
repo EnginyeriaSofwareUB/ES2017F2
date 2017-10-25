@@ -63,13 +63,8 @@ public class GameController : MonoBehaviour
             if(player.GetNumSlimes() == 0)
             {
                 //This player loses
-                SceneManager.LoadScene("GameOver");
                 players.Remove(player);
             }
-        }
-        if (players.Count == 1)
-        {
-            //This player win
         }
     }
 
@@ -96,7 +91,7 @@ public class GameController : MonoBehaviour
 	 */
     private bool IsGameEnded()
     {
-        return currentTurn >= MAX_TURNS;
+        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
     }
 
     /*
