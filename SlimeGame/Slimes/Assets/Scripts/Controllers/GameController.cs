@@ -34,12 +34,16 @@ public class GameController : MonoBehaviour
         players.Add(new Player("Jugador 2", 3)); // Test with 2 players
 		go.text = "gameController";
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-        matrix = new Matrix(15);
+        matrix = new Matrix(13, 0.5f);
         MapDrawer.instantiateMap(matrix.getIterable());
-        instantiateSlime("slime", players[0], 0, -1);
-        instantiateSlime("slime", players[0], 1, 0);
-        instantiateSlime("slime2", players[1], 1, 2);
-        instantiateSlime("slime2", players[1], -1, 2);
+        Vector2 slime1 = matrix.GetRandomTile();
+        instantiateSlime("slime", players[0], (int)slime1.x, (int)slime1.y);
+        Vector2 slime2 = matrix.GetRandomTile();
+        instantiateSlime("slime", players[0],(int)slime2.x, (int)slime2.y);
+        Vector2 slime3 = matrix.GetRandomTile();
+        instantiateSlime("slime2", players[1], (int)slime3.x, (int)slime3.y);
+        Vector2 slime4 = matrix.GetRandomTile();
+        instantiateSlime("slime2", players[1], (int)slime4.x, (int)slime4.y);
         selectedSlime = new GameObject("Empty"); //Init selected item as Empty
         currentTurn = 0;
         currentPlayer = 0;
