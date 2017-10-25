@@ -58,6 +58,19 @@ public class GameController : MonoBehaviour
         {
             SceneManager.LoadScene("GameOver");
         }
+        foreach ( Player player in players)
+        {
+            if(player.GetNumSlimes() == 0)
+            {
+                //This player loses
+                SceneManager.LoadScene("GameOver");
+                players.Remove(player);
+            }
+        }
+        if (players.Count == 1)
+        {
+            //This player win
+        }
     }
 
     void OnGUI()
