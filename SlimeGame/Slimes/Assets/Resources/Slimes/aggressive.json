@@ -1,0 +1,7 @@
+{
+    "name": "Aggressive",
+    "movementRange": 2,
+    "attackRange": 3,
+    "attack": 30,
+    "mass" : 10
+}

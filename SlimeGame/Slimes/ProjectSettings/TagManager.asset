@@ -7,6 +7,7 @@ TagManager:
   - Slime
   - Tile
   - UI
+  - Setting
   layers:
   - Default
   - TransparentFX

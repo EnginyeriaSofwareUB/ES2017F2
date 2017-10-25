@@ -590,9 +590,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: 63afb90c-aa7b-4ea9-bf46-c091fbe7ca2b
+  cloudProjectId: cb449f51-9dbb-4f1a-b9c7-7e4ab8df3783
   projectName: Slimes
-  organizationId: marcos-1689171
+  organizationId: ignasigm
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

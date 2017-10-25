@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
 		Text go = GameObject.Find("DebugText").GetComponent<Text>();
 
         //MapDrawer.InitTest ();
@@ -36,14 +37,16 @@ public class GameController : MonoBehaviour
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
         matrix = new Matrix(13, 0.5f);
         MapDrawer.instantiateMap(matrix.getIterable());
+        SlimeCore agileCore = SlimeCore.Create(SlimeCoreTypes.Agile);
+        SlimeCore aggressiveCore = SlimeCore.Create(SlimeCoreTypes.Aggressive);
         Vector2 slime1 = matrix.GetRandomTile();
-        instantiateSlime("slime", players[0], (int)slime1.x, (int)slime1.y);
+        instantiateSlime(aggressiveCore, players[0], (int)slime1.x, (int)slime1.y);
         Vector2 slime2 = matrix.GetRandomTile();
-        instantiateSlime("slime", players[0],(int)slime2.x, (int)slime2.y);
+        instantiateSlime(aggressiveCore, players[0],(int)slime2.x, (int)slime2.y);
         Vector2 slime3 = matrix.GetRandomTile();
-        instantiateSlime("slime2", players[1], (int)slime3.x, (int)slime3.y);
+        instantiateSlime(agileCore, players[1], (int)slime3.x, (int)slime3.y);
         Vector2 slime4 = matrix.GetRandomTile();
-        instantiateSlime("slime2", players[1], (int)slime4.x, (int)slime4.y);
+        instantiateSlime(agileCore, players[1], (int)slime4.x, (int)slime4.y);
         selectedSlime = new GameObject("Empty"); //Init selected item as Empty
         currentTurn = 0;
         currentPlayer = 0;
@@ -58,6 +61,14 @@ public class GameController : MonoBehaviour
         if (ended)
         {
             SceneManager.LoadScene("GameOver");
+        }
+        foreach ( Player player in players)
+        {
+            if(player.GetNumSlimes() == 0)
+            {
+                //This player loses
+                players.Remove(player);
+            }
         }
     }
 
@@ -84,7 +95,7 @@ public class GameController : MonoBehaviour
 	 */
     private bool IsGameEnded()
     {
-        return currentTurn >= MAX_TURNS;
+        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
     }
 
     /*
@@ -139,14 +150,14 @@ public class GameController : MonoBehaviour
         currentTurn++;
     }
 
-    private void instantiateSlime(string sprite, Player pl, int x0, int y0)
+    private void instantiateSlime(SlimeCore core, Player pl, int x0, int y0)
     {
 
         GameObject slime = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
-        slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Test/" + sprite);
+        slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(SlimeCoreTypesCtrl.GetSprite(core.GetCoreType()));
         slime.GetComponent<SpriteRenderer>().sortingOrder = 1;
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
@@ -156,6 +167,7 @@ public class GameController : MonoBehaviour
         Vector2 tileWorldPosition = tile.GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
         slime.GetComponent<Slime>().SetActualTile(tile);
+        slime.GetComponent<Slime>().SetCore(core);
 
     }
 
@@ -176,7 +188,8 @@ public class GameController : MonoBehaviour
             {
                 //Debug.Log("Updating range...");
                 Vector2 positionSlime = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
-                selectedSlime.GetComponent<Slime>().possibleMovements = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
+                selectedSlime.GetComponent<Slime>().possibleMovements = matrix.possibleCoordinatesAndPath(
+                    (int)positionSlime.x, (int)positionSlime.y, selectedSlime.GetComponent<Slime>().GetMovementRange());
                 selectedSlime.GetComponent<Slime>().rangeUpdated = true;
             }
         }
@@ -199,7 +212,8 @@ public class GameController : MonoBehaviour
             //guardar a slime.possibleMovements i a aqui només executar
             //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
             //enlloc de:
-            Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
+            Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath(
+                (int)positionSlime.x, (int)positionSlime.y, selectedSlime.GetComponent<Slime>().GetMovementRange());
 
             if (listdic.ContainsKey(tilehit) && UseActions(1))
             {
