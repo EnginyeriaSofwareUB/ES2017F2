@@ -146,7 +146,7 @@ public class GameController : MonoBehaviour
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
         slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(SlimeCoreTypesCtrl.GetSprite(core.GetCoreType()));
-        slime.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        slime.GetComponent<SpriteRenderer>().sortingOrder = 3;
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
         pl.AddSlime(slime);
@@ -155,8 +155,8 @@ public class GameController : MonoBehaviour
         Vector2 tileWorldPosition = tile.GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
         slime.GetComponent<Slime>().SetActualTile(tile);
+        slime.GetComponent<Slime>().setPlayer(pl);
         slime.GetComponent<Slime>().SetCore(core);
-
     }
 
     public GameObject GetSelectedSlime()
@@ -165,6 +165,7 @@ public class GameController : MonoBehaviour
     }
     public void SetSelectedSlime(GameObject gameObject)
     {
+        HideAnyRange(); 
         // Seleccionem sempre que no sigui una slime o si es una slime, que sigui la SEVA slime.
         if (!gameObject.tag.Equals("Slime") || getCurrentPlayer().IsSlimeOwner(gameObject))
         {
@@ -175,23 +176,30 @@ public class GameController : MonoBehaviour
             if (selectedSlime.tag.Equals("Slime") && !selectedSlime.GetComponent<Slime>().rangeUpdated)
             {
                 //Debug.Log("Updating range...");
+                int range = selectedSlime.GetComponent<Slime>().GetMovementRange();
                 Vector2 positionSlime = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
                 selectedSlime.GetComponent<Slime>().possibleMovements = matrix.possibleCoordinatesAndPath(
-                    (int)positionSlime.x, (int)positionSlime.y, selectedSlime.GetComponent<Slime>().GetMovementRange());
+                    (int)positionSlime.x, (int)positionSlime.y, range);
+                // Millor passar una llista de tilemaps a mostrar highlighted.
                 selectedSlime.GetComponent<Slime>().rangeUpdated = true;
+                selectedSlime.GetComponent<Slime>().ShowRanges(players);
+
+            }else if(selectedSlime.tag.Equals("Slime")){
+                selectedSlime.GetComponent<Slime>().ShowRanges(players);
             }
         }
     }
     public void DeselectItem()
     {
-        Debug.Log("deselecting");
+        //Debug.Log("deselecting");
+        HideAnyRange();
         SetSelectedSlime(new GameObject("Empty"));
     }
 
 
     public void userHitOnTile(TileData tilehit)
     {
-        Debug.Log("userHitOnTile");
+        //Debug.Log("userHitOnTile");
         GameObject slime = selectedSlime;
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
@@ -214,8 +222,16 @@ public class GameController : MonoBehaviour
                 //positionSlime = slime.GetComponent<Slime>().GetActualTile().getPosition();
                 
                 DeselectItem();
+                HideAnyRange();
             }
         }
+    }
+
+    public void HideAnyRange(){
+        foreach(GameObject gObj in GameObject.FindGameObjectsWithTag("RangedTile")){
+            Destroy(gObj);
+        }
+
     }
 
 }

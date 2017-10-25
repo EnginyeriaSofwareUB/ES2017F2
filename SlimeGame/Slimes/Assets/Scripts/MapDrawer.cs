@@ -6,7 +6,9 @@ public class MapDrawer {
 
 	private static Vector2 horizontalOffset;
 	private static Vector2 diagonalOffset;
-	private static Vector2 verticalOffset;
+	//private static Vector2 verticalOffset;
+
+	private static List<GameObject> rangeShown;
 
 	public static void InitTest () {
 		testDrawer ();
@@ -21,7 +23,7 @@ public class MapDrawer {
 		sprites.Add(TileType.Water, Resources.Load<Sprite>("Test/testTileFlat"));
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);
 		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
-		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
+		//		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 
 		foreach (TileData tile in map) {
 			
@@ -78,6 +80,46 @@ public class MapDrawer {
 		}
 		instantiateMap (list);
 	}
+
+	public static void ShowMovementRange(Dictionary<TileData,List<TileData>> possibleMovements){
+		Sprite sprite = Resources.Load<Sprite>("Test/movementRangeFilter");
+		rangeShown = new List<GameObject>();
+
+		foreach(KeyValuePair<TileData, List<TileData>> tilePair in possibleMovements){
+			MarkRanged(tilePair.Key, sprite);
+		}
+	}
+
+	public static void MarkRanged(TileData tile, Sprite sprite){
+		int x = (int)tile.getPosition().x;
+		int y = (int)tile.getPosition().y;
+
+		Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
+			
+		GameObject newTile = new GameObject ("Tile ("+x+","+y+")");
+		newTile.tag = "RangedTile";                           //Add tag
+		newTile.AddComponent<SpriteRenderer> ();
+		newTile.AddComponent<Tile>();                   //Adding Script
+
+		newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
+		newTile.GetComponent<SpriteRenderer> ().sortingOrder = 2;
+		Color tmp = newTile.GetComponent<SpriteRenderer>().color;
+		tmp.a = 0.3f;
+		newTile.GetComponent<SpriteRenderer>().color = tmp;
+
+		newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
+		newTile.GetComponent<Tile>().SetTileData(tile);
+		newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
+		
+		Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
+		newTile.transform.position =vec;
+
+		rangeShown.Add(newTile);
+	}
+
+
+
+
 
 	private class TestClass: MapCoordinates{
 		private Vector2 position;

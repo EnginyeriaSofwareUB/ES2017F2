@@ -39,6 +39,10 @@ public class SlimeCore
         return this.movementRange;
     }
 
+    public int GetAttackRange(){
+        return this.attackRange;
+    }
+
     public void SetCoreType(SlimeCoreTypes type){
         this.type = type;
     }
