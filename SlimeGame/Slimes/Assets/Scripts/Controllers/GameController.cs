@@ -58,6 +58,14 @@ public class GameController : MonoBehaviour
         {
             SceneManager.LoadScene("GameOver");
         }
+        foreach ( Player player in players)
+        {
+            if(player.GetNumSlimes() == 0)
+            {
+                //This player loses
+                players.Remove(player);
+            }
+        }
     }
 
     void OnGUI()
@@ -83,7 +91,7 @@ public class GameController : MonoBehaviour
 	 */
     private bool IsGameEnded()
     {
-        return currentTurn >= MAX_TURNS;
+        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
     }
 
     /*
