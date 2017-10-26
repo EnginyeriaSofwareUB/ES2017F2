@@ -40,6 +40,10 @@ public class InputController : MonoBehaviour
                     //Vector2 position = tile.getPosition();
                     controller.userHitOnTile(tile.GetTileData());
                     uiController.ShowCanvasInfo(tile.ToString());
+                }else if(col.gameObject.CompareTag("MovementRange")){
+                    //controller.userHitOnTile(tile.GetTileData());
+                }else if(col.gameObject.CompareTag("AttackRange")){
+                    
                 }
             }
 

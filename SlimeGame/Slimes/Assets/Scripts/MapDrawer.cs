@@ -8,8 +8,6 @@ public class MapDrawer {
 	private static Vector2 diagonalOffset;
 	//private static Vector2 verticalOffset;
 
-	private static List<GameObject> rangeShown;
-
 	public static void InitTest () {
 		testDrawer ();
 	}
@@ -83,28 +81,45 @@ public class MapDrawer {
 
 	public static void ShowMovementRange(Dictionary<TileData,List<TileData>> possibleMovements){
 		Sprite sprite = Resources.Load<Sprite>("Test/movementRangeFilter");
-		rangeShown = new List<GameObject>();
 
 		foreach(KeyValuePair<TileData, List<TileData>> tilePair in possibleMovements){
-			MarkRanged(tilePair.Key, sprite);
+			MarkRanged("MovementRange", tilePair.Key, sprite);
 		}
 	}
 
-	public static void MarkRanged(TileData tile, Sprite sprite){
+	public static void ShowAttackRange(Slime currentSlime, List<Player> players){
+		Sprite attackFilter = Resources.Load<Sprite>("Test/attackRangeFilter");
+
+		Vector2 myPos = currentSlime.GetActualTile().getPosition();
+		int attackRange = currentSlime.GetAttackRange();
+		foreach(Player pl in players){
+			if(pl != currentSlime.GetPlayer()){
+				foreach(GameObject slGO in pl.GetSlimes()){
+					Slime slime = slGO.GetComponent<Slime>();
+					Vector2 slPos = slime.GetActualTile().getPosition();
+					if(Matrix.distance(slPos, myPos) <= attackRange){
+						MapDrawer.MarkRanged("AttackRange", slime.GetActualTile(), attackFilter);
+					}
+				}
+			}
+		}
+	}
+
+	public static void MarkRanged(string rangedTag, TileData tile, Sprite sprite){
 		int x = (int)tile.getPosition().x;
 		int y = (int)tile.getPosition().y;
 
 		Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 			
 		GameObject newTile = new GameObject ("Tile ("+x+","+y+")");
-		newTile.tag = "RangedTile";                           //Add tag
+		newTile.tag = rangedTag;                           //Add tag
 		newTile.AddComponent<SpriteRenderer> ();
 		newTile.AddComponent<Tile>();                   //Adding Script
 
 		newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
 		newTile.GetComponent<SpriteRenderer> ().sortingOrder = 2;
 		Color tmp = newTile.GetComponent<SpriteRenderer>().color;
-		tmp.a = 0.3f;
+		tmp.a = 0.5f;
 		newTile.GetComponent<SpriteRenderer>().color = tmp;
 
 		newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
@@ -113,8 +128,6 @@ public class MapDrawer {
 		
 		Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
 		newTile.transform.position =vec;
-
-		rangeShown.Add(newTile);
 	}
 
 

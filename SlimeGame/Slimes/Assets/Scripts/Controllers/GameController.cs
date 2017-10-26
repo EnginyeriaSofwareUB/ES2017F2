@@ -180,7 +180,7 @@ public class GameController : MonoBehaviour
                 Vector2 positionSlime = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
                 selectedSlime.GetComponent<Slime>().possibleMovements = matrix.possibleCoordinatesAndPath(
                     (int)positionSlime.x, (int)positionSlime.y, range);
-                // Millor passar una llista de tilemaps a mostrar highlighted.
+                    
                 selectedSlime.GetComponent<Slime>().rangeUpdated = true;
                 selectedSlime.GetComponent<Slime>().ShowRanges(players);
 
@@ -204,12 +204,8 @@ public class GameController : MonoBehaviour
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
             Vector2 positionSlime = slime.GetComponent<Slime>().GetActualTile().getPosition();
-            //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
-            //guardar a slime.possibleMovements i a aqui només executar
-            //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
-            //enlloc de:
-            Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath(
-                (int)positionSlime.x, (int)positionSlime.y, selectedSlime.GetComponent<Slime>().GetMovementRange());
+            
+            Dictionary<TileData, List<TileData>> listdic = slime.GetComponent<Slime>().possibleMovements;
 
             if (listdic.ContainsKey(tilehit) && UseActions(1))
             {
@@ -228,7 +224,10 @@ public class GameController : MonoBehaviour
     }
 
     public void HideAnyRange(){
-        foreach(GameObject gObj in GameObject.FindGameObjectsWithTag("RangedTile")){
+        foreach(GameObject gObj in GameObject.FindGameObjectsWithTag("MovementRange")){
+            Destroy(gObj);
+        }
+        foreach(GameObject gObj in GameObject.FindGameObjectsWithTag("AttackRange")){
             Destroy(gObj);
         }
 
