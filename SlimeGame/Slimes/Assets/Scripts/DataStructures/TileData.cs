@@ -27,6 +27,10 @@ public class TileData:MapDrawer.MapCoordinates{
 	public void SetSlimeOnTop(GameObject slimeTop){
 		this.slimeOnTop=slimeTop;
 	}
+	public Slime GetSlimeOnTop(){
+		if(slimeOnTop != null) return slimeOnTop.GetComponent<Slime>();
+		return null;
+	}
 	public void SetRealWorldPosition(Vector2 vec){
 		realWorldPosition=vec;
 	}

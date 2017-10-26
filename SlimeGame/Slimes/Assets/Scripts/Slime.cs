@@ -18,12 +18,6 @@ public class Slime : MonoBehaviour {
 		
 	}
 
-	public void ShowRanges(List<Player> players){
-		MapDrawer.ShowMovementRange(possibleMovements);
-
-		MapDrawer.ShowAttackRange(this, players);
-	}
-
 	public void ManhattanDistance(Vector2 pos1, Vector2 pos2){
 
 	}
