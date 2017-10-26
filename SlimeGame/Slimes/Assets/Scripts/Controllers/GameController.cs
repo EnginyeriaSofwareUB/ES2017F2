@@ -33,16 +33,20 @@ public class GameController : MonoBehaviour
         players = new List<Player>();
         players.Add(new Player("Jugador 1", 2)); // Test with 2 players
         players.Add(new Player("Jugador 2", 3)); // Test with 2 players
-        go.text = "gameController";
-        matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-
+		go.text = "gameController";
+		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
+        matrix = new Matrix(13, 0.5f);
         MapDrawer.instantiateMap(matrix.getIterable());
         SlimeCore agileCore = SlimeCore.Create(SlimeCoreTypes.Agile);
         SlimeCore aggressiveCore = SlimeCore.Create(SlimeCoreTypes.Aggressive);
-        instantiateSlime(aggressiveCore, players[0], 0, -1);
-        instantiateSlime(aggressiveCore, players[0], 1, 0);
-        instantiateSlime(agileCore, players[1], 2, 2);
-        instantiateSlime(agileCore, players[1], -1, 2);
+        Vector2 slime1 = matrix.GetRandomTile();
+        instantiateSlime(aggressiveCore, players[0], (int)slime1.x, (int)slime1.y);
+        Vector2 slime2 = matrix.GetRandomTile();
+        instantiateSlime(aggressiveCore, players[0],(int)slime2.x, (int)slime2.y);
+        Vector2 slime3 = matrix.GetRandomTile();
+        instantiateSlime(agileCore, players[1], (int)slime3.x, (int)slime3.y);
+        Vector2 slime4 = matrix.GetRandomTile();
+        instantiateSlime(agileCore, players[1], (int)slime4.x, (int)slime4.y);
         selectedSlime = new GameObject("Empty"); //Init selected item as Empty
         currentTurn = 0;
         currentPlayer = 0;
@@ -57,6 +61,14 @@ public class GameController : MonoBehaviour
         if (ended)
         {
             SceneManager.LoadScene("GameOver");
+        }
+        foreach ( Player player in players)
+        {
+            if(player.GetNumSlimes() == 0)
+            {
+                //This player loses
+                players.Remove(player);
+            }
         }
     }
 
@@ -83,7 +95,7 @@ public class GameController : MonoBehaviour
 	 */
     private bool IsGameEnded()
     {
-        return currentTurn >= MAX_TURNS;
+        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
     }
 
     /*
