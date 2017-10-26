@@ -112,7 +112,7 @@ public class MapDrawer
                 {
                     Slime slime = slGO.GetComponent<Slime>();
                     Vector2 slPos = slime.GetActualTile().getPosition();
-                    if (Matrix.distance(slPos, myPos) <= attackRange)
+                    if (Matrix.GetDistance(slPos, myPos) <= attackRange)
                     {
                         MapDrawer.MarkRanged("AttackRange", slime.GetActualTile(), attackFilter);
                     }
