@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-<<<<<<< HEAD
 public class MapDrawer {
 
 	private static Vector2 horizontalOffset;
 	private static Vector2 diagonalOffset;
-	private static Vector2 verticalOffset;
+	//private static Vector2 verticalOffset;
 
 	public static void InitTest () {
 		testDrawer ();
@@ -22,7 +21,7 @@ public class MapDrawer {
 		sprites.Add(TileType.Water, Resources.Load<Sprite>("Test/testTileFlat"));
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);
 		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
-		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
+		//verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 
 		foreach (TileData tile in map) {
 			
@@ -30,39 +29,6 @@ public class MapDrawer {
 			int x = (int)tile.getPosition().x;
 			int y = (int)tile.getPosition().y;
 			/*
-=======
-public class MapDrawer
-{
-
-    private static Vector2 horizontalOffset;
-    private static Vector2 diagonalOffset;
-    //private static Vector2 verticalOffset;
-
-    public static void InitTest()
-    {
-        testDrawer();
-    }
-
-    public static void instantiateMap(System.Collections.IEnumerable map)
-    {
-
-        Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
-        Hashtable sprites = new Hashtable();
-        sprites.Add(TileType.Block, Resources.Load<Sprite>("Test/testTileFlat2"));
-        sprites.Add(TileType.Sand, Resources.Load<Sprite>("Test/testTileFlat3"));
-        sprites.Add(TileType.Water, Resources.Load<Sprite>("Test/testTileFlat"));
-        horizontalOffset = new Vector2(sprite.rect.width / (float)(sprite.pixelsPerUnit * 2f), 0f);
-        diagonalOffset = new Vector2(sprite.rect.width / (float)(sprite.pixelsPerUnit * 4f), 3f * sprite.rect.height / (float)(sprite.pixelsPerUnit * 8));
-        //		verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
-
-        foreach (TileData tile in map)
-        {
-
-            Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
-            int x = (int)tile.getPosition().x;
-            int y = (int)tile.getPosition().y;
-            /*
->>>>>>> development
 			if (x % 2 == 1 && x!=0) {
 				tileWorldPosition += diagonalOffset;	 
 			}
@@ -72,7 +38,6 @@ public class MapDrawer
             newTile.tag = "Tile";                           //Add tag
             newTile.AddComponent<SpriteRenderer>();
             newTile.AddComponent<Tile>();                   //Adding Script
-<<<<<<< HEAD
 			newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
 			newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<Tile>().SetTileData(tile);
@@ -102,39 +67,6 @@ public class MapDrawer
 
 
 	/***
-=======
-            newTile.GetComponent<SpriteRenderer>().sprite = (Sprite)sprites[tile.getTileType()];
-            newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
-            newTile.GetComponent<Tile>().SetTileData(tile);
-            newTile.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
-            //rotacion de 60
-            tile.SetRealWorldPosition(tileWorldPosition);
-            Vector3 vec = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
-            newTile.transform.position = vec;
-        }
-
-    }
-    public static Vector2 drawInternCoordenates(Vector2 axial)
-    {
-        Vector2 tileWorldPosition = new Vector2();
-        int x = (int)axial.x;
-        int y = (int)axial.y;
-        tileWorldPosition += x * diagonalOffset;
-        tileWorldPosition += y * horizontalOffset;
-        tileWorldPosition.y = -tileWorldPosition.y;
-        return tileWorldPosition;
-    }
-    public interface MapCoordinates
-    {
-
-        Vector2 getPosition();
-        TileType getTileType();
-    }
-
-
-
-    /***
->>>>>>> development
 	Class and methods for testing
 	***/
     private static void testDrawer()
