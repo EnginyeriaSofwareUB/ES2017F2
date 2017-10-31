@@ -8,6 +8,10 @@ TagManager:
   - Tile
   - UI
   - Setting
+  - MovementRange
+  - AttackRange
+  - DivisionRange
+  - FusionRange
   layers:
   - Default
   - TransparentFX

@@ -24,8 +24,15 @@ public class TileData:MapDrawer.MapCoordinates{
 	public TileType getTileType(){
 		return type;
 	}
+	public void SetTileType(TileType type){
+		this.type= type;
+	}
 	public void SetSlimeOnTop(GameObject slimeTop){
 		this.slimeOnTop=slimeTop;
+	}
+	public Slime GetSlimeOnTop(){
+		if(slimeOnTop != null) return slimeOnTop.GetComponent<Slime>();
+		return null;
 	}
 	public void SetRealWorldPosition(Vector2 vec){
 		realWorldPosition=vec;

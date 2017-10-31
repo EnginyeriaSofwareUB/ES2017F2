@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     private GameObject selectedSlime;
     private Matrix matrix;
     private List<Player> players;
-	private GameObject panelTip,textTip;
+    private GameObject panelTip, textTip;
     private int currentTurn;
     private int currentPlayer;
     private int playerActions;
@@ -21,25 +21,32 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-		Text go = GameObject.Find("DebugText").GetComponent<Text>();
+
+        Text go = GameObject.Find("DebugText").GetComponent<Text>();
 
         //MapDrawer.InitTest ();
-		panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
-		textTip = GameObject.Find ("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
-		panelTip.GetComponent<DialogInfo> ().Active (false);
-		textTip.GetComponent<Text> ().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
+        panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
+        textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
+        panelTip.GetComponent<DialogInfo>().Active(false);
+        textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
 
         players = new List<Player>();
         players.Add(new Player("Jugador 1", 2)); // Test with 2 players
         players.Add(new Player("Jugador 2", 3)); // Test with 2 players
 		go.text = "gameController";
-		matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-
+		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
+        matrix = new Matrix(13, 0.5f);
         MapDrawer.instantiateMap(matrix.getIterable());
-        instantiateSlime("slime", players[0], 0, -1);
-        instantiateSlime("slime", players[0], 1, 0);
-        instantiateSlime("slime2", players[1], 2, 2);
-        instantiateSlime("slime2", players[1], -1, 2);
+        SlimeCore agileCore = SlimeCore.Create(SlimeCoreTypes.Agile);
+        SlimeCore aggressiveCore = SlimeCore.Create(SlimeCoreTypes.Aggressive);
+        Vector2 slime1 = matrix.GetRandomTile();
+        instantiateSlime(aggressiveCore, players[0], (int)slime1.x, (int)slime1.y);
+        Vector2 slime2 = matrix.GetRandomTile();
+        instantiateSlime(aggressiveCore, players[0],(int)slime2.x, (int)slime2.y);
+        Vector2 slime3 = matrix.GetRandomTile();
+        instantiateSlime(agileCore, players[1], (int)slime3.x, (int)slime3.y);
+        Vector2 slime4 = matrix.GetRandomTile();
+        instantiateSlime(agileCore, players[1], (int)slime4.x, (int)slime4.y);
         selectedSlime = new GameObject("Empty"); //Init selected item as Empty
         currentTurn = 0;
         currentPlayer = 0;
@@ -54,6 +61,14 @@ public class GameController : MonoBehaviour
         if (ended)
         {
             SceneManager.LoadScene("GameOver");
+        }
+        foreach ( Player player in players)
+        {
+            if(player.GetNumSlimes() == 0)
+            {
+                //This player loses
+                players.Remove(player);
+            }
         }
     }
 
@@ -80,7 +95,7 @@ public class GameController : MonoBehaviour
 	 */
     private bool IsGameEnded()
     {
-        return currentTurn >= MAX_TURNS;
+        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
     }
 
     /*
@@ -100,15 +115,39 @@ public class GameController : MonoBehaviour
         return true;
     }
 
-    public void UseActionsPROVA(int numberOfActions)
+    public void PrepareAction(ActionType action)
     {
-        playerActions += numberOfActions;
-
-        if (playerActions >= getCurrentPlayer().GetActions())
+        if (selectedSlime.tag.Equals("Slime"))
         {
-            NextPlayer();
+            Slime slime = selectedSlime.GetComponent<Slime>();
+            switch (action)
+            {
+                case ActionType.Move:
+                    MapDrawer.ShowMovementRange(slime);
+                    break;
+                case ActionType.Attack:
+                    MapDrawer.ShowAttackRange(slime, players);
+                    break;
+                case ActionType.Divide:
+                    HideAnyRange();
+                    MapDrawer.ShowDivisionRange(slime, matrix);
+                    break;
+                case ActionType.Fusion:
+                    HideAnyRange();
+                    MapDrawer.ShowFusionRange(slime, matrix);
+                    break;
+                default:
+                    UseActions(1);
+                    break;
+            }
         }
     }
+
+    public void PrepareAction(int action)
+    {
+        PrepareAction((ActionType)action);
+    }
+
 
     /*
 	Funció que avança al seguent jugador.
@@ -135,15 +174,15 @@ public class GameController : MonoBehaviour
         currentTurn++;
     }
 
-    private void instantiateSlime(string sprite, Player pl, int x0, int y0)
+    private void instantiateSlime(SlimeCore core, Player pl, int x0, int y0)
     {
 
         GameObject slime = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
-        slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Test/" + sprite);
-        slime.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(SlimeCoreTypesCtrl.GetSprite(core.GetCoreType()));
+        slime.GetComponent<SpriteRenderer>().sortingOrder = 2;
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
         pl.AddSlime(slime);
@@ -152,7 +191,8 @@ public class GameController : MonoBehaviour
         Vector2 tileWorldPosition = tile.GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
         slime.GetComponent<Slime>().SetActualTile(tile);
-
+        slime.GetComponent<Slime>().setPlayer(pl);
+        slime.GetComponent<Slime>().SetCore(core);
     }
 
     public GameObject GetSelectedSlime()
@@ -164,52 +204,112 @@ public class GameController : MonoBehaviour
         // Seleccionem sempre que no sigui una slime o si es una slime, que sigui la SEVA slime.
         if (!gameObject.tag.Equals("Slime") || getCurrentPlayer().IsSlimeOwner(gameObject))
         {
+            HideAnyRange();
+
             if (selectedSlime.name.Equals("Empty")) Destroy(selectedSlime);
             selectedSlime = gameObject;
 
-            // Actualitzem el rang si estem seleccionant una slime sense el rang actualitzat.
-            if (selectedSlime.tag.Equals("Slime") && !selectedSlime.GetComponent<Slime>().rangeUpdated)
-            {
-                //Debug.Log("Updating range...");
-                Vector2 positionSlime = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
-                selectedSlime.GetComponent<Slime>().possibleMovements = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
-                selectedSlime.GetComponent<Slime>().rangeUpdated = true;
+            if (selectedSlime.tag.Equals("Slime"))
+            {  
+                Slime slime = selectedSlime.GetComponent<Slime>();
+                // Actualitzem el rang si estem seleccionant una slime sense el rang actualitzat.
+                if (!slime.rangeUpdated)
+                {
+                    //Debug.Log("Updating range...");
+                    int range = slime.GetMovementRange();
+                    Vector2 positionSlime = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
+                    slime.possibleMovements = matrix.possibleCoordinatesAndPath(
+                        (int)positionSlime.x, (int)positionSlime.y, range);
+
+                    slime.rangeUpdated = true;
+                }
+                PrepareAction(ActionType.Move);
+                PrepareAction(ActionType.Attack);
+
+                //show info
+                Camera.main.GetComponent<UIController>().ShowCanvasInfo(slime.ToString());
             }
         }
     }
     public void DeselectItem()
     {
-        Debug.Log("deselecting");
+        //Debug.Log("deselecting");
+        HideAnyRange();
         SetSelectedSlime(new GameObject("Empty"));
     }
 
 
-    public void userHitOnTile(TileData tilehit)
+    public void MoveSlime(TileData tileTo)
     {
-        Debug.Log("userHitOnTile");
+        //Debug.Log("userHitOnTile");
         GameObject slime = selectedSlime;
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
-            Vector2 positionSlime = slime.GetComponent<Slime>().GetActualTile().getPosition();
-            //s'ha de calcular un cop (al començar torn i recalcular al fer qualsevol accio (ja que el range hauria de ser en referencia a aixo))
-            //guardar a slime.possibleMovements i a aqui només executar
-            //Dictionary<TileData, List<TileData>> listdic =  slime.GetComponent<Slime>().possibleMovements
-            //enlloc de:
-            Dictionary<TileData, List<TileData>> listdic = matrix.possibleCoordinatesAndPath((int)positionSlime.x, (int)positionSlime.y, 4);
+            Dictionary<TileData, List<TileData>> listdic = slime.GetComponent<Slime>().possibleMovements;
 
-            if (listdic.ContainsKey(tilehit) && UseActions(1))
+            //if (listdic.ContainsKey(tilehit) && UseActions(1))
+            if (UseActions(1))
             {
                 //List<Vector2> listvec = new List<Vector2>();
-                List<TileData> path = listdic[tilehit];
-                
+                List<TileData> path = listdic[tileTo];
+
                 slime.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
-                
+
                 slime.GetComponent<Slime>().rangeUpdated = false;
                 //positionSlime = slime.GetComponent<Slime>().GetActualTile().getPosition();
-                
+
                 DeselectItem();
+                HideAnyRange();
             }
         }
+    }
+
+    public void AttackSlime(Slime toAttack)
+    {
+        // GESTIONAR ATAQUE
+        if (UseActions(1))
+        {
+            Debug.Log("ATTACK");
+        }
+    }
+
+    public void DivideSlime(Tile posToDivide)
+    {
+        // GESTIONAR DIVISION
+        if (UseActions(1))
+        {
+            Debug.Log("DIVISION");
+        }
+    }
+
+    public void FusionSlime(Tile posToFusion)
+    {
+        // GESTIONAR FUSION
+        if (UseActions(1))
+        {
+            Debug.Log("FUSION");
+        }
+    }
+
+    public void HideAnyRange()
+    {
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("MovementRange"))
+        {
+            Destroy(gObj);
+        }
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("AttackRange"))
+        {
+            Destroy(gObj);
+        }
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("DivisionRange"))
+        {
+            Destroy(gObj);
+        }
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("FusionRange"))
+        {
+            Destroy(gObj);
+        }
+
     }
 
 }
