@@ -5,7 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class SelectorController : MonoBehaviour {
-	private List<string> spritePaths;
+    private string sprite;
+	private List<string> corePaths;
 	private List<string> coresInfo;
 	private List<MapTypes> mapTypes;
 	private List<Color> colors;
@@ -27,13 +28,16 @@ public class SelectorController : MonoBehaviour {
 		mapTypes.Add (MapTypes.Small);
 		mapTypes.Add (MapTypes.Medium);
 		mapTypes.Add (MapTypes.Big);
-		spritePaths = new List<string> ();
-		spritePaths.Add ("Test/slime");
-		spritePaths.Add ("Test/slime2");
-		spritePaths.Add ("Test/slime3");
-		GameObject.Find ("Sprite1").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (spritePaths [slimeSelector1]);
-		GameObject.Find ("Sprite2").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (spritePaths [slimeSelector2]);
-		colors = new List<Color> ();
+		corePaths = new List<string> ();
+		corePaths.Add ("Sprites/Wrath");
+		corePaths.Add ("Sprites/Sloth");
+		corePaths.Add ("Sprites/Gluttony");
+        sprite = "Sprites/slime_sprite";
+		GameObject.Find ("Sprite1").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (sprite);
+		GameObject.Find ("Sprite2").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (sprite);
+        GameObject.Find("Core1").GetComponent<Image>().overrideSprite = Resources.Load<Sprite>(corePaths[slimeSelector1]);
+        GameObject.Find("Core2").GetComponent<Image>().overrideSprite = Resources.Load<Sprite>(corePaths[slimeSelector2]);
+        colors = new List<Color> ();
 		colors.Add (new Color (1, 0, 0));
 		colors.Add (new Color (0, 0, 1));
 		colors.Add (new Color (0, 1, 0));
@@ -61,23 +65,23 @@ public class SelectorController : MonoBehaviour {
 
 	public void changeCore1(int cursor){
 		slimeSelector1 += cursor;
-		if (slimeSelector1 > spritePaths.Count - 1) {
+		if (slimeSelector1 > corePaths.Count - 1) {
 			slimeSelector1 = 0;
 		} else if (slimeSelector1 < 0) {
-			slimeSelector1 = spritePaths.Count - 1;
+			slimeSelector1 = corePaths.Count - 1;
 		}
-		GameObject.Find ("Sprite1").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (spritePaths [slimeSelector1]);
+		GameObject.Find ("Core1").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (corePaths [slimeSelector1]);
 		GameObject.Find ("Text1").GetComponent<Text> ().text = coresInfo [slimeSelector1];
 	}
 
 	public void changeCore2(int cursor){
 		slimeSelector2 += cursor;
-		if (slimeSelector2 > spritePaths.Count - 1) {
+		if (slimeSelector2 > corePaths.Count - 1) {
 			slimeSelector2 = 0;
 		} else if (slimeSelector2 < 0){
-			slimeSelector2 = spritePaths.Count - 1;
+			slimeSelector2 = corePaths.Count - 1;
 		}
-		GameObject.Find ("Sprite2").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (spritePaths [slimeSelector2]);
+		GameObject.Find ("Core2").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (corePaths [slimeSelector2]);
 		GameObject.Find ("Text2").GetComponent<Text> ().text = coresInfo [slimeSelector2];
 	}
 
