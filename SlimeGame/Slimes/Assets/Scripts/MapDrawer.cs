@@ -12,7 +12,7 @@ public class MapDrawer {
 		testDrawer ();
 	}
 		
-	public static void instantiateMap(System.Collections.IEnumerable map){
+	public static void instantiateMap(System.Collections.IEnumerable map, int offsetx = 0, int offsety = 0){
 
 		Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
 		Hashtable sprites = new Hashtable ();
@@ -44,7 +44,7 @@ public class MapDrawer {
 			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
 			//rotacion de 60
 			tile.SetRealWorldPosition(tileWorldPosition);
-			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
+			Vector3 vec = new Vector3 (tileWorldPosition.x+offsetx, tileWorldPosition.y+offsety, 0f);
 			newTile.transform.position =vec;
 		}
 
