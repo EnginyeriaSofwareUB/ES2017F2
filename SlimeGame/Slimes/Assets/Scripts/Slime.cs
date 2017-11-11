@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Slime : MonoBehaviour {
 	private SlimeCore core;
+	private Player player;
 	public  TileData actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
@@ -16,6 +17,11 @@ public class Slime : MonoBehaviour {
 	void Update () {
 		
 	}
+
+	public void ManhattanDistance(Vector2 pos1, Vector2 pos2){
+
+	}
+
     //TODO modify when we have more attributes
     public override string ToString()
     {
@@ -34,9 +40,24 @@ public class Slime : MonoBehaviour {
 		this.core = core;
 	}
 
+	public void setPlayer(Player player){
+		this.player = player;
+	}
+
+	public Player GetPlayer(){
+		return player;
+	}
+
 	public int GetMovementRange(){
 		if(core != null){
 			return core.GetMovementRange();
+		}
+		return 0;
+	}
+
+	public int GetAttackRange(){
+		if(core != null){
+			return core.GetAttackRange();
 		}
 		return 0;
 	}
