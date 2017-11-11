@@ -16,7 +16,7 @@ public class MapDrawer {
 
 		Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
 		Hashtable sprites = new Hashtable ();
-		sprites.Add(TileType.Block, Resources.Load<Sprite>("Test/testTileFlat2"));
+		//sprites.Add(TileType.Block, Resources.Load<Sprite>("Test/testTileFlat2"));
 		sprites.Add(TileType.Sand, Resources.Load<Sprite>("Test/testTileFlat3"));
 		sprites.Add(TileType.Water, Resources.Load<Sprite>("Test/testTileFlat"));
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);

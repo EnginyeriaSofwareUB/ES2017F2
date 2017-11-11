@@ -18,7 +18,7 @@ public class TileData:MapDrawer.MapCoordinates{
 		return hexPosition;
 	}
 	public bool isBlocking(){
-		return type==TileType.Block||slimeOnTop!=null; //or someone on it
+		return slimeOnTop!=null; //or someone on it
 	}
 
 	public TileType getTileType(){
