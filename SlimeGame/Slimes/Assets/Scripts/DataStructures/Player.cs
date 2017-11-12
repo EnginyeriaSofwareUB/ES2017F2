@@ -4,28 +4,26 @@ using UnityEngine;
 
 public class Player {
 
+	public SlimeCoreData slimeCoreData;
 	private string name;
 	private int actions;
-	private List<GameObject> slimes;
+	private List<Slime> slimes;
 
-	public Player(string name, int actions){
+	public Player(string name, int actions,SlimeCoreData slimeCoreData){
 		this.name = name;
 		this.actions = actions;
-		slimes = new List<GameObject>();
+		slimes = new List<Slime>();
+		this.slimeCoreData = slimeCoreData;
 	}
 
-	public void AddSlime(GameObject slime){
+	public void AddSlime(Slime slime){
 		slimes.Add(slime);
 	}
 
-	public bool IsSlimeOwner(GameObject slime){
-		bool found = false;
-		int i = 0;
-		while(!found && i<slimes.Count){
-			found = slimes[i] == slime;
-			i++;
-		}
-		return found;
+	public bool IsSlimeOwner(Slime slime){
+
+		return slimes.Contains (slime);
+	
 	}
 
 	public string GetName(){
@@ -37,7 +35,7 @@ public class Player {
 	public int GetActions(){
 		return this.actions;
 	}
-	public List<GameObject> GetSlimes(){
+	public List<Slime> GetSlimes(){
 		return slimes;
 	}
 }

@@ -59,7 +59,7 @@ public class SlimeMovement : MonoBehaviour {
 			indexBuffer = 0;
 			endPos = bufferPositions [indexBuffer].GetRealWorldPosition();
 			moving = true; //inici del moviment
-			gameObject.GetComponent<Slime>().SetActualTile(buffer [buffer.Count-1]);
+			//gameObject.GetComponent<Slime>().SetActualTile(buffer [buffer.Count-1]);
 		}
 	}
 }

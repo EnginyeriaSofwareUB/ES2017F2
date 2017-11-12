@@ -8,6 +8,9 @@ public class MapDrawer {
 	private static Vector2 diagonalOffset;
 	//private static Vector2 verticalOffset;
 
+	private static Tile[,] tiles;
+	private static int MAXMAPSIZE = 50; 
+
 	public static void InitTest () {
 		testDrawer ();
 	}
@@ -22,7 +25,7 @@ public class MapDrawer {
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);
 		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
 		//verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
-
+		tiles = new Tile[MAXMAPSIZE,MAXMAPSIZE];
 		foreach (TileData tile in map) {
 			
 			Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
@@ -39,13 +42,18 @@ public class MapDrawer {
             newTile.AddComponent<SpriteRenderer>();
             newTile.AddComponent<Tile>();                   //Adding Script
 			newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
+			newTile.GetComponent<SpriteRenderer> ().sortingLayerName = "TileContent";
 			newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<Tile>().SetTileData(tile);
-			newTile.transform.localScale = new Vector3 (0.5f, 0.5f, 1f);
+			Vector3 localScale = new Vector3 (0.5f, 0.5f, 1f);
+			newTile.transform.localScale = localScale;
 			//rotacion de 60
-			tile.SetRealWorldPosition(tileWorldPosition);
+			tile.SetTile(newTile.GetComponent<Tile>());
 			Vector3 vec = new Vector3 (tileWorldPosition.x+offsetx, tileWorldPosition.y+offsety, 0f);
 			newTile.transform.position =vec;
+			newTile.GetComponent<Tile>().startUILayer (vec,localScale);
+			newTile.GetComponent<Tile>().startElementLayer (vec,localScale);
+			SetTileAt(newTile.GetComponent<Tile> (),x,y);
 		}
 
 	}
@@ -64,7 +72,27 @@ public class MapDrawer {
 		TileType getTileType();
 	}
 
+	public static Tile GetTileAt(int x,int y){
+		int auxX = x, auxY = y;
+		if (x < 0) {
+			auxX = MAXMAPSIZE + x; 
+		}
+		if (y < 0) {
+			auxY = MAXMAPSIZE + y;
+		}
+		return tiles [auxX, auxY];
+	}
 
+	public static void SetTileAt(Tile t,int x,int y){
+		int auxX = x, auxY = y;
+		if (x < 0) {
+			auxX = MAXMAPSIZE + x; 
+		}
+		if (y < 0) {
+			auxY = MAXMAPSIZE + y;
+		}
+		tiles [auxX, auxY] = t;
+	}
 
 	/***
 	Class and methods for testing
@@ -81,46 +109,13 @@ public class MapDrawer {
         }
         instantiateMap(list);
     }
-
-    public static void ShowMovementRange(Slime slime)
-    {
-        Sprite sprite = Resources.Load<Sprite>("Test/movementRangeFilter");
-
-        foreach (KeyValuePair<TileData, List<TileData>> tilePair in slime.possibleMovements)
-        {
-            MarkRanged("MovementRange", tilePair.Key, sprite);
-        }
-    }
-
-    public static void ShowAttackRange(Slime currentSlime, List<Player> players)
-    {
-        Sprite attackFilter = Resources.Load<Sprite>("Test/attackRangeFilter");
-
-        Vector2 myPos = currentSlime.GetActualTile().getPosition();
-        int attackRange = currentSlime.GetAttackRange();
-        foreach (Player pl in players)
-        {
-            if (pl != currentSlime.GetPlayer())
-            {
-                foreach (GameObject slGO in pl.GetSlimes())
-                {
-                    Slime slime = slGO.GetComponent<Slime>();
-                    Vector2 slPos = slime.GetActualTile().getPosition();
-                    if (Matrix.GetDistance(slPos, myPos) <= attackRange)
-                    {
-                        MapDrawer.MarkRanged("AttackRange", slime.GetActualTile(), attackFilter);
-                    }
-                }
-            }
-        }
-    }
-
+		
     public static void ShowDivisionRange(Slime currentSlime, Matrix map)
     {
         Sprite divisionFilter = Resources.Load<Sprite>("Test/attackRangeFilter");
 
         // Por cada casilla a distancia 1 que no este bloqueada...
-        foreach (TileData tile in map.getNeighbours(currentSlime.GetActualTile()))
+		foreach (TileData tile in map.getNeighbours(currentSlime.GetTileData()))
         {
             MapDrawer.MarkRanged("DivisionRange", tile, divisionFilter);
         }
@@ -131,7 +126,7 @@ public class MapDrawer {
         Sprite fusionFilter = Resources.Load<Sprite>("Test/attackRangeFilter");
 
         // Por cada casilla a distancia 1 que no este bloqueada...
-        foreach (TileData tile in map.getNeighbours(currentSlime.GetActualTile(), true))
+		foreach (TileData tile in map.getNeighbours(currentSlime.GetTileData(), true))
         {
             Slime overSlime = tile.GetSlimeOnTop();
             if (overSlime != null && overSlime.GetPlayer() == currentSlime.GetPlayer())
