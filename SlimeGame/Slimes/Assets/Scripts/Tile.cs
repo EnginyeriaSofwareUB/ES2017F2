@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour {
+	
 	private TileData data;
+
+	public SpriteRenderer tileUILayer;
+	public SpriteRenderer tileElementLayer;
+
 	// Use this for initialization
 	void Start () {
-		
+
 	}
 	
 	// Update is called once per frame
@@ -30,6 +35,30 @@ public class Tile : MonoBehaviour {
 	}
 	public void SetTileData(TileData data){
 		this.data=data;
+	}
+
+	public void startUILayer(Vector3 pos, Vector3 size){
+		GameObject gotileUILayer = new GameObject ("TileUILayer");
+		gotileUILayer.GetComponent<Transform> ().SetParent (this.transform);
+		tileUILayer = gotileUILayer.AddComponent<SpriteRenderer> ();
+		tileUILayer.gameObject.transform.position = pos;
+		tileUILayer.gameObject.transform.localScale = new Vector2(1f,1f);;
+		tileUILayer.sortingLayerName = "TileUI";
+		tileUILayer.color = new Color (1f, 1f, 0f, 0.5f);
+	}
+
+	public void startElementLayer(Vector3 pos, Vector3 size){
+		GameObject gotileElementLayer = new GameObject ("TileElementLayer");
+		gotileElementLayer.GetComponent<Transform> ().SetParent (this.transform);
+		tileElementLayer = gotileElementLayer.AddComponent<SpriteRenderer> ();
+		tileElementLayer.gameObject.transform.position = pos;
+		tileElementLayer.gameObject.transform.localScale = new Vector2(1f,1f);
+		tileElementLayer.sortingLayerName = "TileElement";
+		tileElementLayer.color = new Color (1f, 1f, 1f, 0.5f);
+	}
+
+	public void SetSlimeOnTop(GameObject obj){
+		data.SetSlimeOnTop (obj);
 	}
 	
 }

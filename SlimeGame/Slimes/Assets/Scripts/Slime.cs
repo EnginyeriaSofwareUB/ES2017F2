@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
-	private SlimeCore core;
 	private Player player;
-	public  TileData actualTile;
+	public Tile actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
 	// Use this for initialization
@@ -27,17 +26,17 @@ public class Slime : MonoBehaviour {
     {
         return "Insert some text here to describe the slime";
     }
-	public void SetActualTile(TileData newTile){
+	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
 		actualTile=newTile;
 		actualTile.SetSlimeOnTop(gameObject);
 	}
-	public TileData GetActualTile(){
+	public Tile GetActualTile(){
 		return actualTile;
 	}
 
-	public void SetCore(SlimeCore core){
-		this.core = core;
+	public TileData GetTileData(){
+		return actualTile.GetTileData ();
 	}
 
 	public void setPlayer(Player player){
@@ -49,16 +48,10 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
-		if(core != null){
-			return core.GetMovementRange();
-		}
-		return 0;
+		return player.slimeCoreData.movementRange;
 	}
 
 	public int GetAttackRange(){
-		if(core != null){
-			return core.GetAttackRange();
-		}
-		return 0;
+		return player.slimeCoreData.attackRange;
 	}
 }
