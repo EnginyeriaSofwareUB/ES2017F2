@@ -206,6 +206,26 @@ public class GameController : MonoBehaviour
 		rect.localPosition = new Vector3 (0f,1f,0f);
 		rect.sizeDelta = new Vector2 (1.5f,0.25f);
 
+		//posem les imatges i configuracio per la barra de vida
+		/*GameObject imatge = new GameObject("HealthBack");
+		Image im = imatge.AddComponent<Image> ();
+		imatge.transform.SetParent (newCanvas.transform);
+		rect = imatge.GetComponent<RectTransform> ();
+		rect.localPosition = new Vector3 (0f,0f,0f);
+		rect.sizeDelta = new Vector2 (1.5f,0.25f);
+		GameObject health = Instantiate (imatge, imatge.transform);
+		health.name = "Health";
+*/
+
+		/*imatge.GetComponent<Image> ().color = Color.gray;
+		Image scriptHealth = health.GetComponent<Image> ();
+		scriptHealth.color = Color.red;
+		//fem que sigui barra de vida, segons el parametre fillAmount
+		scriptHealth.type = Image.Type.Filled;
+		scriptHealth.fillMethod = Image.FillMethod.Horizontal;
+		scriptHealth.fillAmount = 0f;*/
+
+
     }
 
     public GameObject GetSelectedSlime()
