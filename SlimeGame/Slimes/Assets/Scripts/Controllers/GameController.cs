@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     private int currentPlayer;
     private int playerActions;
 	public Sprite healthBarImage;
+	public GameObject me;
 
 
     // Use this for initialization
@@ -198,6 +199,7 @@ public class GameController : MonoBehaviour
         slime.GetComponent<Slime>().SetActualTile(tile);
         slime.GetComponent<Slime>().setPlayer(pl);
         slime.GetComponent<Slime>().SetCore(core);
+		slime.GetComponent<Slime> ().SetGameObjectController (me);
 
 		//MASSA RANDOM
 		slime.GetComponent<Slime>().SetMassa(Random.Range(0f, 10.0f));
@@ -287,7 +289,6 @@ public class GameController : MonoBehaviour
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
             Dictionary<TileData, List<TileData>> listdic = slime.GetComponent<Slime>().possibleMovements;
-
             //if (listdic.ContainsKey(tilehit) && UseActions(1))
             if (UseActions(1))
             {
@@ -361,11 +362,10 @@ public class GameController : MonoBehaviour
 				total += slm.GetComponent<Slime> ().GetMassa ();
 			}
 		}
-		Debug.Log (total);
 		return total;
 	}
 
-	private void PrintHealthBars(){
+	public void PrintHealthBars(){
 		float total = CalcularTotalVida ();
 		foreach (Player player in players){
 			List<GameObject> slms = player.GetSlimes ();
