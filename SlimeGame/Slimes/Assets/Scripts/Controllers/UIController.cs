@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,7 +25,7 @@ public class UIController : MonoBehaviour {
         //Si clica OK desactiva el canvas
         canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
 
-		//TileMoveSprite = Resources.Load ();
+		TileMoveSprite = Resources.Load<Sprite> ("Test/movementRangeFilter");
 		TileAttackSprite = Resources.Load<Sprite> ("Test/attackRangeFilter");
 		TileSplitSprite = Resources.Load<Sprite> ("Test/movementRangeFilter");
 		currentUIRenderer = new List<SpriteRenderer> ();
@@ -59,7 +60,43 @@ public class UIController : MonoBehaviour {
 	}
 
 	public void showMoveRange(Slime slime){
-		
+		ArrayList tiles = new ArrayList();
+		ArrayList distance = new ArrayList ();
+		List<Tile> visited = new List<Tile> ();
+
+		int moveRange = slime.GetMovementRange ();
+
+		List<Vector2> directions = new List<Vector2> {
+			new Vector2 (0, -1),new Vector2 (1, -1), new Vector2 (1, 0),new Vector2 (0, 1),new Vector2 (-1,1),new Vector2 (-1, 0)
+		};
+
+		tiles.Add (slime.GetActualTile ());
+		distance.Add (0);
+		int counter = 0;
+		while(tiles.Count>0){
+			Tile t = (Tile) tiles[0];
+			tiles.RemoveAt (0);
+			int prevD = (int) distance[0];
+			distance.RemoveAt (0);
+			counter++;
+			Debug.Log (counter+" "+tiles.Count+" "+t.GetTileData().ToString());
+			visited.Add (t);
+			foreach(Vector2 vec in directions){
+				int x = (int) (t.getPosition ().x + vec.x);
+				int y = (int) (t.getPosition ().y + vec.y);
+				Tile newT = MapDrawer.GetTileAt(x ,y);
+				if (!visited.Contains(newT) && !tiles.Contains(newT) && newT!=null && prevD+1<=moveRange && !newT.GetTileData().isBlocking()) {
+					tiles.Add(newT);
+					distance.Add (prevD + 1);
+				}
+			}
+		}
+		visited.RemoveAt(0);
+		Debug.Log (visited.Count);
+		foreach (Tile t in visited) { 
+			t.tileUILayer.sprite = TileMoveSprite;
+			currentUIRenderer.Add (t.tileUILayer);
+		}
 	}
 
 	public void showAttackRange(Slime slime){

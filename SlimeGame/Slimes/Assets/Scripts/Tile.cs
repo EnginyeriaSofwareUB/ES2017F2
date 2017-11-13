@@ -26,10 +26,11 @@ public class Tile : MonoBehaviour {
     //TODO modify when we have more attributes
     public override string ToString()
     {
-        return "Here will be info about tile when we got this";
+		return data.ToString();
         //TODO Em peta perque data me diu que es NULL
         //return data.ToString();
     }
+
 	public TileData GetTileData(){
 		return data;
 	}
@@ -44,7 +45,7 @@ public class Tile : MonoBehaviour {
 		tileUILayer.gameObject.transform.position = pos;
 		tileUILayer.gameObject.transform.localScale = new Vector2(1f,1f);;
 		tileUILayer.sortingLayerName = "TileUI";
-		tileUILayer.color = new Color (1f, 1f, 0f, 0.5f);
+		tileUILayer.color = new Color (1f, 1f, 1f, 0.5f);
 	}
 
 	public void startElementLayer(Vector3 pos, Vector3 size){
