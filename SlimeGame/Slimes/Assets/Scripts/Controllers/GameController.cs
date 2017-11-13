@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
     {
 
         Text go = GameObject.Find("DebugText").GetComponent<Text>();
-
+        
         //MapDrawer.InitTest ();
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
         textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
@@ -35,15 +35,17 @@ public class GameController : MonoBehaviour
         players.Add(new Player("Jugador 2", 3)); // Test with 2 players
 		go.text = "gameController";
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-        matrix = new Matrix(13, 0.5f);
+        matrix = new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
         SlimeCore agileCore = SlimeCore.Create(SlimeCoreTypes.Agile);
         SlimeCore aggressiveCore = SlimeCore.Create(SlimeCoreTypes.Aggressive);
-        Vector2 slime1 = matrix.GetRandomTile();
+        int seed = 123456;
+        System.Random rnd = new System.Random(seed);
+        Vector2 slime1 = matrix.GetRandomTile(rnd);
         instantiateSlime(aggressiveCore, players[0], (int)slime1.x, (int)slime1.y);
-        Vector2 slime2 = matrix.GetRandomTile();
+        Vector2 slime2 = matrix.GetRandomTile(rnd);
         instantiateSlime(aggressiveCore, players[0],(int)slime2.x, (int)slime2.y);
-        Vector2 slime3 = matrix.GetRandomTile();
+        Vector2 slime3 = matrix.GetRandomTile(rnd);
         instantiateSlime(agileCore, players[1], (int)slime3.x, (int)slime3.y);
         Vector2 slime4 = matrix.GetRandomTile();
         instantiateSlime(agileCore, players[1], (int)slime4.x, (int)slime4.y);
