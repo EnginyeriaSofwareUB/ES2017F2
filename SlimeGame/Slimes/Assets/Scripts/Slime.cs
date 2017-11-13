@@ -8,6 +8,7 @@ public class Slime : MonoBehaviour {
 	public  TileData actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
+	private float massa;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
@@ -60,5 +61,13 @@ public class Slime : MonoBehaviour {
 			return core.GetAttackRange();
 		}
 		return 0;
+	}
+
+	public void SetMassa(float m){
+		massa = m;
+	}
+
+	public float GetMassa(){
+		return massa;
 	}
 }
