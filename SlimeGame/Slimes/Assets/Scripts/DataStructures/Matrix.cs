@@ -37,7 +37,7 @@ public class Matrix {
 			}
 		}
 	}
-	public Matrix(int diagonal, float probabilityNull){
+	public Matrix(int diagonal, float probabilityNull, int seed){
 		map = new Dictionary<int, Dictionary<int,TileData>> ();
 		int maxim = (int)(diagonal/2);
 		int minim = -maxim;
@@ -56,8 +56,8 @@ public class Matrix {
 		//dict[TileType.Block]=0.3f;
 		dict[TileType.Sand]=0.7f;
 		
-	    CreateTiles(maxim, totalNumTiles,probabilityNull);
-		DistributeTiles();
+	    CreateTiles(maxim, totalNumTiles,probabilityNull, seed);
+		DistributeTiles(seed);
 	}
 	
 	public List<TileData> GetTotalTiles(){
@@ -207,7 +207,7 @@ public class Matrix {
 	/*
 	float
 	 */
-	public void DistributeTiles(Dictionary<TileType,float> probabilitiesDic=null){
+	public void DistributeTiles(int seed, Dictionary<TileType,float> probabilitiesDic=null){
 		//list must sum up to 1
 		List<TileData> alltiles = GetTotalTiles();
 		int totalTiles =alltiles.Count;
@@ -230,7 +230,7 @@ public class Matrix {
 			typeNumCenters[type]=(int)Math.Round(probabilitiesDic[type]*maxNumIslands);
 			
 		}		
-		System.Random rnd = new System.Random();	
+		System.Random rnd = new System.Random(seed);	
 		foreach(TileType type in typeNumCenters.Keys){
 			for(int i =0;i<typeNumCenters[type];i++){
 				
@@ -264,8 +264,8 @@ tile.SetTileType(nearestCenter.getTileType());
 
 		} 
 	}
-	public Vector2 GetRandomTile(){
-		System.Random rnd = new System.Random();
+	public Vector2 GetRandomTile(System.Random rnd=null){
+		if(rnd==null) rnd = new System.Random();
 		TileData selectedTile = null;
 		while(selectedTile==null || selectedTile.isBlocking()){
 			List<int> keys = new List<int>(map.Keys);
@@ -278,19 +278,12 @@ tile.SetTileType(nearestCenter.getTileType());
 		return selectedTile.getPosition();
 	}
 	
-	public void CreateTiles(int maxim, int totalNumTiles, float probabilityNull){
+	public void CreateTiles(int maxim, int totalNumTiles, float probabilityNull, int seed){
 		int pizzaHex = (totalNumTiles-1)/6;
-		int nullTiles = (int)Math.Round((double)(probabilityNull*pizzaHex));
-		//int count = 0;
-		List<Vector3> allTilesPizzaHexNorth = new List<Vector3>();
-		for(int x = 0;x<=maxim;x++){
-			for(int y = 0;y<maxim-x;y++){
-				allTilesPizzaHexNorth.Add(new Vector3(x,y,-x-y));
-			}
-		}
-		int seed = Guid.NewGuid().GetHashCode();
-		List<Vector3> toCreateList = GetWhichTilesToCreate(allTilesPizzaHexNorth, allTilesPizzaHexNorth.Count-nullTiles, seed);		
-		AddTileToMap(TileType.Sand, 0,0);
+		
+		
+		List<Vector3> toCreateList = GetWhichTilesToCreate(maxim, probabilityNull, seed);		
+		
 		foreach(Vector3 toCreate in toCreateList){
 			List<Vector2> listVecHex = new List<Vector2>();
 			int x =(int)toCreate.x;
@@ -320,83 +313,77 @@ tile.SetTileType(nearestCenter.getTileType());
 	public void AddTileToMap(TileType type, int x, int y){
 		if(!map.ContainsKey(x)) map[x]=new Dictionary<int,TileData>();
 		map[x][y]=new TileData(type,new Vector2(x,y));;
+		
 	}
-	public List<Vector3> GetWhichTilesToCreate(List<Vector3> alltilesnorth, int createTilesNum, int seed){
-		if(createTilesNum==alltilesnorth.Count) return alltilesnorth;
-		Dictionary<int, Dictionary<int, Dictionary<int, bool>>> dictionary = new Dictionary<int, Dictionary<int, Dictionary<int, bool>>>();
-		List<Vector3> possibleCreateTiles = new List<Vector3>();		
-		foreach(Vector3 tile in alltilesnorth){
-			int x = (int)tile.x;
-			int y = (int)tile.y;
-			int z = (int)tile.z;
-			if(!dictionary.ContainsKey(x))dictionary[x]=new Dictionary<int, Dictionary<int, bool>>();
-			if(!dictionary[x].ContainsKey(y))dictionary[x][y]=new Dictionary<int, bool>();
-			dictionary[x][y][z]=false;		
-			possibleCreateTiles.Add(new Vector3(x,y,z));	
-			/*if(x==1 && y!=0){
-				if(!dictionary.ContainsKey(z))dictionary[z]=new Dictionary<int, Dictionary<int, bool>>();
-				if(!dictionary[z].ContainsKey(-x))dictionary[z][-x]=new Dictionary<int, bool>();
-				//dictionary[z][-x][-y]=true;				
-				dictionary[z][-x][-y]=false;
-			}*/
+	public List<Vector3> GetWhichTilesToCreate(int maxim, float probabilityNull, int seed){
+		List<Vector3> alltilesnorth = AllTilesNorth(maxim);
+		int createTilesNum = (int)Math.Round((double)((1-probabilityNull)*(alltilesnorth.Count-maxim+1)));
+		System.Random rnd = new System.Random(seed);
+		if(rnd.NextDouble()>probabilityNull)AddTileToMap(TileType.Sand, 0,0);
+		if(probabilityNull<=0) return alltilesnorth;
+		Dictionary<int, Dictionary<int, Dictionary<int, bool>>> dictionary = new Dictionary<int, Dictionary<int, Dictionary<int, bool>>>();		
+		
+		List<Vector3> finalList = new List<Vector3>();
+		Vector3 current = new Vector3(0,1,-1);
+		List<Vector3> upDirections = new List<Vector3>{new Vector3 (1, 0, -1),new Vector3 (0, 1, -1)};
+		for(int i = 1; i<maxim;i++){
+			finalList.Add(current);
+			alltilesnorth.Remove(current);
+			current += upDirections[rnd.Next(upDirections.Count)];
 		}
 		
-		System.Random rnd = new System.Random(seed);
-		int createdTiles = 0;
-		Vector3 current = new Vector3(0,0,0);
-		//dictionary[0][0][0]=true;
-		List<Vector3> directions = new List<Vector3> {
-			new Vector3 (0, -1, 1),new Vector3 (1, -1, 0), new Vector3 (1, 0, -1),new Vector3 (0, 1, -1),new Vector3 (-1,1,0),new Vector3 (-1, 0, 1)
-		};
-		List<Vector3> directionsRemaining = new List<Vector3>(directions);
-		Vector3 currentDirection = new Vector3();
-		List<Vector3> visited = new List<Vector3>();
-		List<Vector3> badVisited = new List<Vector3>();
-		while(createdTiles<createTilesNum){			
-			if(directionsRemaining.Count==0){
-				badVisited.Add(current);
-				try{
-				current=visited[rnd.Next(visited.Count)];
-				}catch(Exception ex){
-					string s = ex.GetType().ToString();
-				}
-				directionsRemaining = new List<Vector3>(directions);
-			}
-			try{
-				currentDirection = directionsRemaining[rnd.Next(directionsRemaining.Count)];
-			}catch(Exception ex){
-				string s = ex.GetType().ToString();
-			}
-			
-			
-			Vector3 neighbor = current+currentDirection;			
-			int x = (int)neighbor.x;
-			int y = (int)neighbor.y;
-			int z = (int)neighbor.z;
-			if(dictionary.ContainsKey(x) && dictionary[x].ContainsKey(y)&& dictionary[x][y].ContainsKey(z) && !dictionary[x][y][z] && !badVisited.Contains(neighbor)){
-				dictionary[x][y][z] = true;				
-				createdTiles++;
-				directionsRemaining = new List<Vector3>(directions);
-				visited.Add(neighbor);
-			}else{
-				directionsRemaining.Remove(currentDirection);
-			}				
-		}
-
-		List<Vector3> tilesPositiveSelected = new List<Vector3>();
-		foreach(int x in dictionary.Keys){
-			foreach(int y in dictionary[x].Keys){
-				foreach(int z in dictionary[x][y].Keys){
-					if(dictionary[x][y][z]){
-						int xReal = x;
-						int yReal = y;
-						int zReal = z;
-						tilesPositiveSelected.Add(new Vector3(xReal,yReal,zReal));
-					}
+		List<Vector3> startingPoints = new List<Vector3>(finalList);
+		while(finalList.Count<createTilesNum+maxim-1 && startingPoints.Count>0){
+			current = startingPoints[rnd.Next(startingPoints.Count)];
+			List<Vector3> directionsRemaining = AllDirectionsFrom(current, maxim);
+			bool added = false;
+			while(!added && directionsRemaining.Count>0){
+				Vector3 newDir = directionsRemaining[rnd.Next(directionsRemaining.Count)];
+				Vector3 newCurrent = newDir+current;
+				if(alltilesnorth.Contains(newCurrent)){
+					finalList.Add(newCurrent);
+					alltilesnorth.Remove(current);
+					startingPoints.Add(newCurrent);
+					added=true;
+				}else{
+					directionsRemaining.Remove(newDir);
 				}
 			}
+			if(!added)startingPoints.Remove(current);
 		}
-		return tilesPositiveSelected;
+		return finalList;
+	}
+	public List<Vector3> AllDirectionsFrom(Vector3 vec, int maxim){
+		Vector3 NO = new Vector3 (1, 0, -1);
+		Vector3 O = new Vector3 (1, -1, 0);
+		Vector3 SO = new Vector3 (0, -1, 1);
+		Vector3 NE = new Vector3 (1, 0, -1);
+		Vector3 E = new Vector3 (1, 0, -1);
+		Vector3 SE = new Vector3 (1, 0, -1);
+		List<Vector3> possibleDir = new List<Vector3>();
+		if(vec.x != 0){
+			possibleDir.Add(SE);
+			possibleDir.Add(E);
+		}
+		if(vec.y != 1){
+			possibleDir.Add(SO);
+			possibleDir.Add(O);
+		}
+		if(-vec.z != maxim-1){
+			possibleDir.Add(NO);
+			possibleDir.Add(NE);
+		}
+		return possibleDir;
+	}
+	public List<Vector3> AllTilesNorth(int maxim){
+		List<Vector3> allTilesPizzaHexNorth = new List<Vector3>();
+		
+		for(int x = 0;x<=maxim;x++){
+			for(int y = 1;y<maxim-x;y++){
+				allTilesPizzaHexNorth.Add(new Vector3(x,y,-x-y));
+			}
+		}
+		return allTilesPizzaHexNorth;
 	}
 	public bool IsGraphConnected(Dictionary<int, Dictionary<int, Dictionary<int, bool>>> dictionary, int allNodes){
 		List<Vector3> directions = new List<Vector3> {
