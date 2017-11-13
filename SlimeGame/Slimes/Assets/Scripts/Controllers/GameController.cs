@@ -193,6 +193,19 @@ public class GameController : MonoBehaviour
         slime.GetComponent<Slime>().SetActualTile(tile);
         slime.GetComponent<Slime>().setPlayer(pl);
         slime.GetComponent<Slime>().SetCore(core);
+		//afegim canvas al gameObject per poder pintar la barra de vida
+		GameObject newCanvas = new GameObject("Canvas");
+		Canvas c = newCanvas.AddComponent<Canvas>();
+		c.renderMode = RenderMode.WorldSpace;
+
+		//rect.localScale = new 
+		newCanvas.transform.SetParent (slime.transform);
+		RectTransform rect = newCanvas.GetComponent<RectTransform> ();
+		//rect.localPosition = new Vector3 (-slime.transform.localScale.x/2,2*slime.transform.localScale.y,0);
+		//rect.sizeDelta = new Vector2 (2*slime.transform.localScale.x,slime.transform.localScale.y/2);
+		rect.localPosition = new Vector3 (0f,1f,0f);
+		rect.sizeDelta = new Vector2 (1.5f,0.25f);
+
     }
 
     public GameObject GetSelectedSlime()
