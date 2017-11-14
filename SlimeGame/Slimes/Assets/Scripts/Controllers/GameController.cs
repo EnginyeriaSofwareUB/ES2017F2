@@ -67,10 +67,6 @@ public class GameController : MonoBehaviour
 				allSlimes.Add (s);
 			}
 		}
-
-		//iniciem les barres de vida
-		PrintHealthBars ();
-
     }
 
     // Update is called once per frame
@@ -223,7 +219,9 @@ public class GameController : MonoBehaviour
         slime.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
+
 		pl.AddSlime(slime.GetComponent<Slime>());
+
         slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 		Tile tile = MapDrawer.GetTileAt(x0, y0);
 		Vector2 tileWorldPosition = tile.GetTileData().GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
@@ -316,54 +314,28 @@ public class GameController : MonoBehaviour
 		}
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
+        RangedAttack(targetSlime);
 	}
 
-	public void FusionSlime(Tile posToFusion)
-	{
-		
-	}
-
-
-    public void HideAnyRange()
+    public void RangedAttack(Slime toAttack)
     {
-        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("MovementRange"))
-        {
-            Destroy(gObj);
-        }
-        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("AttackRange"))
-        {
-            Destroy(gObj);
-        }
-        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("DivisionRange"))
-        {
-            Destroy(gObj);
-        }
-        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("FusionRange"))
-        {
-            Destroy(gObj);
-        }
-
+        GameObject projectile = new GameObject("projectile");
+        Sprite sprite = Resources.Load<Sprite>("Sprites/Proj");
+        projectile.AddComponent<ProjectileTrajectory>();
+        projectile.AddComponent<SpriteRenderer>().sprite = sprite;
+        projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+        projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
+        Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
+        Vector2 endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
+        projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
     }
 
-	private float CalcularTotalVida(){
-		float total = 0;
-		foreach (Player player in players){
-			List<Slime> slms = player.GetSlimes ();
-			foreach (Slime slm in slms) {
-				total += slm.mass;
-			}
-		}
-		return total;
-	}
 
-	public void PrintHealthBars(){
-		float total = CalcularTotalVida ();
-		foreach (Player player in players){
-			List<Slime> slms = player.GetSlimes ();
-			foreach (Slime slm in slms) {
-				slm.gameObject.transform.Find ("Canvas").transform.Find("HealthBack").transform.Find("Health").GetComponent<Image> ().fillAmount = slm.mass / total;
-			}
-		}
+
+
+    public void FusionSlime(Tile posToFusion)
+	{
+		
 	}
 
 }
