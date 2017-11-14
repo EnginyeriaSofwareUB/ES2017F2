@@ -17,6 +17,8 @@ public class GameController : MonoBehaviour
     private int currentTurn;
     private int currentPlayer;
     private int playerActions;
+	public Sprite healthBarImage;
+	public GameObject me;
 
 	public List<Slime> allSlimes;
 
@@ -47,7 +49,7 @@ public class GameController : MonoBehaviour
         players.Add(new Player("Jugador 1", 2,cores[0])); // Test with 2 players
 		players.Add(new Player("Jugador 2", 3,cores[1])); // Test with 2 players
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-        matrix = new Matrix(13, 0.5f);
+        matrix = new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
         Vector2 slime1 = matrix.GetRandomTile();
 		instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
@@ -65,6 +67,10 @@ public class GameController : MonoBehaviour
 				allSlimes.Add (s);
 			}
 		}
+
+		//iniciem les barres de vida
+		PrintHealthBars ();
+
     }
 
     // Update is called once per frame
@@ -209,6 +215,44 @@ public class GameController : MonoBehaviour
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
         slime.GetComponent<Slime>().SetActualTile(tile);
         slime.GetComponent<Slime>().setPlayer(pl);
+        slime.GetComponent<Slime>().SetCore(core);
+		slime.GetComponent<Slime> ().SetGameObjectController (me);
+
+		//MASSA RANDOM
+		slime.GetComponent<Slime>().SetMassa(Random.Range(0f, 10.0f));
+		//FI MASSA RANDOM
+
+		//CONFIGURACIO BARRA VIDA PER SLIME
+		//afegim canvas al gameObject per despres posar les imatges de la barra de vida
+		GameObject newCanvas = new GameObject("Canvas");
+		Canvas c = newCanvas.AddComponent<Canvas>();
+		c.renderMode = RenderMode.WorldSpace;
+		//es el fill del slime 
+		newCanvas.transform.SetParent (slime.transform);
+		RectTransform rect = newCanvas.GetComponent<RectTransform> ();
+		//posicion del canvas, dins hi haura la barra de vida
+		rect.localPosition = new Vector3 (0f,1f,0f);
+		rect.sizeDelta = new Vector2 (1.5f,0.25f);
+
+		//posem les imatges i configuracio per la barra de vida
+		GameObject imatge = new GameObject("HealthBack");
+		Image im = imatge.AddComponent<Image> (); //posem image com a component del gameobject
+		imatge.transform.SetParent (newCanvas.transform); //el gameobject es fill del gameobject que te el canvas
+		im.sprite = healthBarImage; //la imatge de la barra de vida
+		rect = imatge.GetComponent<RectTransform> (); //les posicions i mides
+		rect.localPosition = new Vector3 (0f,0f,0f);
+		rect.sizeDelta = new Vector2 (1.5f,0.25f);
+		//de lo que hem creat, fem una copia i la posem com a fill de l'actual
+		GameObject health = Instantiate (imatge, imatge.transform);
+		health.name = "Health"; //la reanomenem, i sera el que veurem com a vida
+		Image scriptHealth = health.GetComponent<Image> ();
+		scriptHealth.color = Color.red; //camviem el color
+		//configuracio per fer moure el valor
+		scriptHealth.type = Image.Type.Filled;
+		scriptHealth.fillMethod = Image.FillMethod.Horizontal;
+		scriptHealth.fillAmount = 0f; //iniciem a 0, despres es posara segons la massa que tingui respecte el total
+
+
     }
 
     public Slime GetSelectedSlime()
@@ -231,7 +275,6 @@ public class GameController : MonoBehaviour
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
             Dictionary<TileData, List<TileData>> listdic = slime.GetComponent<Slime>().possibleMovements;
-
             //if (listdic.ContainsKey(tilehit) && UseActions(1))
             if (UseActions(1))
             {
@@ -272,5 +315,47 @@ public class GameController : MonoBehaviour
             Debug.Log("FUSION");
         }
     }
+
+    public void HideAnyRange()
+    {
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("MovementRange"))
+        {
+            Destroy(gObj);
+        }
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("AttackRange"))
+        {
+            Destroy(gObj);
+        }
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("DivisionRange"))
+        {
+            Destroy(gObj);
+        }
+        foreach (GameObject gObj in GameObject.FindGameObjectsWithTag("FusionRange"))
+        {
+            Destroy(gObj);
+        }
+
+    }
+
+	private float CalcularTotalVida(){
+		float total = 0;
+		foreach (Player player in players){
+			List<GameObject> slms = player.GetSlimes ();
+			foreach (GameObject slm in slms) {
+				total += slm.GetComponent<Slime> ().GetMassa ();
+			}
+		}
+		return total;
+	}
+
+	public void PrintHealthBars(){
+		float total = CalcularTotalVida ();
+		foreach (Player player in players){
+			List<GameObject> slms = player.GetSlimes ();
+			foreach (GameObject slm in slms) {
+				slm.transform.Find ("Canvas").transform.Find("HealthBack").transform.Find("Health").GetComponent<Image> ().fillAmount = slm.GetComponent<Slime> ().GetMassa () / total;
+			}
+		}
+	}
 
 }

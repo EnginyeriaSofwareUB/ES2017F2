@@ -7,6 +7,8 @@ public class Slime : MonoBehaviour {
 	public Tile actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
+	private float massa;
+	private GameObject gameObjectController;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
@@ -53,5 +55,25 @@ public class Slime : MonoBehaviour {
 
 	public int GetAttackRange(){
 		return player.slimeCoreData.attackRange;
+	}
+
+	//no posar aqui que actualitzi les barres de vida del joc, perque aqui es posa la massa per primer cop
+	public void SetMassa(float m){
+		massa = m;
+	}
+
+	public float GetMassa(){
+		return massa;
+	}
+
+	//metode el qual ens resten vida, s'ha de tractar que passa quan s'acaba la vida
+	//de moment esta posat aixi per tal de que si hi ha un canvi en la massa aquest repercuteixi a les barres de vida del joc
+	/*public void Attack(float damage){
+		massa = massa - damage;
+		gameObjectController.GetComponent<GameController>().PrintHealthBars ();
+	}*/
+
+	public void SetGameObjectController(GameObject go){
+		gameObjectController = go;
 	}
 }
