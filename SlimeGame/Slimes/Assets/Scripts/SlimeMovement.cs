@@ -12,6 +12,8 @@ public class SlimeMovement : MonoBehaviour {
 	public float secondsXmovement = 1; //1 segon, pero es pot determinar des de unity
 	private float startTime;
 
+	private GameController gameController;
+
 	void Start(){
 		/*Exemple de recorregut:
 		List<Vector2> list = new List<Vector2> ();
@@ -23,6 +25,7 @@ public class SlimeMovement : MonoBehaviour {
 		SetBufferAndPlay (list);*/
 
 		moving = false;
+		gameController = GameObject.Find ("Main Camera").GetComponent<GameController> ();
 	}
 	
 	// Update is called once per frame
@@ -39,7 +42,7 @@ public class SlimeMovement : MonoBehaviour {
 				if (indexBuffer >= bufferPositions.Count) {
 					bufferPositions = null;
 					moving = false; //acaba el moviment
-					
+					gameController.updateStatus(GameControllerStatus.CHECKINGLOGIC);
 				} else {
 					startPos = endPos;
 					endPos = bufferPositions [indexBuffer].GetRealWorldPosition();
@@ -59,7 +62,7 @@ public class SlimeMovement : MonoBehaviour {
 			indexBuffer = 0;
 			endPos = bufferPositions [indexBuffer].GetRealWorldPosition();
 			moving = true; //inici del moviment
-			gameObject.GetComponent<Slime>().SetActualTile(buffer [buffer.Count-1]);
+			//gameObject.GetComponent<Slime>().SetActualTile(buffer [buffer.Count-1]);
 		}
 	}
 }

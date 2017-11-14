@@ -1,0 +1,29 @@
+﻿{
+	"0":{
+		"name":"Wraith",
+		"attack":8,
+		"movementRange":4,
+		"attackRange":4,
+		"startingHP":100,
+		"attackCost":2,
+		"picDirection":"Test/slime"
+	},
+	"1":{
+		"name":"Sloth",
+		"attack":4,
+		"movementRange":3,
+		"attackRange":3,
+		"startingHP":120,
+		"attackCost":1,
+		"picDirection":"Test/slime2"
+	},
+	"2":{
+		"name":"Inocence",
+		"attack":3,
+		"movementRange":3,
+		"attackRange":4,
+		"startingHP":80,
+		"attackCost":0,
+		"picDirection":"Test/slime3"
+	}
+}
