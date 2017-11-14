@@ -11,11 +11,14 @@ public class InputController : MonoBehaviour
     public int yLimit;
     public int minZoom;
     public int maxZoom;
+    public int speed;
 
     void Start()
     {
-        xLimit = 6;
-        yLimit = 6;
+        speed = 1;
+        
+        xLimit = (int) MapDrawer.MapSize().x;
+        yLimit = (int) MapDrawer.MapSize().y;
         minZoom = 3;
         maxZoom = 13;
         controller = Camera.main.GetComponent<GameController>();
@@ -83,28 +86,28 @@ public class InputController : MonoBehaviour
         {
             if(this.transform.position.y < yLimit)
             {
-                this.transform.position += new Vector3(0, 1, 0);
+                this.transform.position += new Vector3(0, 1, 0) * speed;
             }
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (this.transform.position.y > -yLimit)
             {
-                this.transform.position -= new Vector3(0, 1, 0);
+                this.transform.position -= new Vector3(0, 1, 0) * speed;
             }
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             if (this.transform.position.x > -xLimit)
             {
-                this.transform.position -= new Vector3(1, 0, 0);
+                this.transform.position -= new Vector3(1, 0, 0) * speed;
             }
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             if (this.transform.position.x < xLimit)
             {
-                this.transform.position += new Vector3(1, 0, 0);
+                this.transform.position += new Vector3(1, 0, 0) * speed;
             }
         }
     }

@@ -6,6 +6,7 @@ public class MapDrawer {
 
 	private static Vector2 horizontalOffset;
 	private static Vector2 diagonalOffset;
+    private static Vector2 size;
 	//private static Vector2 verticalOffset;
 
 	public static void InitTest () {
@@ -28,6 +29,15 @@ public class MapDrawer {
 			Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 			int x = (int)tile.getPosition().x;
 			int y = (int)tile.getPosition().y;
+
+            if (x > size.x)
+            {
+                size.x = x;
+            }
+            if (y > size.y)
+            {
+                size.y = y;
+            }
 			/*
 			if (x % 2 == 1 && x!=0) {
 				tileWorldPosition += diagonalOffset;	 
@@ -167,6 +177,10 @@ public class MapDrawer {
         newTile.transform.position = vec;
     }
 
+    public static Vector2 MapSize()
+    {
+        return size;
+    }
 
 
 
