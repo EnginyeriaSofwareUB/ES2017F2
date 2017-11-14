@@ -70,6 +70,9 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if (status == GameControllerStatus.CHECKINGLOGIC) {
+			checkLogic ();
+		}
         bool ended = IsGameEnded();
 
         if (ended)
@@ -85,6 +88,18 @@ public class GameController : MonoBehaviour
             }
         }
     }
+
+	public void checkLogic(){
+		if (playerActions >= players [currentPlayer].GetActions ()) {
+			currentPlayer++;
+			if (currentPlayer >= players.Count) {
+				currentPlayer = 0;
+				currentTurn++;
+			}
+			playerActions = 0;
+		}
+		status = GameControllerStatus.WAITINGFORACTION;
+	}
 
     void OnGUI()
     {
@@ -191,7 +206,7 @@ public class GameController : MonoBehaviour
         currentTurn++;
     }
 
-    private void instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
+    private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
     {
 
         GameObject slime = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
@@ -209,6 +224,7 @@ public class GameController : MonoBehaviour
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
         slime.GetComponent<Slime>().SetActualTile(tile);
         slime.GetComponent<Slime>().setPlayer(pl);
+		return slime.GetComponent<Slime> ();
     }
 
     public Slime GetSelectedSlime()
@@ -229,22 +245,35 @@ public class GameController : MonoBehaviour
 		TileData tileTo = tile.GetTileData ();
 		//Debug.Log("userHitOnTile");
 		//TODO: Refactor this to only search one path
-		List<Dictionary<TileData,List<TileData>>> p = matrix.coordinateRangeAndPath((int)tileTo.getPosition().x,(int)tileTo.getPosition().y,selectedSlime.GetMovementRange());
+		Dictionary<TileData,List<TileData>> moves = matrix.possibleCoordinatesAndPath(
+			(int)selectedSlime.actualTile.getPosition().x, (int)selectedSlime.actualTile.getPosition().y, selectedSlime.GetMovementRange());
 
-		List<TileData> path = matrix.coordinateRangeAndPath((int)tileTo.getPosition().x,(int)tileTo.getPosition().y,selectedSlime.GetMovementRange())[0][tileTo];
-
+		List<TileData> path = moves[tileTo];
+		path [path.Count-1].SetSlimeOnTop (selectedSlime.gameObject);
+		selectedSlime.SetActualTile (tile);
 		selectedSlime.gameObject.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
 
 		selectedSlime.gameObject.GetComponent<Slime>().rangeUpdated = false;
+		status = GameControllerStatus.PLAYINGACTION;
+		playerActions++;
     }
 
 	public void SlplitSlime(Tile targetTile){
-
+		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
+		players [currentPlayer].AddSlime (newSlime);
+		allSlimes.Add (newSlime);
+		targetTile.SetSlimeOnTop (newSlime.gameObject);
+		newSlime.SetActualTile (targetTile);
+		newSlime.setMass (selectedSlime.mass/2.0f);
+		selectedSlime.setMass (selectedSlime.mass / 2.0f);
+		playerActions++;
+		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
 	public void AttackSlime(Slime targetSlime){
 		targetSlime.changeMass (-selectedSlime.getDamage ());
-		Debug.Log (targetSlime.mass);
+		playerActions++;
+		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
 	public void FusionSlime(Tile posToFusion)

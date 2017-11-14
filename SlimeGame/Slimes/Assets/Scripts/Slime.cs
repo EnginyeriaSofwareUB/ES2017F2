@@ -25,7 +25,7 @@ public class Slime : MonoBehaviour {
     //TODO modify when we have more attributes
     public override string ToString()
     {
-        return "Insert some text here to describe the slime";
+		return mass.ToString();
     }
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
@@ -67,5 +67,9 @@ public class Slime : MonoBehaviour {
 
 	public bool isAlive(){
 		return mass > 0.0f ? true : false;
+	}
+
+	public void setMass(float mass){
+		this.mass = mass;
 	}
 }

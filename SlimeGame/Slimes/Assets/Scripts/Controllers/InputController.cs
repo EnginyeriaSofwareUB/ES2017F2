@@ -18,8 +18,6 @@ public class InputController : MonoBehaviour
 	List<Tile> moveTiles;
 	List<Tile> splitTiles;
 
-	bool inputTriggered;
-
     void Start()
     {
         xLimit = 6;
@@ -49,13 +47,15 @@ public class InputController : MonoBehaviour
 						splitTiles = uiController.showSplitRange (col.gameObject.GetComponent<Slime> ());
 						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
 						s = col.gameObject.GetComponent<Slime>().ToString();
-						inputTriggered = true;
 						break;
-					} else if(col.gameObject.tag == "Tile") {
+					/*}else if(col.gameObject.tag == "Slime") {
+						//s = col.gameObject.GetComponent<Slime>().ToString();
+*/
+					}else if(col.gameObject.tag == "Tile") {
 						Tile target = col.gameObject.GetComponent<Tile> ();
 						bool isMoveTile = moveTiles.Contains (target);
 						bool isAttackTile = attackTiles.Contains (target);
-						if(inputTriggered && (isMoveTile || isAttackTile)){
+						if((isMoveTile || isAttackTile) && gameController.GetSelectedSlime()!=null){
 							if (isMoveTile) {
 								Debug.Log (Time.time+"Move");
 								gameController.MoveSlime (target);
@@ -87,6 +87,7 @@ public class InputController : MonoBehaviour
 					}
 					if(t!=null && splitTiles.Contains(t)){
 						Debug.Log (Time.time+"Split");
+						gameController.SlplitSlime (t);
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 					}else{
@@ -96,9 +97,9 @@ public class InputController : MonoBehaviour
 					}
 				}
 			} else if (Input.GetMouseButtonDown (1)) {
+				gameController.SetSelectedSlime (null);
 				uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
-				inputTriggered = false;
 			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0 && this.GetComponent<Camera> ().orthographicSize > minZoom) {
 				this.GetComponent<Camera> ().orthographicSize--;
 			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0 && this.GetComponent<Camera> ().orthographicSize < maxZoom) {

@@ -4,5 +4,6 @@ public enum GameControllerStatus
 {
 	PLAYINGACTION,
 	WAITINGFORACTION,
-	GAMEEND
+	GAMEEND,
+	CHECKINGLOGIC
 }
