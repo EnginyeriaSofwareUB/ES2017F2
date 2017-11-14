@@ -193,6 +193,9 @@ public class GameController : MonoBehaviour
         slime.GetComponent<SpriteRenderer>().sortingOrder = 2;
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
+
+        //slime.AddComponent<ProjectileTrajectory>();
+
         pl.AddSlime(slime);
         slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         TileData tile = matrix.getTile(x0, y0);
@@ -314,7 +317,19 @@ public class GameController : MonoBehaviour
         if (UseActions(1))
         {
             Debug.Log("ATTACK");
+            //if (selectedSlime.GetComponent<Slime>().GetActualTile() - toAttack.GetActualTile() > 2 ) {
+            RangedAttack(toAttack);
+            //}
+            //si distancia objetivo >= 2, realizar ataque a distancia (proyectil)
         }
+    }
+
+    public void RangedAttack(Slime toAttack)
+    {
+        selectedSlime.AddComponent<ProjectileTrajectory>();
+        Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
+        Vector2 endPos = toAttack.GetActualTile().getPosition();
+        selectedSlime.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
     }
 
     public void DivideSlime(Tile posToDivide)
