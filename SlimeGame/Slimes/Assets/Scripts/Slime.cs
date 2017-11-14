@@ -42,6 +42,7 @@ public class Slime : MonoBehaviour {
 
 	public void setPlayer(Player player){
 		this.player = player;
+		mass = player.slimeCoreData.startingHP;
 	}
 
 	public Player GetPlayer(){

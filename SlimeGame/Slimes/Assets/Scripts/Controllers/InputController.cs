@@ -58,10 +58,12 @@ public class InputController : MonoBehaviour
 						if(inputTriggered && (isMoveTile || isAttackTile)){
 							if (isMoveTile) {
 								Debug.Log (Time.time+"Move");
+								gameController.MoveSlime (target);
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							} else if (isAttackTile) {
 								Debug.Log (Time.time+"Attack");
+								gameController.AttackSlime (target.GetSlimeOnTop());
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							}

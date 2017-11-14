@@ -224,65 +224,37 @@ public class GameController : MonoBehaviour
 		return players [currentPlayer];
 	}
 
-    public void MoveSlime(TileData tileTo)
+    public void MoveSlime(Tile tile)
     {
-        //Debug.Log("userHitOnTile");
-		GameObject slime = selectedSlime.gameObject;
-        if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
-        {
-            Dictionary<TileData, List<TileData>> listdic = slime.GetComponent<Slime>().possibleMovements;
+		TileData tileTo = tile.GetTileData ();
+		//Debug.Log("userHitOnTile");
+		//TODO: Refactor this to only search one path
+		List<Dictionary<TileData,List<TileData>>> p = matrix.coordinateRangeAndPath((int)tileTo.getPosition().x,(int)tileTo.getPosition().y,selectedSlime.GetMovementRange());
 
-            //if (listdic.ContainsKey(tilehit) && UseActions(1))
-            if (UseActions(1))
-            {
-                //List<Vector2> listvec = new List<Vector2>();
-                List<TileData> path = listdic[tileTo];
+		List<TileData> path = matrix.coordinateRangeAndPath((int)tileTo.getPosition().x,(int)tileTo.getPosition().y,selectedSlime.GetMovementRange())[0][tileTo];
 
-                slime.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
+		selectedSlime.gameObject.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
 
-                slime.GetComponent<Slime>().rangeUpdated = false;
-                //positionSlime = slime.GetComponent<Slime>().GetActualTile().getPosition();
-			}
-        }
+		selectedSlime.gameObject.GetComponent<Slime>().rangeUpdated = false;
     }
 
-    public void AttackSlime(Slime toAttack)
-    {
-        // GESTIONAR ATAQUE
-        if (UseActions(1))
-        {
-            Debug.Log("ATTACK");
-        }
-    }
+	public void SlplitSlime(Tile targetTile){
 
-    public void DivideSlime(Tile posToDivide)
-    {
-        // GESTIONAR DIVISION
-        if (UseActions(1))
-        {
-            Debug.Log("DIVISION");
-        }
-    }
+	}
 
-    public void FusionSlime(Tile posToFusion)
-    {
-        // GESTIONAR FUSION
-        if (UseActions(1))
-        {
-            Debug.Log("FUSION");
-        }
-    }
-
-	public void attackSlime(Slime targetSlime){
+	public void AttackSlime(Slime targetSlime){
 		targetSlime.changeMass (-selectedSlime.getDamage ());
+		Debug.Log (targetSlime.mass);
 	}
 
-	public void splitSlime(Tile targetTile){
-	
+	public void FusionSlime(Tile posToFusion)
+	{
+		// GESTIONAR FUSION
+		if (UseActions(1))
+		{
+			Debug.Log("FUSION");
+		}
 	}
 
-	public void moveSlime(Tile targetTile){
-	
-	}
 
 }

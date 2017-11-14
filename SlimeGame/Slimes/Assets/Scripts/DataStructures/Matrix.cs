@@ -176,6 +176,7 @@ public class Matrix {
 		}
 		return dic;
 	}
+
 	public List<Dictionary<TileData,List<TileData>>> coordinateRangeAndPath(int x, int y, int range){		
 		List<Dictionary<TileData,List<TileData>>> listdic = new List<Dictionary<TileData,List<TileData>>>();
 		//Queue<QueueItem> queue = new Queue<QueueItem>();

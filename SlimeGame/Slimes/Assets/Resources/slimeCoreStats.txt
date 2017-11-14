@@ -13,7 +13,7 @@
 		"attack":4,
 		"movementRange":3,
 		"attackRange":3,
-		"startingHP":5,
+		"startingHP":120,
 		"attackCost":1,
 		"picDirection":"Test/slime2"
 	},

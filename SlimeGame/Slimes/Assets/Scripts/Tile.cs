@@ -61,5 +61,9 @@ public class Tile : MonoBehaviour {
 	public void SetSlimeOnTop(GameObject obj){
 		data.SetSlimeOnTop (obj);
 	}
-	
+
+	public Slime GetSlimeOnTop(){
+		return data.GetSlimeOnTop ();
+	}
+
 }
