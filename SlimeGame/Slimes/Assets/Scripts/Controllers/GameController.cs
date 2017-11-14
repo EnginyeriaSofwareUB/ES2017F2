@@ -16,6 +16,8 @@ public class GameController : MonoBehaviour
     private int currentTurn;
     private int currentPlayer;
     private int playerActions;
+	public Sprite healthBarImage;
+	public GameObject me;
 
 
     // Use this for initialization
@@ -53,6 +55,10 @@ public class GameController : MonoBehaviour
         currentTurn = 0;
         currentPlayer = 0;
         playerActions = 0;
+
+		//iniciem les barres de vida
+		PrintHealthBars ();
+
     }
 
     // Update is called once per frame
@@ -195,6 +201,43 @@ public class GameController : MonoBehaviour
         slime.GetComponent<Slime>().SetActualTile(tile);
         slime.GetComponent<Slime>().setPlayer(pl);
         slime.GetComponent<Slime>().SetCore(core);
+		slime.GetComponent<Slime> ().SetGameObjectController (me);
+
+		//MASSA RANDOM
+		slime.GetComponent<Slime>().SetMassa(Random.Range(0f, 10.0f));
+		//FI MASSA RANDOM
+
+		//CONFIGURACIO BARRA VIDA PER SLIME
+		//afegim canvas al gameObject per despres posar les imatges de la barra de vida
+		GameObject newCanvas = new GameObject("Canvas");
+		Canvas c = newCanvas.AddComponent<Canvas>();
+		c.renderMode = RenderMode.WorldSpace;
+		//es el fill del slime 
+		newCanvas.transform.SetParent (slime.transform);
+		RectTransform rect = newCanvas.GetComponent<RectTransform> ();
+		//posicion del canvas, dins hi haura la barra de vida
+		rect.localPosition = new Vector3 (0f,1f,0f);
+		rect.sizeDelta = new Vector2 (1.5f,0.25f);
+
+		//posem les imatges i configuracio per la barra de vida
+		GameObject imatge = new GameObject("HealthBack");
+		Image im = imatge.AddComponent<Image> (); //posem image com a component del gameobject
+		imatge.transform.SetParent (newCanvas.transform); //el gameobject es fill del gameobject que te el canvas
+		im.sprite = healthBarImage; //la imatge de la barra de vida
+		rect = imatge.GetComponent<RectTransform> (); //les posicions i mides
+		rect.localPosition = new Vector3 (0f,0f,0f);
+		rect.sizeDelta = new Vector2 (1.5f,0.25f);
+		//de lo que hem creat, fem una copia i la posem com a fill de l'actual
+		GameObject health = Instantiate (imatge, imatge.transform);
+		health.name = "Health"; //la reanomenem, i sera el que veurem com a vida
+		Image scriptHealth = health.GetComponent<Image> ();
+		scriptHealth.color = Color.red; //camviem el color
+		//configuracio per fer moure el valor
+		scriptHealth.type = Image.Type.Filled;
+		scriptHealth.fillMethod = Image.FillMethod.Horizontal;
+		scriptHealth.fillAmount = 0f; //iniciem a 0, despres es posara segons la massa que tingui respecte el total
+
+
     }
 
     public GameObject GetSelectedSlime()
@@ -248,7 +291,6 @@ public class GameController : MonoBehaviour
         if (!selectedSlime.name.Equals("Empty") && !selectedSlime.GetComponent<SlimeMovement>().moving)
         {
             Dictionary<TileData, List<TileData>> listdic = slime.GetComponent<Slime>().possibleMovements;
-
             //if (listdic.ContainsKey(tilehit) && UseActions(1))
             if (UseActions(1))
             {
@@ -313,5 +355,26 @@ public class GameController : MonoBehaviour
         }
 
     }
+
+	private float CalcularTotalVida(){
+		float total = 0;
+		foreach (Player player in players){
+			List<GameObject> slms = player.GetSlimes ();
+			foreach (GameObject slm in slms) {
+				total += slm.GetComponent<Slime> ().GetMassa ();
+			}
+		}
+		return total;
+	}
+
+	public void PrintHealthBars(){
+		float total = CalcularTotalVida ();
+		foreach (Player player in players){
+			List<GameObject> slms = player.GetSlimes ();
+			foreach (GameObject slm in slms) {
+				slm.transform.Find ("Canvas").transform.Find("HealthBack").transform.Find("Health").GetComponent<Image> ().fillAmount = slm.GetComponent<Slime> ().GetMassa () / total;
+			}
+		}
+	}
 
 }

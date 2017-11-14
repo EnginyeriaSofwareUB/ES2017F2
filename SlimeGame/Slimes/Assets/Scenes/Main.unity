@@ -660,6 +660,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a31e68acd5599864d9873d2144e54c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthBarImage: {fileID: 21300000, guid: 04456e939c7f07643a157eccee19dddb, type: 3}
+  me: {fileID: 608162599}
 --- !u!114 &608162607
 MonoBehaviour:
   m_ObjectHideFlags: 0
