@@ -20,6 +20,8 @@ public class GameController : MonoBehaviour
 	public Sprite healthBarImage;
 	public GameObject me;
 
+	private Sprite conquerSprite;
+
 	public List<Slime> allSlimes;
 
 	private GameControllerStatus status;
@@ -39,6 +41,7 @@ public class GameController : MonoBehaviour
 			);
 			cores.Add (slimeData);
 		}
+		conquerSprite = Resources.Load<Sprite> ("Test/conquerTile");
         //MapDrawer.InitTest ();
 		status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
@@ -46,10 +49,10 @@ public class GameController : MonoBehaviour
         panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-        players.Add(new Player("Jugador 1", 2,cores[0])); // Test with 2 players
-		players.Add(new Player("Jugador 2", 3,cores[1])); // Test with 2 players
-		players[1].SetColor(new Color(1f,0f,0f));
-		players[0].SetColor(new Color(0f,0f,1f));
+		players.Add(new Player("Jugador 1", 2,cores[GameSelection.player1Core])); // Test with 2 players
+		players.Add(new Player("Jugador 2", 3,cores[GameSelection.player2Core])); // Test with 2 players
+		players[0].SetColor(GameSelection.player1Color);
+		players[1].SetColor(GameSelection.player2Color);
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
         matrix = new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
@@ -338,12 +341,24 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
     }
 
-
-
-
-    public void FusionSlime(Tile posToFusion)
+    public void FusionSlime(Slime fusionTarget)
 	{
-		
+		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
+		allSlimes.Remove(selectedSlime);
+		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
+		fusionTarget.setMass (selectedSlime.mass + fusionTarget.mass);
+		Destroy (selectedSlime.gameObject);
+		playerActions++;
+		status = GameControllerStatus.CHECKINGLOGIC;
+	}
+
+	public void ConquerTile(Tile tile){
+		tile.tileElementLayer.sprite = conquerSprite;
+		Color c = selectedSlime.GetPlayer ().GetColor ();
+		c.a = 0.5f;
+		tile.tileElementLayer.color = c;
+		playerActions++;
+		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
 }

@@ -43,7 +43,8 @@ public class InputController : MonoBehaviour
 				// Priority to action colliders
 				string s = " ";
 				foreach (Collider2D col in colliders) {
-					if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> ().GetPlayer () == gameController.GetCurrentPlayer ()) {
+					if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> ().GetPlayer () == gameController.GetCurrentPlayer () && 
+						gameController.GetSelectedSlime() != col.gameObject.GetComponent<Slime>()) {
 						uiController.hideCurrentUITiles ();
 						splitTiles = uiController.showSplitRange (col.gameObject.GetComponent<Slime> ());
 						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
@@ -52,23 +53,30 @@ public class InputController : MonoBehaviour
 					/*}else if(col.gameObject.tag == "Slime") {
 						//s = col.gameObject.GetComponent<Slime>().ToString();
 */ 
-					}else if(col.gameObject.tag == "Tile") {
+					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
+						gameController.ConquerTile (col.gameObject.GetComponent<Slime> ().GetActualTile());
+						uiController.DisableCanvas ();
+						uiController.hideCurrentUITiles ();
+						gameController.SetSelectedSlime (null);
+					} else if(col.gameObject.tag == "Tile") {
 						Tile target = col.gameObject.GetComponent<Tile> ();
 						bool isMoveTile = moveTiles.Contains (target);
 						bool isAttackTile = attackTiles.Contains (target);
-						if((isMoveTile || isAttackTile) && gameController.GetSelectedSlime()!=null){
+						if ((isMoveTile || isAttackTile) && gameController.GetSelectedSlime () != null) {
 							if (isMoveTile) {
-								Debug.Log (Time.time+"Move");
+								Debug.Log (Time.time + "Move");
 								gameController.MoveSlime (target);
+								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							} else if (isAttackTile) {
-								Debug.Log (Time.time+"Attack");
-								gameController.AttackSlime (target.GetSlimeOnTop());
+								Debug.Log (Time.time + "Attack");
+								gameController.AttackSlime (target.GetSlimeOnTop ());
+								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							}
-						}else{
+						} else {
 							s = target.ToString();
 						}
 					}
@@ -76,19 +84,28 @@ public class InputController : MonoBehaviour
 				if (!s.Equals (" ")) {
 					uiController.ShowCanvasInfo (s);
 				}
-
 			} else if (Input.GetMouseButtonUp (0) && gameController.GetSelectedSlime()!=null) {
 				if (gameController.GetSelectedSlime () != null) {
 					Collider2D[] colliders = Physics2D.OverlapPointAll (Camera.main.ScreenToWorldPoint (Input.mousePosition));
 					Tile t = null;
+					Slime s = null;
 					foreach (Collider2D c in colliders) {
 						if (c.gameObject.tag == "Tile") {
 							t = c.gameObject.GetComponent<Tile> ();
+						} else if (c.gameObject.tag == "Slime" && c.gameObject.GetComponent<Slime> ().GetPlayer () == gameController.GetCurrentPlayer ()) {
+							s = c.gameObject.GetComponent<Slime> ();
 						}
 					}
-					if(t!=null && splitTiles.Contains(t)){
+					if (s != null && s!=gameController.GetSelectedSlime()) {
+						Debug.Log (Time.time+"Join");
+						gameController.FusionSlime (s);
+						uiController.DisableCanvas ();
+						uiController.hideCurrentUITiles ();
+						gameController.SetSelectedSlime (null);
+					}else if(t!=null && splitTiles.Contains(t)){
 						Debug.Log (Time.time+"Split");
 						gameController.SlplitSlime (t);
+						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 					}else{

@@ -56,6 +56,11 @@ public class SelectorController : MonoBehaviour {
 		GameObject.Find ("Text1").GetComponent<Text> ().text = coresInfo [slimeSelector1];
 		GameObject.Find ("Text2").GetComponent<Text> ().text = coresInfo [slimeSelector2];
 		loadMap ();
+
+		GameSelection.player1Color = colors [colorSelector1];
+		GameSelection.player2Color = colors [colorSelector2];
+		GameSelection.player1Core = slimeSelector1;
+		GameSelection.player2Core = slimeSelector2;
 	}
 	
 	// Update is called once per frame
@@ -72,6 +77,7 @@ public class SelectorController : MonoBehaviour {
 		}
 		GameObject.Find ("Core1").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (corePaths [slimeSelector1]);
 		GameObject.Find ("Text1").GetComponent<Text> ().text = coresInfo [slimeSelector1];
+		GameSelection.player1Core = slimeSelector1;
 	}
 
 	public void changeCore2(int cursor){
@@ -83,6 +89,7 @@ public class SelectorController : MonoBehaviour {
 		}
 		GameObject.Find ("Core2").GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> (corePaths [slimeSelector2]);
 		GameObject.Find ("Text2").GetComponent<Text> ().text = coresInfo [slimeSelector2];
+		GameSelection.player2Core = slimeSelector2;
 	}
 
 	public void changeColor1(int cursor){
@@ -102,6 +109,7 @@ public class SelectorController : MonoBehaviour {
 		}
 		GameObject.Find ("Color1").GetComponent<Image> ().color = colors[colorSelector1];
 		GameObject.Find ("Sprite1").GetComponent<Image> ().color = colors[colorSelector1];
+		GameSelection.player1Color = colors [colorSelector1];
 	}	
 
 	public void changeColor2(int cursor){
@@ -121,6 +129,7 @@ public class SelectorController : MonoBehaviour {
 		}
 		GameObject.Find ("Color2").GetComponent<Image> ().color = colors[colorSelector2];
 		GameObject.Find ("Sprite2").GetComponent<Image> ().color = colors[colorSelector2];
+		GameSelection.player2Color = colors [colorSelector2];
 	}	
 
 	public void changeMap(int cursor){
