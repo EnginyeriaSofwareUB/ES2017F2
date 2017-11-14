@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
-	private SlimeCore core;
 	private Player player;
-	public  TileData actualTile;
+	public Tile actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
-	private float massa;
-	private GameObject gameObjectController;
+	public float mass;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
@@ -27,23 +25,24 @@ public class Slime : MonoBehaviour {
     //TODO modify when we have more attributes
     public override string ToString()
     {
-        return "Insert some text here to describe the slime";
+		return mass.ToString();
     }
-	public void SetActualTile(TileData newTile){
+	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
 		actualTile=newTile;
 		actualTile.SetSlimeOnTop(gameObject);
 	}
-	public TileData GetActualTile(){
+	public Tile GetActualTile(){
 		return actualTile;
 	}
 
-	public void SetCore(SlimeCore core){
-		this.core = core;
+	public TileData GetTileData(){
+		return actualTile.GetTileData ();
 	}
 
 	public void setPlayer(Player player){
 		this.player = player;
+		mass = player.slimeCoreData.startingHP;
 	}
 
 	public Player GetPlayer(){
@@ -51,36 +50,26 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
-		if(core != null){
-			return core.GetMovementRange();
-		}
-		return 0;
+		return player.slimeCoreData.movementRange;
 	}
 
 	public int GetAttackRange(){
-		if(core != null){
-			return core.GetAttackRange();
-		}
-		return 0;
+		return player.slimeCoreData.attackRange;
 	}
 
-	//no posar aqui que actualitzi les barres de vida del joc, perque aqui es posa la massa per primer cop
-	public void SetMassa(float m){
-		massa = m;
+	public void changeMass(float q){
+		mass += q;
 	}
 
-	public float GetMassa(){
-		return massa;
+	public float getDamage(){
+		return player.slimeCoreData.attack;
 	}
 
-	//metode el qual ens resten vida, s'ha de tractar que passa quan s'acaba la vida
-	//de moment esta posat aixi per tal de que si hi ha un canvi en la massa aquest repercuteixi a les barres de vida del joc
-	/*public void Attack(float damage){
-		massa = massa - damage;
-		gameObjectController.GetComponent<GameController>().PrintHealthBars ();
-	}*/
+	public bool isAlive(){
+		return mass > 0.0f ? true : false;
+	}
 
-	public void SetGameObjectController(GameObject go){
-		gameObjectController = go;
+	public void setMass(float mass){
+		this.mass = mass;
 	}
 }
