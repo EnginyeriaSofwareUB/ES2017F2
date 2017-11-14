@@ -50,7 +50,7 @@ public class InputController : MonoBehaviour
 						break;
 					/*}else if(col.gameObject.tag == "Slime") {
 						//s = col.gameObject.GetComponent<Slime>().ToString();
-*/
+*/ 
 					}else if(col.gameObject.tag == "Tile") {
 						Tile target = col.gameObject.GetComponent<Tile> ();
 						bool isMoveTile = moveTiles.Contains (target);

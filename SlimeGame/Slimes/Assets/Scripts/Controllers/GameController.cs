@@ -309,17 +309,18 @@ public class GameController : MonoBehaviour
 
 	public void AttackSlime(Slime targetSlime){
 		targetSlime.changeMass (-selectedSlime.getDamage ());
+		if (!targetSlime.isAlive ()) {
+			targetSlime.GetTileData ().SetSlimeOnTop (null);
+			Destroy (targetSlime.gameObject);
+			allSlimes.Remove (targetSlime);
+		}
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
 	public void FusionSlime(Tile posToFusion)
 	{
-		// GESTIONAR FUSION
-		if (UseActions(1))
-		{
-			Debug.Log("FUSION");
-		}
+		
 	}
 
 
