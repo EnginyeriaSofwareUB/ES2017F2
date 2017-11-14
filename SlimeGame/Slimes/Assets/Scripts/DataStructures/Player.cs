@@ -8,12 +8,21 @@ public class Player {
 	private string name;
 	private int actions;
 	private List<Slime> slimes;
+	private Color color;
 
 	public Player(string name, int actions,SlimeCoreData slimeCoreData){
 		this.name = name;
 		this.actions = actions;
 		slimes = new List<Slime>();
 		this.slimeCoreData = slimeCoreData;
+	}
+
+	public void SetColor(Color c){
+		color = c;
+	}
+
+	public Color GetColor(){
+		return color;
 	}
 
 	public void AddSlime(Slime slime){

@@ -48,6 +48,8 @@ public class GameController : MonoBehaviour
         players = new List<Player>();
         players.Add(new Player("Jugador 1", 2,cores[0])); // Test with 2 players
 		players.Add(new Player("Jugador 2", 3,cores[1])); // Test with 2 players
+		players[1].SetColor(new Color(1f,0f,0f));
+		players[0].SetColor(new Color(0f,0f,1f));
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
         matrix = new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
@@ -329,6 +331,7 @@ public class GameController : MonoBehaviour
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
         Vector2 endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();

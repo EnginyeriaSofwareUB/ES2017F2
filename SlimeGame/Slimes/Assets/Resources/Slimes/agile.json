@@ -1,7 +1,0 @@
-{
-    "name": "Agile",
-    "movementRange": 3,
-    "attackRange": 1,
-    "attack": 20,
-    "mass" : 10
-}
