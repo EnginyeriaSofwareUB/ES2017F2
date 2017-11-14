@@ -59,6 +59,9 @@ public class GameController : MonoBehaviour
 		//iniciem les barres de vida
 		PrintHealthBars ();
 
+        //iniciem la informacio de game over
+        GameOverInfo.Init();
+
     }
 
     // Update is called once per frame
@@ -68,6 +71,7 @@ public class GameController : MonoBehaviour
 
         if (ended)
         {
+            GameOverInfo.SetWinner(players[0]);
             SceneManager.LoadScene("GameOver");
         }
         foreach ( Player player in players)
@@ -75,6 +79,7 @@ public class GameController : MonoBehaviour
             if(player.GetNumSlimes() == 0)
             {
                 //This player loses
+                GameOverInfo.SetLoser(player);
                 players.Remove(player);
             }
         }
