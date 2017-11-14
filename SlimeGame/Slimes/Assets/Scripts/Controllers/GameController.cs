@@ -273,4 +273,16 @@ public class GameController : MonoBehaviour
         }
     }
 
+	public void attackSlime(Slime targetSlime){
+		targetSlime.changeMass (-selectedSlime.getDamage ());
+	}
+
+	public void splitSlime(Tile targetTile){
+	
+	}
+
+	public void moveSlime(Tile targetTile){
+	
+	}
+
 }

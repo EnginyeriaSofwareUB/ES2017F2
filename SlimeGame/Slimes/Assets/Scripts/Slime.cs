@@ -7,6 +7,7 @@ public class Slime : MonoBehaviour {
 	public Tile actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
+	public float mass;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
@@ -53,5 +54,17 @@ public class Slime : MonoBehaviour {
 
 	public int GetAttackRange(){
 		return player.slimeCoreData.attackRange;
+	}
+
+	public void changeMass(float q){
+		mass += q;
+	}
+
+	public float getDamage(){
+		return player.slimeCoreData.attack;
+	}
+
+	public bool isAlive(){
+		return mass > 0.0f ? true : false;
 	}
 }

@@ -29,6 +29,7 @@ public class UIController : MonoBehaviour {
 		TileAttackSprite = Resources.Load<Sprite> ("Test/attackRangeFilter");
 		TileSplitSprite = Resources.Load<Sprite> ("Test/movementRangeFilter");
 		currentUIRenderer = new List<SpriteRenderer> ();
+
 	}
 	
 	// Update is called once per frame
@@ -50,19 +51,25 @@ public class UIController : MonoBehaviour {
         canvasInfo.SetActive(false);
     }
 
-	public void showSplitRange(Slime slime){
+	public List<Tile> showSplitRange(Slime slime){
 		List<TileData> neighbours = gameController.matrix.getNeighbours (slime.GetTileData());
+		List<Tile> splitTiles = new List<Tile> ();
 		foreach (TileData td in neighbours) {
 			Tile t = td.getTile ();
 			t.tileUILayer.sprite = TileSplitSprite;
 			currentUIRenderer.Add(t.tileUILayer);
+			splitTiles.Add (t);
 		}
+		return splitTiles;
 	}
 
-	public void showMoveRange(Slime slime){
+	public List<Tile> showMoveRange(Slime slime){
+
 		ArrayList tiles = new ArrayList();
 		ArrayList distance = new ArrayList ();
 		List<Tile> visited = new List<Tile> ();
+
+		List<Tile> moveTiles = new List<Tile> ();
 
 		int moveRange = slime.GetMovementRange ();
 
@@ -79,7 +86,6 @@ public class UIController : MonoBehaviour {
 			int prevD = (int) distance[0];
 			distance.RemoveAt (0);
 			counter++;
-			Debug.Log (counter+" "+tiles.Count+" "+t.GetTileData().ToString());
 			visited.Add (t);
 			foreach(Vector2 vec in directions){
 				int x = (int) (t.getPosition ().x + vec.x);
@@ -92,15 +98,17 @@ public class UIController : MonoBehaviour {
 			}
 		}
 		visited.RemoveAt(0);
-		Debug.Log (visited.Count);
-		foreach (Tile t in visited) { 
+		foreach (Tile t in visited) {
+			moveTiles.Add (t);
 			t.tileUILayer.sprite = TileMoveSprite;
 			currentUIRenderer.Add (t.tileUILayer);
 		}
+		return moveTiles;
 	}
 
-	public void showAttackRange(Slime slime){
+	public List<Tile> showAttackRange(Slime slime){
 		Player currentPlayer = gameController.GetCurrentPlayer ();
+		List<Tile> attackTiles = new List<Tile> ();
 		Vector2 myPos = slime.GetActualTile().getPosition();
 		foreach(Slime s in gameController.allSlimes){
 			if (currentPlayer != s.GetPlayer()){
@@ -108,9 +116,11 @@ public class UIController : MonoBehaviour {
 				if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
 					s.GetActualTile ().tileUILayer.sprite = TileAttackSprite;
 					currentUIRenderer.Add (s.GetActualTile ().tileUILayer);
+					attackTiles.Add (s.GetActualTile ());
 				}
 			}
 		}
+		return attackTiles;
 	}
 
 	public void hideCurrentUITiles(){
