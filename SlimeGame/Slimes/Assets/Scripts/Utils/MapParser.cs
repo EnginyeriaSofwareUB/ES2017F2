@@ -8,9 +8,8 @@ public static class MapParser {
 	public static List<List<TileType>> ReadMap(MapTypes mapType) {
 		string path = MapTypesCtrl.GetPath(mapType);
 
-		System.IO.StreamReader reader = new System.IO.StreamReader (path);
-		string content = reader.ReadToEnd ();
-		reader.Close ();
+		TextAsset reader = Resources.Load (path) as TextAsset;
+		string content = reader.text;
 
 		string[] lines = content.Split ("\n" [0]);
 		int rows = lines.Length;

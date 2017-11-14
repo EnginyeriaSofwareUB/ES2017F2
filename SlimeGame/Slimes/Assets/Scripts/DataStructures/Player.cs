@@ -37,4 +37,7 @@ public class Player {
 	public int GetActions(){
 		return this.actions;
 	}
+	public List<GameObject> GetSlimes(){
+		return slimes;
+	}
 }

@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Slime
   - Tile
+  - UI
+  - Setting
+  - MovementRange
+  - AttackRange
+  - DivisionRange
+  - FusionRange
   layers:
   - Default
   - TransparentFX

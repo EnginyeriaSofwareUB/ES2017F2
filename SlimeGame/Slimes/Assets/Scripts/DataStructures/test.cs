@@ -6,12 +6,12 @@ public class test : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		List<List<TileType>> matrix;
+		//List<List<TileType>> matrix;
 		 
-		Matrix realmatrix;
+		//Matrix realmatrix;
 		//for(
-			int y = 9; //y<15;y+=2){			
-			matrix = getNewMatrix(y,5,0);
+			//int y = 9; //y<15;y+=2){			
+			//matrix = getNewMatrix(y,5,0);
 			//realmatrix = new Matrix(matrix);
 		    //realmatrix.ToString();	
 			//foreach(TileData tile in realmatrix.coordinateRange(3,2,2)) Debug.Log(tile.ToString());

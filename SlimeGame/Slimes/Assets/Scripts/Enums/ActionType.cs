@@ -4,5 +4,6 @@ public enum ActionType {
 	Attack,
 	Eat,
     Conquer,
-    Divide
+    Divide,
+	Fusion
 }
