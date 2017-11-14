@@ -326,7 +326,10 @@ public class GameController : MonoBehaviour
 
     public void RangedAttack(Slime toAttack)
     {
-        selectedSlime.AddComponent<ProjectileTrajectory>();
+        GameObject projectile = new GameObject("projectile");
+        Sprite sprite = Resources.Load<Sprite>("Sprites/Proj");
+        projectile.AddComponent<ProjectileTrajectory>();
+        projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().getPosition();
         Vector2 endPos = toAttack.GetActualTile().getPosition();
         selectedSlime.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);

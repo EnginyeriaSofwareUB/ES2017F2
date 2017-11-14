@@ -5,10 +5,11 @@ using UnityEngine;
 public class ProjectileTrajectory : MonoBehaviour {
 
 	public GameObject trajectoryPointPrefeb;
-    //private Vector2 startPos, endPos;
 
-    public float secondsXmovement = 1; //1 segon, pero es pot determinar des de unity
+    public float speed = 1;
     private float startTime;
+    private Vector2 direction;
+    private Vector2 endPos;
 
     private int numTrajectoryPoints = 20; //A modificar a conveniencia
 	private List<Vector2> trajectoryPoints = null;
@@ -23,7 +24,8 @@ public class ProjectileTrajectory : MonoBehaviour {
 	}
 	
 	public void SetTrajectoryPoints(Vector2 startPos, Vector2 endPos){
-		for (int i = 0; i < numTrajectoryPoints; i++) {
+        direction = (startPos - endPos).normalized;
+		/*for (int i = 0; i < numTrajectoryPoints; i++) {
 			Vector2 pos = new Vector2 ((startPos.x - endPos.x) * i / numTrajectoryPoints, (startPos.y - endPos.y) * i / numTrajectoryPoints);
 			trajectoryPoints[i] = pos;
 		}
@@ -31,12 +33,27 @@ public class ProjectileTrajectory : MonoBehaviour {
         moving = true;
         gameObject.AddComponent<Projectile>();
         gameObject.GetComponent<Projectile>().transform.position = trajectoryPoints[trajectoryCounter];
-        trajectoryCounter++;
+        trajectoryCounter++;*/
     }
 
 	// Update is called once per frame
 	void Update () {
-        if (trajectoryPoints != null && trajectoryPoints.Count > 0)
+        if (moving)
+        {
+            Vector2 position = new Vector2(transform.position.x, transform.position.y);
+            Vector2 inc = direction * speed * Time.deltaTime;
+            if ((endPos-position).magnitude <= inc.magnitude)
+            {
+                moving = false;
+                transform.position = endPos;
+            } else
+            {
+                transform.position = position + inc;
+            }
+                
+            
+        }
+       /* if (trajectoryPoints != null && trajectoryPoints.Count > 0)
         {
             float i = (Time.time - startTime) / secondsXmovement;
             gameObject.GetComponent<Projectile>().transform.position = trajectoryPoints[trajectoryCounter];
@@ -48,6 +65,6 @@ public class ProjectileTrajectory : MonoBehaviour {
                 moving = false; //acaba el moviment
 
             }
-        }
+        }*/
     }
 }
