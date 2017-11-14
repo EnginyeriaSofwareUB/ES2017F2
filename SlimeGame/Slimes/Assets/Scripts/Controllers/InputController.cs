@@ -11,13 +11,14 @@ public class InputController : MonoBehaviour
     public int yLimit;
     public int minZoom;
     public int maxZoom;
-
-	public float speed = 5;
+    public int speed;
 
     void Start()
     {
-        xLimit = 6;
-        yLimit = 6;
+        speed = 1;
+        
+        xLimit = (int) MapDrawer.MapSize().x;
+        yLimit = (int) MapDrawer.MapSize().y;
         minZoom = 3;
         maxZoom = 13;
 		gameController = Camera.main.GetComponent<GameController>();
@@ -46,7 +47,6 @@ public class InputController : MonoBehaviour
 					uiController.showMoveRange (gameController.GetSelectedSlime());
 					uiController.showAttackRange (gameController.GetSelectedSlime());
 				}
-
 			} else if (Input.GetMouseButtonDown (1)) {
 				uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();

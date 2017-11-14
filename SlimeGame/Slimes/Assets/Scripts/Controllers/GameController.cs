@@ -71,6 +71,9 @@ public class GameController : MonoBehaviour
 		//iniciem les barres de vida
 		PrintHealthBars ();
 
+        //iniciem la informacio de game over
+        GameOverInfo.Init();
+
     }
 
     // Update is called once per frame
@@ -80,6 +83,7 @@ public class GameController : MonoBehaviour
 
         if (ended)
         {
+            GameOverInfo.SetWinner(players[0]);
             SceneManager.LoadScene("GameOver");
         }
         foreach ( Player player in players)
@@ -87,6 +91,7 @@ public class GameController : MonoBehaviour
             if(player.GetNumSlimes() == 0)
             {
                 //This player loses
+                GameOverInfo.SetLoser(player);
                 players.Remove(player);
             }
         }
@@ -215,7 +220,6 @@ public class GameController : MonoBehaviour
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
         slime.GetComponent<Slime>().SetActualTile(tile);
         slime.GetComponent<Slime>().setPlayer(pl);
-        slime.GetComponent<Slime>().SetCore(core);
 		slime.GetComponent<Slime> ().SetGameObjectController (me);
 
 		//MASSA RANDOM
