@@ -27,20 +27,14 @@ public class MapDrawer {
 		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
 		//verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 		tiles = new Tile[MAXMAPSIZE,MAXMAPSIZE];
+        size = new Vector2();
 		foreach (TileData tile in map) {
 			
 			Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 			int x = (int)tile.getPosition().x;
 			int y = (int)tile.getPosition().y;
 
-            if (x > size.x)
-            {
-                size.x = x;
-            }
-            if (y > size.y)
-            {
-                size.y = y;
-            }
+            
 			/*
 			if (x % 2 == 1 && x!=0) {
 				tileWorldPosition += diagonalOffset;	 
@@ -59,7 +53,12 @@ public class MapDrawer {
 			newTile.transform.localScale = localScale;
 			//rotacion de 60
 			tile.SetTile(newTile.GetComponent<Tile>());
-			Vector3 vec = new Vector3 (tileWorldPosition.x+offsetx, tileWorldPosition.y+offsety, 0f);
+            tileWorldPosition.x+=offsetx;
+            tileWorldPosition.y+=offsety;
+			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
+            if (tileWorldPosition.x > size.x)size.x = tileWorldPosition.x;
+            if (tileWorldPosition.y > size.y)size.y = tileWorldPosition.y;
+            
 			newTile.transform.position =vec;
 			newTile.GetComponent<Tile>().startUILayer (vec,localScale);
 			newTile.GetComponent<Tile>().startElementLayer (vec,localScale);
