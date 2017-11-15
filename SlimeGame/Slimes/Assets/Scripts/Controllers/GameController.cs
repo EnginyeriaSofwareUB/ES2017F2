@@ -26,6 +26,8 @@ public class GameController : MonoBehaviour
 
 	private GameControllerStatus status;
 
+	public GameObject healthBar;
+
 
     // Use this for initialization
     void Start()
@@ -225,7 +227,7 @@ public class GameController : MonoBehaviour
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
-		slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(core.picDirection);
+		slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(core.picDirection+0);
         slime.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
@@ -250,24 +252,6 @@ public class GameController : MonoBehaviour
 		//posicion del canvas, dins hi haura la barra de vida
 		rect.localPosition = new Vector3 (0f,1f,0f);
 		rect.sizeDelta = new Vector2 (1.5f,0.25f);
-
-		//posem les imatges i configuracio per la barra de vida
-		GameObject imatge = new GameObject("HealthBack");
-		Image im = imatge.AddComponent<Image> (); //posem image com a component del gameobject
-		imatge.transform.SetParent (newCanvas.transform); //el gameobject es fill del gameobject que te el canvas
-		im.sprite = healthBarImage; //la imatge de la barra de vida
-		rect = imatge.GetComponent<RectTransform> (); //les posicions i mides
-		rect.localPosition = new Vector3 (0f,0f,0f);
-		rect.sizeDelta = new Vector2 (1.5f,0.25f);
-		//de lo que hem creat, fem una copia i la posem com a fill de l'actual
-		GameObject health = Instantiate (imatge, imatge.transform);
-		health.name = "Health"; //la reanomenem, i sera el que veurem com a vida
-		Image scriptHealth = health.GetComponent<Image> ();
-		scriptHealth.color = Color.red; //camviem el color
-		//configuracio per fer moure el valor
-		scriptHealth.type = Image.Type.Filled;
-		scriptHealth.fillMethod = Image.FillMethod.Horizontal;
-		scriptHealth.fillAmount = 0f; //iniciem a 0, despres es posara segons la massa que tingui respecte el total
 
         return slime.GetComponent<Slime> ();
     }
@@ -309,8 +293,8 @@ public class GameController : MonoBehaviour
 		allSlimes.Add (newSlime);
 		targetTile.SetSlimeOnTop (newSlime.gameObject);
 		newSlime.SetActualTile (targetTile);
-		newSlime.setMass (selectedSlime.mass/2.0f);
-		selectedSlime.setMass (selectedSlime.mass / 2.0f);
+		newSlime.SetMass (selectedSlime.GetMass()/2.0f);
+		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
@@ -346,7 +330,7 @@ public class GameController : MonoBehaviour
 		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
 		allSlimes.Remove(selectedSlime);
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
-		fusionTarget.setMass (selectedSlime.mass + fusionTarget.mass);
+		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
