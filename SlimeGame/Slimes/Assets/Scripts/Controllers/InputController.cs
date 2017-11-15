@@ -19,7 +19,7 @@ public class InputController : MonoBehaviour
 
     void Start()
     {
-        speed = 1;
+        speed = 25;
         
         xLimit = (int) MapDrawer.MapSize().x;
         yLimit = (int) MapDrawer.MapSize().y;
