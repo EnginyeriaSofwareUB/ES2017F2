@@ -31,8 +31,8 @@ public class SpriteAnimation
 	public void LoadSprites(string name,int imgQuantity){
 		
 		sprites = new List<Sprite> ();
-		for (int i = 0; i < 5; i++) {
-			sprites.Add (Resources.Load<Sprite>("Sprites/BasicCore/slime_gluttony_core_"+i));
+		for (int i = 0; i < imgQuantity; i++) {
+			sprites.Add (Resources.Load<Sprite>(name+i));
 		}
 	}
 

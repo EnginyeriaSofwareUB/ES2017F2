@@ -58,6 +58,11 @@ public class InputController : MonoBehaviour
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
+						break;
+					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime>().GetPlayer()!=gameController.GetCurrentPlayer()
+						&& gameController.GetSelectedSlime()==null){
+						s = col.gameObject.GetComponent<Slime>().ToString();
+						break;
 					} else if(col.gameObject.tag == "Tile") {
 						Tile target = col.gameObject.GetComponent<Tile> ();
 						bool isMoveTile = moveTiles.Contains (target);

@@ -1,12 +1,12 @@
 ﻿{
 	"0":{
-		"name":"Wraith",
+		"name":"Wrath",
 		"attack":8,
 		"movementRange":4,
 		"attackRange":4,
 		"startingHP":100,
 		"attackCost":2,
-		"picDirection":"Test/slime"
+		"picDirection":"Sprites/BasicCore/slime_wrath_core_"
 	},
 	"1":{
 		"name":"Sloth",
@@ -15,15 +15,15 @@
 		"attackRange":3,
 		"startingHP":120,
 		"attackCost":1,
-		"picDirection":"Test/slime2"
+		"picDirection":"Sprites/BasicCore/slime_sloth_core_"
 	},
 	"2":{
-		"name":"Inocence",
+		"name":"Gluttony",
 		"attack":3,
 		"movementRange":3,
 		"attackRange":4,
 		"startingHP":80,
 		"attackCost":0,
-		"picDirection":"Test/slime3"
+		"picDirection":"Sprites/BasicCore/slime_gluttony_core_"
 	}
 }
