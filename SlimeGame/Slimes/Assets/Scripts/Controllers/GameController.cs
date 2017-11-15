@@ -305,7 +305,6 @@ public class GameController : MonoBehaviour
 			targetSlime.GetTileData ().SetSlimeOnTop (null);
 			Destroy (targetSlime.gameObject);
 			allSlimes.Remove (targetSlime);
-			Destroy(targetSlime.gameObject.GetComponent<SlimeMovement> ().healthBar);
 		}
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
@@ -332,7 +331,6 @@ public class GameController : MonoBehaviour
 		allSlimes.Remove(selectedSlime);
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
-		Destroy(selectedSlime.gameObject.GetComponent<SlimeMovement> ().healthBar);
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
