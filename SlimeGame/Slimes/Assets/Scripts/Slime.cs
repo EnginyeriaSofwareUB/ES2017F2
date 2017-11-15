@@ -7,19 +7,23 @@ public class Slime : MonoBehaviour {
 	public Tile actualTile;
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
-	public float mass;
+	private float mass;
 	private SpriteAnimation animation;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
-		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		animation.LoadSprites ("",1);
-		animation.playAnimation ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		animation.update ();
+	}
+
+	public void initSpriteAnimation(){
+		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
+		animation.LoadSprites (player.slimeCoreData.picDirection,5);
+		animation.playAnimation ();
+
 	}
 
 	public void ManhattanDistance(Vector2 pos1, Vector2 pos2){
@@ -47,6 +51,7 @@ public class Slime : MonoBehaviour {
 	public void setPlayer(Player player){
 		this.player = player;
 		mass = player.slimeCoreData.startingHP;
+		initSpriteAnimation ();
 		gameObject.GetComponent<SpriteRenderer> ().color = player.GetColor ();
 	}
 
@@ -74,7 +79,11 @@ public class Slime : MonoBehaviour {
 		return mass > 0.0f ? true : false;
 	}
 
-	public void setMass(float mass){
+	public void SetMass(float mass){
 		this.mass = mass;
+	}
+
+	public float GetMass(){
+		return mass;
 	}
 }
