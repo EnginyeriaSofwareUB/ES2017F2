@@ -47,6 +47,7 @@ public class MapDrawer {
             newTile.AddComponent<Tile>();                   //Adding Script
 			newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
 			newTile.GetComponent<SpriteRenderer> ().sortingLayerName = "TileContent";
+			newTile.GetComponent<SpriteRenderer> ().material = GameObject.Find ("Main Camera").GetComponent<GameController> ().tileMaterial;
 			newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<Tile>().SetTileData(tile);
 			Vector3 localScale = new Vector3 (0.5f, 0.5f, 1f);

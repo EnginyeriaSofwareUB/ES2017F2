@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
-
+	public Material tileMaterial;
 
     // Use this for initialization
     void Start()

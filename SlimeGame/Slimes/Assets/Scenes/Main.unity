@@ -589,6 +589,7 @@ MonoBehaviour:
   me: {fileID: 608162599}
   allSlimes: []
   healthBar: {fileID: 1002717027723656, guid: 948a448c03a258b488449708fc34cf61, type: 2}
+  tileMaterial: {fileID: 2100000, guid: 915986c0ee44cb0499b50cb943d47bfe, type: 2}
 --- !u!114 &608162607
 MonoBehaviour:
   m_ObjectHideFlags: 0
