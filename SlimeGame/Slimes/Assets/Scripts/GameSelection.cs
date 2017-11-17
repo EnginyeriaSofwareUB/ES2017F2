@@ -8,4 +8,6 @@ public class GameSelection
 
 	public static int player1Core=0;
 	public static int player2Core=0;
+
+	public static Matrix map=null;
 }

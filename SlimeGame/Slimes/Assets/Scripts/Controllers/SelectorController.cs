@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using System;
 public class SelectorController : MonoBehaviour {
     private string sprite;
 	private List<string> corePaths;
 	private List<string> coresInfo;
-	private List<MapTypes> mapTypes;
+	private List<MapTypeSelection> mapTypes;
 	private List<Color> colors;
 	private int slimeSelector1;
 	private int slimeSelector2;
@@ -16,6 +16,7 @@ public class SelectorController : MonoBehaviour {
 	private int colorSelector2;
 	private int mapSelector;
 
+	public Matrix map;
 
 	// Use this for initialization
 	void Start () {
@@ -24,10 +25,14 @@ public class SelectorController : MonoBehaviour {
 		mapSelector = 2;
 		colorSelector1 = 0;
 		colorSelector2 = 1;
-		mapTypes = new List<MapTypes> ();
-		mapTypes.Add (MapTypes.Small);
-		mapTypes.Add (MapTypes.Medium);
-		mapTypes.Add (MapTypes.Big);
+		mapTypes = new List<MapTypeSelection> ();
+		foreach(MapTypes type in Enum.GetValues(typeof(MapTypes))){
+			mapTypes.Add(new MapTypeSelection(type));
+		}
+		foreach(SeededMap seed in GetAllInterestingSeededMaps()){
+			mapTypes.Add(new MapTypeSelection(seed));
+		}
+		//mapTypes.Add(new MapTypeSelection());
 		corePaths = new List<string> ();
 		corePaths.Add ("Sprites/Wrath");
 		corePaths.Add ("Sprites/Sloth");
@@ -146,7 +151,65 @@ public class SelectorController : MonoBehaviour {
 		foreach (GameObject elem in GameObject.FindGameObjectsWithTag ("Tile")){
 			GameObject.Destroy (elem);
 		}
-		MapDrawer.instantiateMap(new Matrix(MapParser.ReadMap(mapTypes[mapSelector])).getIterable(),-1000,0);
+		MapTypeSelection sel = mapTypes[mapSelector];
+		if(sel.GetTypeSel()==MapTypeSelectionTypes.Manual){
+			map = new Matrix(MapParser.ReadMap(sel.GetTypeManual()));
+		}else if(sel.GetTypeSel()==MapTypeSelectionTypes.Seeded){
+			map=new Matrix(sel.GetTypeSeeded().maxim,sel.GetTypeSeeded().nullProbability,sel.GetTypeSeeded().seed);
+		}else{
+			System.Random rnd = new System.Random();
+			map=new Matrix(rnd.Next(7,35),(float)rnd.NextDouble(),Guid.NewGuid().GetHashCode());
+		}
+		MapDrawer.instantiateMap(map.getIterable(),-1000,0);
+		GameSelection.map=map;
 	}
+	private List<SeededMap> GetAllInterestingSeededMaps(){
+		List<SeededMap> seededMap = new List<SeededMap>();
+		seededMap.Add(new SeededMap(11,0.3f,00000));
+		seededMap.Add(new SeededMap(25,0.4f,000011));
+		seededMap.Add(new SeededMap(35,0.5f,0007887));
+		seededMap.Add(new SeededMap(17,0.9f,0007887));
+		return seededMap;
+	}
+}
+ enum MapTypeSelectionTypes{
+	Random,
+	Seeded,
+	Manual
+}
+class SeededMap{
+	public int seed;
+	public float nullProbability;
+	public int maxim;
+	public SeededMap(int maxim, float nullProbability, int seed){
+		this.maxim=maxim;
+		this.nullProbability=nullProbability;
+		this.seed=seed;
+	}
+}
 
+class MapTypeSelection{
+	MapTypeSelectionTypes type;
+	SeededMap seed;
+	MapTypes manual;
+	public MapTypeSelection(MapTypes typeMap){
+		type=MapTypeSelectionTypes.Manual;
+		manual=typeMap;
+	}
+	public MapTypeSelection(SeededMap seed){
+		type=MapTypeSelectionTypes.Seeded;
+		this.seed=seed;
+	}
+	public MapTypeSelection(){
+		type=MapTypeSelectionTypes.Random;
+	}
+	public MapTypeSelectionTypes GetTypeSel(){
+		return type;
+	}
+	public MapTypes GetTypeManual(){
+		return manual;
+	}
+	public SeededMap GetTypeSeeded(){
+		return seed;
+	}
 }

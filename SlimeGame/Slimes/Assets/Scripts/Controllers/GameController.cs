@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
-
+	public Material tileMaterial;
 
     // Use this for initialization
     void Start()
@@ -56,7 +56,8 @@ public class GameController : MonoBehaviour
 		players[0].SetColor(GameSelection.player1Color);
 		players[1].SetColor(GameSelection.player2Color);
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-        matrix = new Matrix(11, 0.3f, 1234567);
+        matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
+        if(matrix==null) matrix= new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
         Vector2 slime1 = matrix.GetRandomTile();
 		instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
