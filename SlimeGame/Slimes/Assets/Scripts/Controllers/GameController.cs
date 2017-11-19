@@ -61,12 +61,12 @@ public class GameController : MonoBehaviour
         MapDrawer.instantiateMap(matrix.getIterable());
         Vector2 slime1 = matrix.GetRandomTile();
 		instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
-        Vector2 slime2 = matrix.GetRandomTile();
-		instantiateSlime(cores[0], players[0],(int)slime2.x, (int)slime2.y);
+        //Vector2 slime2 = matrix.GetRandomTile();
+		//instantiateSlime(cores[0], players[0],(int)slime2.x, (int)slime2.y);
         Vector2 slime3 = matrix.GetRandomTile();
 		instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
-        Vector2 slime4 = matrix.GetRandomTile();
-		instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
+        //Vector2 slime4 = matrix.GetRandomTile();
+		//instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
         currentTurn = 0;
         currentPlayer = 0;
         playerActions = 0;
