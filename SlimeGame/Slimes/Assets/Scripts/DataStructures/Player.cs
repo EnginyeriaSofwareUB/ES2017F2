@@ -7,25 +7,35 @@ public class Player {
 	public SlimeCoreData slimeCoreData;
 	private string name;
 	private int actions;
+    private float actionsPerSlime;
 	private List<Slime> slimes;
 	private Color color;
 
-	public Player(string name, int actions,SlimeCoreData slimeCoreData){
+	public Player(string name, float actionsPerSlime,SlimeCoreData slimeCoreData){
 		this.name = name;
-		this.actions = actions;
+		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
 		this.slimeCoreData = slimeCoreData;
+        updateActions();
 	}
 
 	public void SetColor(Color c){
 		color = c;
 	}
 
+    public void updateActions()
+    {
+        actions = (int) actionsPerSlime * slimes.Count;
+        if (actions < 1)
+            actions = 1;
+    }
+
 	public Color GetColor(){
 		return color;
 	}
 
 	public void AddSlime(Slime slime){
+        updateActions();
 		slimes.Add(slime);
 	}
 

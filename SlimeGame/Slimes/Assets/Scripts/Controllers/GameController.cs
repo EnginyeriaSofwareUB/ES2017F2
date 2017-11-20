@@ -51,22 +51,35 @@ public class GameController : MonoBehaviour
         panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-		players.Add(new Player("Jugador 1", 2,cores[GameSelection.player1Core])); // Test with 2 players
-		players.Add(new Player("Jugador 2", 3,cores[GameSelection.player2Core])); // Test with 2 players
+
+        if (tutorial != 1)
+        {
+            players.Add(new Player("Jugador 1", 2, cores[GameSelection.player1Core])); // Test with 2 players
+            players.Add(new Player("Jugador 2", 2, cores[GameSelection.player2Core]));
+            matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
+            if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
+            Vector2 slime1 = matrix.GetRandomTile();
+            instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
+            Vector2 slime2 = matrix.GetRandomTile();
+            instantiateSlime(cores[0], players[0], (int)slime2.x, (int)slime2.y);
+            Vector2 slime3 = matrix.GetRandomTile();
+            instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
+            Vector2 slime4 = matrix.GetRandomTile();
+            instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
+        }
+        else
+        {
+            players.Add(new Player("Jugador 1", 1, cores[3]));
+            players.Add(new Player("IA", 1, cores[4]));
+            matrix = new Matrix(11, 0.3f, 1234567);
+            instantiateSlime(cores[3], players[0], -3, 3);
+            instantiateSlime(cores[4], players[1], -4, 1);
+        }
 		players[0].SetColor(GameSelection.player1Color);
 		players[1].SetColor(GameSelection.player2Color);
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-        matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-        if(matrix==null) matrix= new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
-        Vector2 slime1 = matrix.GetRandomTile();
-		instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
-        //Vector2 slime2 = matrix.GetRandomTile();
-		//instantiateSlime(cores[0], players[0],(int)slime2.x, (int)slime2.y);
-        Vector2 slime3 = matrix.GetRandomTile();
-		instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
-        //Vector2 slime4 = matrix.GetRandomTile();
-		//instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
+
         currentTurn = 0;
         currentPlayer = 0;
         playerActions = 0;
@@ -298,13 +311,15 @@ public class GameController : MonoBehaviour
 		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
-	}
+    }
 
 	public void AttackSlime(Slime targetSlime){
 		targetSlime.changeMass (-selectedSlime.getDamage ());
 		if (!targetSlime.isAlive ()) {
 			targetSlime.GetTileData ().SetSlimeOnTop (null);
+            Player pl = targetSlime.GetPlayer();
 			Destroy (targetSlime.gameObject);
+            pl.updateActions();
 			allSlimes.Remove (targetSlime);
 		}
 		playerActions++;
@@ -335,6 +350,7 @@ public class GameController : MonoBehaviour
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
+        players[currentPlayer].updateActions();
 	}
 
 	public void ConquerTile(Tile tile){
