@@ -586,9 +586,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBarImage: {fileID: 21300000, guid: 04456e939c7f07643a157eccee19dddb, type: 3}
-  me: {fileID: 608162599}
   allSlimes: []
   healthBar: {fileID: 1002717027723656, guid: 948a448c03a258b488449708fc34cf61, type: 2}
+  maxMass: 300
+  minMass: 20
+  maxScale: 0.6
+  minScale: 0.2
 --- !u!114 &608162607
 MonoBehaviour:
   m_ObjectHideFlags: 0

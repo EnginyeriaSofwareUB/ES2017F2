@@ -18,7 +18,6 @@ public class GameController : MonoBehaviour
     private int currentPlayer;
     private int playerActions;
 	public Sprite healthBarImage;
-	public GameObject me;
 
 	private Sprite conquerSprite;
 
@@ -235,7 +234,7 @@ public class GameController : MonoBehaviour
 
 		pl.AddSlime(slime.GetComponent<Slime>());
 
-        slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+		slime.GetComponent<Slime> ().changeScaleSlime ();
 		Tile tile = MapDrawer.GetTileAt(x0, y0);
 		Vector2 tileWorldPosition = tile.GetTileData().GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
@@ -332,6 +331,7 @@ public class GameController : MonoBehaviour
 		allSlimes.Remove(selectedSlime);
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
+
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
