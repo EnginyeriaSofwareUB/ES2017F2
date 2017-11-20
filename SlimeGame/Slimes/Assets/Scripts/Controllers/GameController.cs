@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
+    public int tutorial = 0;
 
 
     // Use this for initialization
