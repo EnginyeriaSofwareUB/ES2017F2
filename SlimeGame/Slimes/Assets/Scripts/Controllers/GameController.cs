@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
-    public int tutorial = 0;
+    public int tutorial;
 
 
     // Use this for initialization
@@ -52,13 +52,28 @@ public class GameController : MonoBehaviour
         panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
+        tutorial = 1;
 
-        if (tutorial != 1)
+        if (tutorial == 1)
+        {
+            players.Add(new Player("Jugador 1", 1, cores[3]));
+            players.Add(new Player("IA", 1, cores[4]));
+            players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo
+            players[1].SetColor(GameSelection.player2Color);
+            matrix = new Matrix(11, 0.3f, 1234567);
+            MapDrawer.instantiateMap(matrix.getIterable());
+            instantiateSlime(cores[3], players[0], 3, -4);
+            instantiateSlime(cores[4], players[1], -4, 1);
+        }
+        else
         {
             players.Add(new Player("Jugador 1", 2, cores[GameSelection.player1Core])); // Test with 2 players
             players.Add(new Player("Jugador 2", 2, cores[GameSelection.player2Core]));
+            players[0].SetColor(GameSelection.player1Color);
+            players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
             if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
+            MapDrawer.instantiateMap(matrix.getIterable());
             Vector2 slime1 = matrix.GetRandomTile();
             instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
             Vector2 slime2 = matrix.GetRandomTile();
@@ -68,18 +83,8 @@ public class GameController : MonoBehaviour
             Vector2 slime4 = matrix.GetRandomTile();
             instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
         }
-        else
-        {
-            players.Add(new Player("Jugador 1", 1, cores[3]));
-            players.Add(new Player("IA", 1, cores[4]));
-            matrix = new Matrix(11, 0.3f, 1234567);
-            instantiateSlime(cores[3], players[0], -3, 3);
-            instantiateSlime(cores[4], players[1], -4, 1);
-        }
-		players[0].SetColor(GameSelection.player1Color);
-		players[1].SetColor(GameSelection.player2Color);
+
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-        MapDrawer.instantiateMap(matrix.getIterable());
 
         currentTurn = 0;
         currentPlayer = 0;
