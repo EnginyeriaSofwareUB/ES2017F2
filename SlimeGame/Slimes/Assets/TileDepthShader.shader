@@ -53,10 +53,11 @@ Shader "Unlit/TileDepthShader"
                 float _diff = (bottom - top)*0.5;
                 screenPos.x = screenPos.x*(_half+_diff*screenPos.y);
                 screenPos.x = (screenPos.x+1)*0.5;
-                screenPos.y = 1-(screenPos.y+1)*0.5;
+                screenPos.y = (screenPos.y+1)*0.5;
                 half4 sum = half4(0.0h,0.0h,0.0h,0.0h);
-                //sum = tex2D(_MainTex,float2(i.uv.x+(1-i.uv.y)*sin(_Time.w+i.uv.y),i.uv.y))*(1-screenPos.y);//*_SinTime.w
-                sum = tex2D(_MainTex,float2(i.uv.x+i.uv.y*sin((_Time.w+(1-i.uv.y))*2.3),i.uv.y));//*_SinTime.w
+                sum = tex2D(_MainTex,float2(i.uv.x+(1-i.uv.y)*sin((_Time.w+i.uv.y)*2.3),i.uv.y))*screenPos.y;//*_SinTime.w
+                //sum = tex2D(_MainTex,float2(i.uv.x+i.uv.y*sin((_Time.w+(1-i.uv.y))*2.3),i.uv.y));//*_SinTime.w
+               	//sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*screenPos.y;
                 return sum;
             }
             ENDCG
