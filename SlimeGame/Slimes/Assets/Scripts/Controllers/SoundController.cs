@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundController : MonoBehaviour {
+public class SoundController {
 	public AudioSource efxSource;
 	public AudioSource musicSource;
 	public static SoundController instance = null; 
 
+	public SoundController(){
+		efxSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
+		musicSource = GameObject.Find("EventSystem").GetComponent<AudioSource>();
+	}
 
-	void Awake (){
+	public static SoundController GetInstance(){
 		if (instance == null)
-			instance = this;
-		else if (instance != this)
-			Destroy (gameObject);
-		DontDestroyOnLoad (gameObject);
+			instance = new SoundController ();
+		return instance;
 	}
 
 	public void PlaySingle(AudioClip clip){

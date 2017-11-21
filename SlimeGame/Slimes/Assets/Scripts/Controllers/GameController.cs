@@ -31,7 +31,6 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
 		FloatingTextController.Initialize ();
 
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
@@ -79,6 +78,7 @@ public class GameController : MonoBehaviour
 		}
         //iniciem la informacio de game over
         GameOverInfo.Init();
+		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
 
     }
 
