@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
     private int currentTurn;
     private int currentPlayer;
     private int playerActions;
-	public Sprite healthBarImage;
+	public Material fire;
 
 	private Sprite conquerSprite;
 
