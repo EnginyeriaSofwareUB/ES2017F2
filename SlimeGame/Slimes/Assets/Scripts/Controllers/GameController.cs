@@ -31,6 +31,9 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
+		FloatingTextController.Initialize ();
+
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
@@ -300,6 +303,7 @@ public class GameController : MonoBehaviour
 	}
 
 	public void AttackSlime(Slime targetSlime){
+		FloatingTextController.CreateFloatingText ((-selectedSlime.getDamage ()).ToString(),targetSlime.transform);
 		targetSlime.changeMass (-selectedSlime.getDamage ());
 		if (!targetSlime.isAlive ()) {
 			targetSlime.GetTileData ().SetSlimeOnTop (null);
