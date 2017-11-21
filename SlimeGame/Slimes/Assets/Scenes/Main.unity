@@ -586,7 +586,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBarImage: {fileID: 21300000, guid: 04456e939c7f07643a157eccee19dddb, type: 3}
-  me: {fileID: 608162599}
   allSlimes: []
   healthBar: {fileID: 1002717027723656, guid: 948a448c03a258b488449708fc34cf61, type: 2}
   tileMaterial: {fileID: 2100000, guid: 915986c0ee44cb0499b50cb943d47bfe, type: 2}
