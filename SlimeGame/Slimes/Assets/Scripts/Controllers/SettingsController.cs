@@ -15,7 +15,7 @@ public class SettingsController : MonoBehaviour {
 		//GameObject.Find ("Effects").GetComponent<Toggle> ().onValueChanged.RemoveAllListeners ();
 		//GameObject.Find ("Music").GetComponent<Toggle> ().onValueChanged.RemoveAllListeners ();
 		string jsonData = PlayerPrefs.GetString ("SettingsVolume");
-		if (jsonData != null) {
+		if (jsonData != null && !jsonData.Equals("")) {
 			loadSettings (jsonData);
 		} else {
 			effects = 1;
@@ -59,6 +59,7 @@ public class SettingsController : MonoBehaviour {
 		
 }
 	
+[SerializeField]
 public class SaveSettings{
 	public float effects = 1;
 	public float music = 1;
