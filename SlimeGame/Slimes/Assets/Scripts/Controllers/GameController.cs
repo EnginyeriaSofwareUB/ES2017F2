@@ -94,6 +94,10 @@ public class GameController : MonoBehaviour
 				allSlimes.Add (s);
 			}
 		}
+        foreach (Player pl in players)
+        {
+            pl.updateActions();
+        }
         //iniciem la informacio de game over
         GameOverInfo.Init();
 
@@ -126,7 +130,10 @@ public class GameController : MonoBehaviour
 	public void checkLogic(){
 		if (playerActions >= players [currentPlayer].GetActions ()) {
 			currentPlayer++;
-			if (currentPlayer >= players.Count) {
+            foreach (Player pl in players) {
+                pl.updateActions();
+            }
+            if (currentPlayer >= players.Count) {
 				currentPlayer = 0;
 				currentTurn++;
 			}
@@ -309,7 +316,7 @@ public class GameController : MonoBehaviour
 
 	public void SlplitSlime(Tile targetTile){
 		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
-		players [currentPlayer].AddSlime (newSlime);
+		//players [currentPlayer].AddSlime (newSlime);
 		allSlimes.Add (newSlime);
 		targetTile.SetSlimeOnTop (newSlime.gameObject);
 		newSlime.SetActualTile (targetTile);
@@ -325,7 +332,6 @@ public class GameController : MonoBehaviour
 			targetSlime.GetTileData ().SetSlimeOnTop (null);
             Player pl = targetSlime.GetPlayer();
 			Destroy (targetSlime.gameObject);
-            pl.updateActions();
 			allSlimes.Remove (targetSlime);
 		}
 		playerActions++;
@@ -356,7 +362,6 @@ public class GameController : MonoBehaviour
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
-        players[currentPlayer].updateActions();
 	}
 
 	public void ConquerTile(Tile tile){

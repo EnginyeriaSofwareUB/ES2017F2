@@ -35,7 +35,6 @@ public class Player {
 	}
 
 	public void AddSlime(Slime slime){
-        updateActions();
 		slimes.Add(slime);
 	}
 
