@@ -45,7 +45,7 @@ public class GameController : MonoBehaviour
 			);
 			cores.Add (slimeData);
 		}
-		conquerSprite = Resources.Load<Sprite> ("Test/conquerTile");
+		conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
         //MapDrawer.InitTest ();
 		status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
@@ -230,7 +230,7 @@ public class GameController : MonoBehaviour
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
-		slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(core.picDirection+0);
+		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
         slime.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
@@ -318,7 +318,7 @@ public class GameController : MonoBehaviour
     public void RangedAttack(Slime toAttack)
     {
         GameObject projectile = new GameObject("projectile");
-        Sprite sprite = Resources.Load<Sprite>("Sprites/Proj");
+		Sprite sprite = SpritesLoader.GetInstance().GetResource("Sprites/Proj");
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
