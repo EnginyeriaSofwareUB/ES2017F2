@@ -90,6 +90,10 @@ public class GameController : MonoBehaviour
 		}
         bool ended = IsGameEnded();
 
+		if (players [currentPlayer].isPlayerAI ()) {
+			DoAction (players [currentPlayer].GetAction (this));
+		}
+
         if (ended)
         {
             GameOverInfo.SetWinner(players[0]);
@@ -171,6 +175,7 @@ public class GameController : MonoBehaviour
 
     public void PrepareAction(ActionType action)
     {
+        /*
         if (selectedSlime.tag.Equals("Slime"))
         {
             Slime slime = selectedSlime.GetComponent<Slime>();
@@ -191,6 +196,7 @@ public class GameController : MonoBehaviour
                     break;
             }
         }
+         */
     }
 
     public void PrepareAction(int action)
@@ -272,7 +278,32 @@ public class GameController : MonoBehaviour
 		return players [currentPlayer];
 	}
 
-    public void MoveSlime(Tile tile)
+	public void DoAction(SlimeAction action){
+		if (action == null) {
+			return;
+		}
+		switch(action.GetAction()) {
+		case ActionType.ATTACK:
+			AttackSlime (action.GetSlime());
+			break;
+		case ActionType.CONQUER:
+			ConquerTile (action.GetTile());
+			break;
+		case ActionType.SPLIT:
+			SplitSlime (action.GetTile());
+			break;
+		case ActionType.EAT:
+			break;
+		case ActionType.MOVE:
+			MoveSlime (action.GetTile());
+			break;
+		case ActionType.FUSION:
+			FusionSlime (action.GetSlime());
+			break;
+		}
+	}
+
+    private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
 		//Debug.Log("userHitOnTile");
@@ -290,7 +321,7 @@ public class GameController : MonoBehaviour
 		playerActions++;
     }
 
-	public void SlplitSlime(Tile targetTile){
+	private void SplitSlime(Tile targetTile){
 		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
 		players [currentPlayer].AddSlime (newSlime);
 		allSlimes.Add (newSlime);
@@ -302,11 +333,12 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
-	public void AttackSlime(Slime targetSlime){
+	private void AttackSlime(Slime targetSlime){
 		FloatingTextController.CreateFloatingText ((-selectedSlime.getDamage ()).ToString(),targetSlime.transform);
 		targetSlime.changeMass (-selectedSlime.getDamage ());
 		if (!targetSlime.isAlive ()) {
 			targetSlime.GetTileData ().SetSlimeOnTop (null);
+			targetSlime.GetPlayer ().GetSlimes ().Remove (targetSlime);
 			Destroy (targetSlime.gameObject);
 			allSlimes.Remove (targetSlime);
 		}
@@ -315,7 +347,7 @@ public class GameController : MonoBehaviour
         RangedAttack(targetSlime);
 	}
 
-    public void RangedAttack(Slime toAttack)
+	private void RangedAttack(Slime toAttack)
     {
         GameObject projectile = new GameObject("projectile");
 		Sprite sprite = SpritesLoader.GetInstance().GetResource("Sprites/Proj");
@@ -329,7 +361,7 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
     }
 
-    public void FusionSlime(Slime fusionTarget)
+	private void FusionSlime(Slime fusionTarget)
 	{
 		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
 		allSlimes.Remove(selectedSlime);
@@ -341,7 +373,7 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
-	public void ConquerTile(Tile tile){
+	private void ConquerTile(Tile tile){
 		tile.tileElementLayer.sprite = conquerSprite;
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
