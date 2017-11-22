@@ -327,6 +327,7 @@ public class GameController : MonoBehaviour
         Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
         Vector2 endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
+        SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
     }
 
     public void FusionSlime(Slime fusionTarget)
