@@ -67,6 +67,7 @@ public class GameController : MonoBehaviour
             MapDrawer.instantiateMap(matrix.getIterable());
             instantiateSlime(cores[3], players[0], 3, -4);
             instantiateSlime(cores[4], players[1], -4, 1);
+            players[1].SetBrain(new TutorialIA());
         }
         else
         {
@@ -137,9 +138,9 @@ public class GameController : MonoBehaviour
 	public void checkLogic(){
 		if (playerActions >= players [currentPlayer].GetActions ()) {
 			currentPlayer++;
-            foreach (Player pl in players) {
-                pl.updateActions();
-            }
+            //foreach (Player pl in players) {
+              //  pl.updateActions();
+            //}
             if (currentPlayer >= players.Count) {
 				currentPlayer = 0;
 				currentTurn++;
