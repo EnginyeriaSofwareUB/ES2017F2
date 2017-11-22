@@ -17,8 +17,7 @@ public class GameController : MonoBehaviour
     private int currentTurn;
     private int currentPlayer;
     private int playerActions;
-	public Sprite healthBarImage;
-	public GameObject me;
+	public Material fire;
 
 	private Sprite conquerSprite;
 
@@ -32,6 +31,9 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
+		FloatingTextController.Initialize ();
+
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
@@ -235,7 +237,7 @@ public class GameController : MonoBehaviour
 
 		pl.AddSlime(slime.GetComponent<Slime>());
 
-        slime.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+		slime.GetComponent<Slime> ().changeScaleSlime ();
 		Tile tile = MapDrawer.GetTileAt(x0, y0);
 		Vector2 tileWorldPosition = tile.GetTileData().GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
         slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
@@ -301,6 +303,7 @@ public class GameController : MonoBehaviour
 	}
 
 	public void AttackSlime(Slime targetSlime){
+		FloatingTextController.CreateFloatingText ((-selectedSlime.getDamage ()).ToString(),targetSlime.transform);
 		targetSlime.changeMass (-selectedSlime.getDamage ());
 		if (!targetSlime.isAlive ()) {
 			targetSlime.GetTileData ().SetSlimeOnTop (null);
@@ -332,6 +335,7 @@ public class GameController : MonoBehaviour
 		allSlimes.Remove(selectedSlime);
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
+
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
