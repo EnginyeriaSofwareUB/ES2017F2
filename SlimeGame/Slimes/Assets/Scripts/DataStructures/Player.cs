@@ -10,6 +10,10 @@ public class Player {
     private float actionsPerSlime;
 	private List<Slime> slimes;
 	private Color color;
+	//Indica si un player es IA
+	private bool isAI;
+
+	private AIInterface brain;
 
 	public Player(string name, float actionsPerSlime,SlimeCoreData slimeCoreData){
 		this.name = name;
@@ -17,6 +21,7 @@ public class Player {
 		slimes = new List<Slime>();
 		this.slimeCoreData = slimeCoreData;
         updateActions();
+		isAI = false;
 	}
 
 	public void SetColor(Color c){
@@ -43,6 +48,23 @@ public class Player {
 		return slimes.Contains (slime);
 	
 	}
+
+	public SlimeAction GetAction(GameController g){
+		if (brain != null) {
+			return brain.GetAction (g);
+		}
+		return null;
+	}
+
+	public void SetBrain(AIInterface brain){
+		isAI = true;
+		this.brain = brain;
+	}
+
+	public bool isPlayerAI(){
+		return isAI;
+	}
+
 
 	public string GetName(){
 		return name;
