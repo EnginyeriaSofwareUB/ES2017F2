@@ -28,6 +28,7 @@ public class GameController : MonoBehaviour
 	public GameObject healthBar;
 	public Material tileMaterial;
 
+
     // Use this for initialization
     void Start()
     {
@@ -334,14 +335,6 @@ public class GameController : MonoBehaviour
 	}
 
 	private void AttackSlime(Slime targetSlime){
-		FloatingTextController.CreateFloatingText ((-selectedSlime.getDamage ()).ToString(),targetSlime.transform);
-		targetSlime.changeMass (-selectedSlime.getDamage ());
-		if (!targetSlime.isAlive ()) {
-			targetSlime.GetTileData ().SetSlimeOnTop (null);
-			targetSlime.GetPlayer ().GetSlimes ().Remove (targetSlime);
-			Destroy (targetSlime.gameObject);
-			allSlimes.Remove (targetSlime);
-		}
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
         RangedAttack(targetSlime);
@@ -356,9 +349,7 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
-        Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
-        Vector2 endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
-        projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
+        projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
     }
 
 	private void FusionSlime(Slime fusionTarget)
@@ -380,6 +371,10 @@ public class GameController : MonoBehaviour
 		tile.tileElementLayer.color = c;
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
+	}
+
+	public void RemoveSlime(Slime slimeToRemove){
+		allSlimes.Remove (slimeToRemove);
 	}
 
 }
