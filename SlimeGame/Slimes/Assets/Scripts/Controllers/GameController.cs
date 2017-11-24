@@ -375,6 +375,9 @@ public class GameController : MonoBehaviour
 
 	public void RemoveSlime(Slime slimeToRemove){
 		allSlimes.Remove (slimeToRemove);
+		foreach (Player player in players){
+			if (player.GetSlimes().Contains(slimeToRemove)) player.GetSlimes().Remove(slimeToRemove);
+		}
 	}
 
 }
