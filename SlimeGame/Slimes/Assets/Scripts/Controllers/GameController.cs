@@ -68,6 +68,7 @@ public class GameController : MonoBehaviour
             instantiateSlime(cores[3], players[0], 3, -4);
             instantiateSlime(cores[4], players[1], -4, 1);
             players[1].SetBrain(new TutorialIA());
+            players[0].setTutorialActions();
         }
         else
         {
@@ -111,20 +112,8 @@ public class GameController : MonoBehaviour
 		if (status == GameControllerStatus.CHECKINGLOGIC) {
 			checkLogic ();
 		}
-        bool ended = IsGameEnded();
 
-        //Per alguna rao cal afeguir la segona condicio :(
-		if (players [currentPlayer].isPlayerAI () && playerActions < players[currentPlayer].GetActions()) {
-            Debug.Log(playerActions);
-			DoAction (players [currentPlayer].GetAction (this));
-		}
-
-        if (ended)
-        {
-            GameOverInfo.SetWinner(players[0]);
-            SceneManager.LoadScene("GameOver");
-        }
-        foreach ( Player player in players)
+        foreach (Player player in players)
         {
             if (player.GetNumSlimes() == 0)
             {
@@ -133,14 +122,29 @@ public class GameController : MonoBehaviour
                 players.Remove(player);
             }
         }
+
+        bool ended = IsGameEnded();
+
+        if (ended)
+        {
+            GameOverInfo.SetWinner(players[0]);
+            SceneManager.LoadScene("GameOver");
+        }
+
+        //Per alguna rao cal afeguir la segona condicio :(
+        if (players [currentPlayer].isPlayerAI () && playerActions < players[currentPlayer].GetActions() && !ended) {
+			DoAction (players [currentPlayer].GetAction (this));
+            //Hi ha bugs si trec aquesta linea
+            selectedSlime = null;
+        }
     }
 
 	public void checkLogic(){
 		if (playerActions >= players [currentPlayer].GetActions ()) {
 			currentPlayer++;
-            //foreach (Player pl in players) {
-              //  pl.updateActions();
-            //}
+            foreach (Player pl in players) {
+                pl.updateActions();
+            }
             if (currentPlayer >= players.Count) {
 				currentPlayer = 0;
 				currentTurn++;
@@ -310,6 +314,10 @@ public class GameController : MonoBehaviour
 		if (action == null) {
 			return;
 		}
+        if(tutorial == 1 && currentPlayer == 0 && ! players[currentPlayer].isTutorialAction(action))
+        {
+            return;
+        }
 		switch(action.GetAction()) {
 		case ActionType.ATTACK:
 			AttackSlime (action.GetSlime());
