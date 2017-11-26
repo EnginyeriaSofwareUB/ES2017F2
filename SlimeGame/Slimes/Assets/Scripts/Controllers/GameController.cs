@@ -8,7 +8,7 @@ using SimpleJSON;
 public class GameController : MonoBehaviour
 {
 
-    private const int MAX_TURNS = 5;
+    private const int MAX_TURNS = 10;
 
     private Slime selectedSlime;
     public Matrix matrix;
@@ -94,14 +94,12 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
         playerActions = 0;
 		foreach(Player p in players){
-			foreach (Slime s in p.GetSlimes()) {
+            p.updateActions();
+            foreach (Slime s in p.GetSlimes()) {
 				allSlimes.Add (s);
 			}
 		}
-        foreach (Player pl in players)
-        {
-            pl.updateActions();
-        }
+
         //iniciem la informacio de game over
         GameOverInfo.Init();
 
@@ -115,7 +113,9 @@ public class GameController : MonoBehaviour
 		}
         bool ended = IsGameEnded();
 
-		if (players [currentPlayer].isPlayerAI ()) {
+        //Per alguna rao cal afeguir la segona condicio :(
+		if (players [currentPlayer].isPlayerAI () && playerActions < players[currentPlayer].GetActions()) {
+            Debug.Log(playerActions);
 			DoAction (players [currentPlayer].GetAction (this));
 		}
 
@@ -126,7 +126,7 @@ public class GameController : MonoBehaviour
         }
         foreach ( Player player in players)
         {
-            if(player.GetNumSlimes() == 0)
+            if (player.GetNumSlimes() == 0)
             {
                 //This player loses
                 GameOverInfo.SetLoser(player);
@@ -392,6 +392,7 @@ public class GameController : MonoBehaviour
 	private void FusionSlime(Slime fusionTarget)
 	{
 		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
+        players[currentPlayer].updateActions();
 		allSlimes.Remove(selectedSlime);
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
