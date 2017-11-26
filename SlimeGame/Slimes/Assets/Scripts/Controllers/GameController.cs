@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
 {
 
     private const int MAX_TURNS = 5;
-
+    
     private Slime selectedSlime;
     public Matrix matrix;
     private List<Player> players;
@@ -27,13 +27,12 @@ public class GameController : MonoBehaviour
 
 	public GameObject healthBar;
 
-
+    private UIController uiController;
     // Use this for initialization
     void Start()
     {
-
+        uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
-
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
@@ -113,6 +112,7 @@ public class GameController : MonoBehaviour
 				currentPlayer = 0;
 				currentTurn++;
 			}
+            //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
 			playerActions = 0;
 		}
 		status = GameControllerStatus.WAITINGFORACTION;
@@ -206,10 +206,12 @@ public class GameController : MonoBehaviour
     {
         currentPlayer++;
         playerActions = 0;
+        //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
         if (currentPlayer >= players.Count)
         {
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
             NextTurn();
+            
         }
     }
 
@@ -220,6 +222,7 @@ public class GameController : MonoBehaviour
     {
         currentPlayer = 0;
         playerActions = 0;
+        
         currentTurn++;
     }
 
@@ -349,5 +352,4 @@ public class GameController : MonoBehaviour
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
-
 }

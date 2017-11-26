@@ -16,7 +16,7 @@ public class MapDrawer {
 		testDrawer ();
 	}
 		
-	public static void instantiateMap(System.Collections.IEnumerable map, int offsetx = 0, int offsety = 0){
+	public static Vector2 instantiateMap(System.Collections.IEnumerable map, int offsetx = 0, int offsety = 0){
 
 		Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
 		Hashtable sprites = new Hashtable ();
@@ -28,13 +28,10 @@ public class MapDrawer {
 		//verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 		tiles = new Tile[MAXMAPSIZE,MAXMAPSIZE];
         size = new Vector2();
-		foreach (TileData tile in map) {
-			
+		foreach (TileData tile in map) {			
 			Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 			int x = (int)tile.getPosition().x;
-			int y = (int)tile.getPosition().y;
-
-            
+			int y = (int)tile.getPosition().y;            
 			/*
 			if (x % 2 == 1 && x!=0) {
 				tileWorldPosition += diagonalOffset;	 
@@ -56,14 +53,15 @@ public class MapDrawer {
             tileWorldPosition.x+=offsetx;
             tileWorldPosition.y+=offsety;
 			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
-            if (tileWorldPosition.x > size.x)size.x = tileWorldPosition.x;
-            if (tileWorldPosition.y > size.y)size.y = tileWorldPosition.y;
+            if (Mathf.Abs(tileWorldPosition.x) > size.x)size.x = Mathf.Abs(tileWorldPosition.x);
+            if (Mathf.Abs(tileWorldPosition.y) > size.y)size.y =Mathf.Abs(tileWorldPosition.y);
             
 			newTile.transform.position =vec;
 			newTile.GetComponent<Tile>().startUILayer (vec,localScale);
 			newTile.GetComponent<Tile>().startElementLayer (vec,localScale);
 			SetTileAt(newTile.GetComponent<Tile> (),x,y);
 		}
+        return size;
 
 	}
 	public static Vector2 drawInternCoordenates(Vector2 axial){		
