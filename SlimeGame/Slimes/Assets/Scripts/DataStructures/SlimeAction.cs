@@ -41,10 +41,14 @@ public class SlimeAction{
 
     public void ChangeTileForSlime()
     {
-        if(this.GetTile().GetSlimeOnTop()!= null && this.data != null && !changed)
+        if (!changed)
         {
-            changed = true;
-            this.data = this.GetTile().GetSlimeOnTop();
+            if (this.GetTile().GetSlimeOnTop() != null && this.data != null)
+            {
+                changed = true;
+                this.data = this.GetTile().GetSlimeOnTop();
+            }
         }
+
     }
 }
