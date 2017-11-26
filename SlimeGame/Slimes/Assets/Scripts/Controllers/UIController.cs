@@ -32,9 +32,9 @@ public class UIController : MonoBehaviour {
         //Si clica OK desactiva el canvas
         canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
 
-		TileMoveSprite = Resources.Load<Sprite> ("Test/movementRangeFilter");
-		TileAttackSprite = Resources.Load<Sprite> ("Test/attackRangeFilter");
-		TileSplitSprite = Resources.Load<Sprite> ("Test/movementRangeFilter");
+		TileMoveSprite = SpritesLoader.GetInstance().GetResource("Test/movementRangeFilter");
+		TileAttackSprite = SpritesLoader.GetInstance().GetResource("Test/attackRangeFilter");
+		TileSplitSprite = SpritesLoader.GetInstance().GetResource("Test/movementRangeFilter");
 		currentUIRenderer = new List<SpriteRenderer> ();
 
 	}

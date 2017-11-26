@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
     private int currentTurn;
     private int currentPlayer;
     private int playerActions;
-	public Sprite healthBarImage;
+	public Material fire;
 
 	private Sprite conquerSprite;
 
@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
+	public Material tileMaterial;
 
     private UIController uiController;
     // Use this for initialization
@@ -44,7 +45,7 @@ public class GameController : MonoBehaviour
 			);
 			cores.Add (slimeData);
 		}
-		conquerSprite = Resources.Load<Sprite> ("Test/conquerTile");
+		conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
         //MapDrawer.InitTest ();
 		status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
@@ -88,6 +89,10 @@ public class GameController : MonoBehaviour
 			checkLogic ();
 		}
         bool ended = IsGameEnded();
+
+		if (players [currentPlayer].isPlayerAI ()) {
+			DoAction (players [currentPlayer].GetAction (this));
+		}
 
         if (ended)
         {
@@ -171,6 +176,7 @@ public class GameController : MonoBehaviour
 
     public void PrepareAction(ActionType action)
     {
+        /*
         if (selectedSlime.tag.Equals("Slime"))
         {
             Slime slime = selectedSlime.GetComponent<Slime>();
@@ -191,6 +197,7 @@ public class GameController : MonoBehaviour
                     break;
             }
         }
+         */
     }
 
     public void PrepareAction(int action)
@@ -233,7 +240,7 @@ public class GameController : MonoBehaviour
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
-		slime.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(core.picDirection+0);
+		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
         slime.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
@@ -275,7 +282,32 @@ public class GameController : MonoBehaviour
 		return players [currentPlayer];
 	}
 
-    public void MoveSlime(Tile tile)
+	public void DoAction(SlimeAction action){
+		if (action == null) {
+			return;
+		}
+		switch(action.GetAction()) {
+		case ActionType.ATTACK:
+			AttackSlime (action.GetSlime());
+			break;
+		case ActionType.CONQUER:
+			ConquerTile (action.GetTile());
+			break;
+		case ActionType.SPLIT:
+			SplitSlime (action.GetTile());
+			break;
+		case ActionType.EAT:
+			break;
+		case ActionType.MOVE:
+			MoveSlime (action.GetTile());
+			break;
+		case ActionType.FUSION:
+			FusionSlime (action.GetSlime());
+			break;
+		}
+	}
+
+    private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
 		//Debug.Log("userHitOnTile");
@@ -293,7 +325,7 @@ public class GameController : MonoBehaviour
 		playerActions++;
     }
 
-	public void SlplitSlime(Tile targetTile){
+	private void SplitSlime(Tile targetTile){
 		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
 		players [currentPlayer].AddSlime (newSlime);
 		allSlimes.Add (newSlime);
@@ -305,34 +337,25 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
-	public void AttackSlime(Slime targetSlime){
-		FloatingTextController.CreateFloatingText ((-selectedSlime.getDamage ()).ToString(),targetSlime.transform);
-		targetSlime.changeMass (-selectedSlime.getDamage ());
-		if (!targetSlime.isAlive ()) {
-			targetSlime.GetTileData ().SetSlimeOnTop (null);
-			Destroy (targetSlime.gameObject);
-			allSlimes.Remove (targetSlime);
-		}
+	private void AttackSlime(Slime targetSlime){
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
         RangedAttack(targetSlime);
 	}
 
-    public void RangedAttack(Slime toAttack)
+	private void RangedAttack(Slime toAttack)
     {
         GameObject projectile = new GameObject("projectile");
-        Sprite sprite = Resources.Load<Sprite>("Sprites/Proj");
+		Sprite sprite = SpritesLoader.GetInstance().GetResource("Sprites/Proj");
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
-        Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
-        Vector2 endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
-        projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
+        projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
     }
 
-    public void FusionSlime(Slime fusionTarget)
+	private void FusionSlime(Slime fusionTarget)
 	{
 		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
 		allSlimes.Remove(selectedSlime);
@@ -344,12 +367,19 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
-	public void ConquerTile(Tile tile){
+	private void ConquerTile(Tile tile){
 		tile.tileElementLayer.sprite = conquerSprite;
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
 		tile.tileElementLayer.color = c;
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
+	}
+
+	public void RemoveSlime(Slime slimeToRemove){
+		allSlimes.Remove (slimeToRemove);
+		foreach (Player player in players){
+			if (player.GetSlimes().Contains(slimeToRemove)) player.GetSlimes().Remove(slimeToRemove);
+		}
 	}
 }

@@ -20,12 +20,12 @@ public class PreviewCameraController : MonoBehaviour {
 		}
 		if(this.size!=null){
 			Camera cam = this.GetComponent<Camera> ();
-			float horzExtent = 0.8f* cam.orthographicSize * cam.aspect;
-			float vertExtent = 0.8f* cam.orthographicSize;
+			float horzExtent = 0.9f* cam.orthographicSize * cam.aspect;
+			float vertExtent = 0.9f* cam.orthographicSize;
 			while(vertExtent<size.y || horzExtent<size.x){
 				cam.orthographicSize++;
-				horzExtent = 0.8f*cam.orthographicSize * cam.aspect;
-				vertExtent = 0.8f* cam.orthographicSize;
+				horzExtent = 0.9f*cam.orthographicSize * cam.aspect;
+				vertExtent = 0.9f* cam.orthographicSize;
 			}
 			
 		}

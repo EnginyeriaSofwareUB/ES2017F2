@@ -45,7 +45,7 @@ public class InputController : MonoBehaviour
 						//s = col.gameObject.GetComponent<Slime>().ToString();
 */ 
 					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
-						gameController.ConquerTile (col.gameObject.GetComponent<Slime> ().GetActualTile());
+						gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
@@ -61,13 +61,13 @@ public class InputController : MonoBehaviour
 						if ((isMoveTile || isAttackTile) && gameController.GetSelectedSlime () != null) {
 							if (isMoveTile) {
 								Debug.Log (Time.time + "Move");
-								gameController.MoveSlime (target);
+								gameController.DoAction(new SlimeAction(ActionType.MOVE,target));
 								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							} else if (isAttackTile) {
 								Debug.Log (Time.time + "Attack");
-								gameController.AttackSlime (target.GetSlimeOnTop ());
+								gameController.DoAction(new SlimeAction(ActionType.ATTACK,target.GetSlimeOnTop ()));
 								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
@@ -94,13 +94,13 @@ public class InputController : MonoBehaviour
 					}
 					if (s != null && s!=gameController.GetSelectedSlime()) {
 						Debug.Log (Time.time+"Join");
-						gameController.FusionSlime (s);
+						gameController.DoAction(new SlimeAction(ActionType.FUSION,s));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 					}else if(t!=null && splitTiles.Contains(t)){
 						Debug.Log (Time.time+"Split");
-						gameController.SlplitSlime (t);
+						gameController.DoAction(new SlimeAction(ActionType.SPLIT,t));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);

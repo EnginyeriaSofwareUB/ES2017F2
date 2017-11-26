@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour {
 	
 	private TileData data;
-
+	private SpriteAnimation animation;
 	public SpriteRenderer tileUILayer;
 	public SpriteRenderer tileElementLayer;
 
@@ -16,7 +16,7 @@ public class Tile : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		animation.update ();
 	}
 
 	public Vector2 getPosition(){
@@ -56,6 +56,10 @@ public class Tile : MonoBehaviour {
 		tileElementLayer.gameObject.transform.localScale = new Vector2(1f,1f);
 		tileElementLayer.sortingLayerName = "TileElement";
 		tileElementLayer.color = new Color (1f, 1f, 1f, 0.5f);
+		//tileElementLayer.material = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+		animation = new SpriteAnimation (tileElementLayer);
+		animation.LoadSprites ("Tiles/Fire/full",6);
+		animation.playAnimation ();
 	}
 
 	public void SetSlimeOnTop(GameObject obj){
