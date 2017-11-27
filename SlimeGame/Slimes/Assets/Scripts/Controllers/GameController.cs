@@ -53,8 +53,8 @@ public class GameController : MonoBehaviour
         panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-		players.Add(new Player("Jugador 1", 2,cores[GameSelection.player1Core])); // Test with 2 players
-		players.Add(new Player("Jugador 2", 3,cores[GameSelection.player2Core])); // Test with 2 players
+		players.Add(new Player("Jugador 1", 1,cores[GameSelection.player1Core])); // Test with 2 players
+		players.Add(new Player("Jugador 2", 1,cores[GameSelection.player2Core], new AIRandom())); // Test with 2 players
 		players[0].SetColor(GameSelection.player1Color);
 		players[1].SetColor(GameSelection.player2Color);
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
@@ -90,8 +90,11 @@ public class GameController : MonoBehaviour
 		}
         bool ended = IsGameEnded();
 
-		if (players [currentPlayer].isPlayerAI ()) {
-			DoAction (players [currentPlayer].GetAction (this));
+		if (status == GameControllerStatus.WAITINGFORACTION && 
+				players [currentPlayer].isPlayerAI ()) {
+			AISlimeAction aiAction =players [currentPlayer].GetAction (this);
+			SetSelectedSlime(aiAction.GetSlime());
+			DoAction ((SlimeAction) aiAction);
 		}
 
         if (ended)
@@ -112,13 +115,7 @@ public class GameController : MonoBehaviour
 
 	public void checkLogic(){
 		if (playerActions >= players [currentPlayer].GetActions ()) {
-			currentPlayer++;
-			if (currentPlayer >= players.Count) {
-				currentPlayer = 0;
-				currentTurn++;
-			}
-            //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
-			playerActions = 0;
+			NextPlayer();
 		}
 		status = GameControllerStatus.WAITINGFORACTION;
 	}
@@ -211,6 +208,7 @@ public class GameController : MonoBehaviour
 	 */
     private void NextPlayer()
     {
+		selectedSlime = null;
         currentPlayer++;
         playerActions = 0;
         //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
@@ -228,8 +226,6 @@ public class GameController : MonoBehaviour
     public void NextTurn()
     {
         currentPlayer = 0;
-        playerActions = 0;
-        
         currentTurn++;
     }
 
@@ -310,6 +306,7 @@ public class GameController : MonoBehaviour
     private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
+		//Debug.Log("Moving to " + tileTo.getPosition().x + " - " + tileTo.getPosition().y);
 		//Debug.Log("userHitOnTile");
 		//TODO: Refactor this to only search one path
 		Dictionary<TileData,List<TileData>> moves = matrix.possibleCoordinatesAndPath(
@@ -353,6 +350,7 @@ public class GameController : MonoBehaviour
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
+		status = GameControllerStatus.PLAYINGACTION;
     }
 
 	private void FusionSlime(Slime fusionTarget)
@@ -381,5 +379,80 @@ public class GameController : MonoBehaviour
 		foreach (Player player in players){
 			if (player.GetSlimes().Contains(slimeToRemove)) player.GetSlimes().Remove(slimeToRemove);
 		}
+	}
+
+	public void OnProjectileAnimationEnded(){
+		status = GameControllerStatus.CHECKINGLOGIC;
+	}
+
+	public List<Tile> GetPossibleMovements(Slime slime){
+		ArrayList tiles = new ArrayList();
+		ArrayList distance = new ArrayList ();
+		List<Tile> visited = new List<Tile> ();
+
+		//List<Tile> moveTiles = new List<Tile> ();
+
+		int moveRange = slime.GetMovementRange ();
+
+		List<Vector2> directions = new List<Vector2> {
+			new Vector2 (0, -1),new Vector2 (1, -1), new Vector2 (1, 0),new Vector2 (0, 1),new Vector2 (-1,1),new Vector2 (-1, 0)
+		};
+
+		tiles.Add (slime.GetActualTile ());
+		distance.Add (0);
+		int counter = 0;
+		while(tiles.Count>0){
+			Tile t = (Tile) tiles[0];
+			tiles.RemoveAt (0);
+			int prevD = (int) distance[0];
+			distance.RemoveAt (0);
+			counter++;
+			visited.Add (t);
+			foreach(Vector2 vec in directions){
+				int x = (int) (t.getPosition ().x + vec.x);
+				int y = (int) (t.getPosition ().y + vec.y);
+				Tile newT = MapDrawer.GetTileAt(x ,y);
+				if (!visited.Contains(newT) && !tiles.Contains(newT) && newT!=null && prevD+1<=moveRange && !newT.GetTileData().isBlocking()) {
+					tiles.Add(newT);
+					distance.Add (prevD + 1);
+				}
+			}
+		}
+		visited.RemoveAt(0);
+		return visited;
+	}
+
+	public List<Slime> GetSlimesInAttackRange(Slime slime){
+		Player currentPlayer = GetCurrentPlayer ();
+		List<Slime> canAttack = new List<Slime> ();
+		Vector2 myPos = slime.GetActualTile().getPosition();
+		foreach(Slime s in allSlimes){
+			if (currentPlayer != s.GetPlayer()){
+				Vector2 slPos = s.GetActualTile().getPosition();		
+				if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
+					canAttack.Add(s);
+				}
+			}
+		}
+		return canAttack;
+	}
+
+	public List<Tile> GetSplitRangeTiles(Slime slime){
+		List<TileData> neighbours = matrix.getNeighbours (slime.GetTileData());
+		List<Tile> splitTiles = new List<Tile> ();
+		foreach (TileData td in neighbours) {
+			splitTiles.Add (td.getTile());
+		}
+		return splitTiles;
+	}
+
+	public List<Slime> GetFusionTargets(Slime slime){
+		List<TileData> neighbours = matrix.getNeighbours (slime.GetTileData());
+		List<Slime> fusionSlimes = new List<Slime> ();
+		foreach (TileData td in neighbours) {
+			if(td.GetSlimeOnTop() != null && td.GetSlimeOnTop().GetPlayer() == GetCurrentPlayer ())
+				fusionSlimes.Add (td.GetSlimeOnTop());
+		}
+		return fusionSlimes;
 	}
 }

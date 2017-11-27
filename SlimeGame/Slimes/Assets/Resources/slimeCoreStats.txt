@@ -11,7 +11,7 @@
 	"1":{
 		"name":"Sloth",
 		"attack":4,
-		"movementRange":3,
+		"movementRange":1,
 		"attackRange":3,
 		"startingHP":120,
 		"attackCost":1,
