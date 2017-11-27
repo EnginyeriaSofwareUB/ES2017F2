@@ -20,7 +20,7 @@ public class Slime : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		animation.update ();
+		if(animation != null) animation.update ();
 	}
 
 	public void initSpriteAnimation(){
@@ -42,7 +42,7 @@ public class Slime : MonoBehaviour {
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
 		actualTile=newTile;
-		actualTile.SetSlimeOnTop(gameObject);
+		actualTile.SetSlimeOnTop(this);
 	}
 	public Tile GetActualTile(){
 		return actualTile;

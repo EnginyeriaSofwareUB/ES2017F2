@@ -8,7 +8,7 @@ using SimpleJSON;
 public class GameController : MonoBehaviour
 {
 
-    private const int MAX_TURNS = 5;
+    private const int MAX_TURNS = 20;
     
     private Slime selectedSlime;
     public Matrix matrix;
@@ -67,6 +67,7 @@ public class GameController : MonoBehaviour
 		instantiateSlime(cores[0], players[0],(int)slime2.x, (int)slime2.y);
         Vector2 slime3 = matrix.GetRandomTile();
 		instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
+		instantiateSlime(cores[1], players[1], (int)slime3.x-1, (int)slime3.y);
         Vector2 slime4 = matrix.GetRandomTile();
 		instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
         currentTurn = 0;
@@ -313,7 +314,7 @@ public class GameController : MonoBehaviour
 			(int)selectedSlime.actualTile.getPosition().x, (int)selectedSlime.actualTile.getPosition().y, selectedSlime.GetMovementRange());
 
 		List<TileData> path = moves[tileTo];
-		path [path.Count-1].SetSlimeOnTop (selectedSlime.gameObject);
+		path [path.Count-1].SetSlimeOnTop (selectedSlime);
 		selectedSlime.SetActualTile (tile);
 		selectedSlime.gameObject.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
 
@@ -326,7 +327,7 @@ public class GameController : MonoBehaviour
 		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
 		players [currentPlayer].AddSlime (newSlime);
 		allSlimes.Add (newSlime);
-		targetTile.SetSlimeOnTop (newSlime.gameObject);
+		targetTile.SetSlimeOnTop (newSlime);
 		newSlime.SetActualTile (targetTile);
 		newSlime.SetMass (selectedSlime.GetMass()/2.0f);
 		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
@@ -438,21 +439,25 @@ public class GameController : MonoBehaviour
 	}
 
 	public List<Tile> GetSplitRangeTiles(Slime slime){
-		List<TileData> neighbours = matrix.getNeighbours (slime.GetTileData());
 		List<Tile> splitTiles = new List<Tile> ();
-		foreach (TileData td in neighbours) {
-			splitTiles.Add (td.getTile());
+		foreach (TileData td in matrix.getNeighbours (slime.GetTileData(), true)) {
+			if(td.getTile().GetSlimeOnTop() == null)
+				splitTiles.Add (td.getTile());
 		}
 		return splitTiles;
 	}
 
 	public List<Slime> GetFusionTargets(Slime slime){
-		List<TileData> neighbours = matrix.getNeighbours (slime.GetTileData());
 		List<Slime> fusionSlimes = new List<Slime> ();
-		foreach (TileData td in neighbours) {
-			if(td.GetSlimeOnTop() != null && td.GetSlimeOnTop().GetPlayer() == GetCurrentPlayer ())
-				fusionSlimes.Add (td.GetSlimeOnTop());
-		}
+		foreach (TileData tile in matrix.getNeighbours(slime.GetTileData(), true))
+        {
+            Slime overSlime = tile.GetSlimeOnTop();
+            if (overSlime != null && overSlime.GetPlayer() == slime.GetPlayer())
+            {
+				Debug.Log("UEEE");
+                fusionSlimes.Add(overSlime);
+            }
+        }
 		return fusionSlimes;
 	}
 }

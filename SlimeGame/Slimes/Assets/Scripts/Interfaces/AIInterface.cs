@@ -19,7 +19,7 @@ public abstract class AIInterface{
 
          foreach(Slime slime in slimes){
              legalActions.AddRange(GetAttackActions(gameController, slime));
-             legalActions.AddRange(GetMoveActions(gameController, slime));
+             //legalActions.AddRange(GetMoveActions(gameController, slime));
              legalActions.AddRange(GetConquerActions(gameController, slime));
              legalActions.AddRange(GetSplitActions(gameController, slime));
              legalActions.AddRange(GetFusionActions(gameController, slime));

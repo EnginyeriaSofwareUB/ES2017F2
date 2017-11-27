@@ -62,7 +62,7 @@ public class Tile : MonoBehaviour {
 		animation.playAnimation ();
 	}
 
-	public void SetSlimeOnTop(GameObject obj){
+	public void SetSlimeOnTop(Slime obj){
 		data.SetSlimeOnTop (obj);
 	}
 

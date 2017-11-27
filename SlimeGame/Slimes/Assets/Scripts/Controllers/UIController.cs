@@ -59,7 +59,6 @@ public class UIController : MonoBehaviour {
     }
 
 	public List<Tile> showSplitRange(Slime slime){
-		List<TileData> neighbours = gameController.matrix.getNeighbours (slime.GetTileData());
 		List<Tile> splitTiles = gameController.GetSplitRangeTiles(slime);
 		foreach (Tile t in splitTiles) {
 			t.tileUILayer.sprite = TileSplitSprite;

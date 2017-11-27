@@ -2,7 +2,7 @@ using UnityEngine;
 public class TileData:MapDrawer.MapCoordinates{
 	private TileType type;
     private Vector2 hexPosition;
-	public GameObject slimeOnTop;
+	public Slime slimeOnTop;
 	private Tile tile;
     //Tile tile;
 	public TileData(TileType typeEnum, Vector2 position){
@@ -27,12 +27,11 @@ public class TileData:MapDrawer.MapCoordinates{
 	public void SetTileType(TileType type){
 		this.type= type;
 	}
-	public void SetSlimeOnTop(GameObject slimeTop){
+	public void SetSlimeOnTop(Slime slimeTop){
 		this.slimeOnTop=slimeTop;
 	}
 	public Slime GetSlimeOnTop(){
-		if(slimeOnTop != null) return slimeOnTop.GetComponent<Slime>();
-		return null;
+		return slimeOnTop;
 	}
 	public Vector2 GetRealWorldPosition(){
 		return tile.gameObject.transform.position;
