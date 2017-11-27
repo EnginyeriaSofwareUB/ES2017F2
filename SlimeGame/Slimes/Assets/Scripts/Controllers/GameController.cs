@@ -26,15 +26,19 @@ public class GameController : MonoBehaviour
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
+
     public int tutorial;
+    private List<string> tutorialTexts;
+    private int textTutorialPosition;
     
 	public Material tileMaterial;
 
     // Use this for initialization
     void Start()
     {
-
-		FloatingTextController.Initialize ();
+        textTutorialPosition = 0;
+        tutorial = 1;
+        FloatingTextController.Initialize ();
 
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
@@ -47,7 +51,22 @@ public class GameController : MonoBehaviour
 			);
 			cores.Add (slimeData);
 		}
-		conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
+
+        if(tutorial == 1)
+        {
+            string textTutorial = (Resources.Load("textTutorial") as TextAsset).text;
+            tutorialTexts = new List<string>();
+            JSONNode s = JSON.Parse(textTutorial);
+            for (int i = 0; i < s.Count; i++)
+            {
+                JSONNode text = s[i.ToString()];
+                tutorialTexts.Add(text["text"]);
+            }
+        }
+
+
+
+        conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
         //MapDrawer.InitTest ();
 		status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
@@ -55,10 +74,11 @@ public class GameController : MonoBehaviour
         panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-        tutorial = 1;
 
         if (tutorial == 1)
         {
+            panelTip.GetComponent<DialogInfo>().Active(true);
+            ShowTutorialTip();
             players.Add(new Player("Jugador 1", 1, cores[3]));
             players.Add(new Player("IA", 1, cores[4]));
             players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo
@@ -131,7 +151,6 @@ public class GameController : MonoBehaviour
             SceneManager.LoadScene("GameOver");
         }
 
-        //Per alguna rao cal afeguir la segona condicio :(
         if (players [currentPlayer].isPlayerAI () && playerActions < players[currentPlayer].GetActions() && !ended) {
 			DoAction (players [currentPlayer].GetAction (this));
             //Hi ha bugs si trec aquesta linea
@@ -314,9 +333,16 @@ public class GameController : MonoBehaviour
 		if (action == null) {
 			return;
 		}
-        if(tutorial == 1 && currentPlayer == 0 && ! players[currentPlayer].isTutorialAction(action))
+        if(tutorial == 1 && currentPlayer == 0)
         {
-            return;
+            if (!players[0].isTutorialAction(action, selectedSlime))
+            {
+                return;
+            }
+            else
+            {
+                ShowTutorialTip();
+            }
         }
 		switch(action.GetAction()) {
 		case ActionType.ATTACK:
@@ -418,5 +444,14 @@ public class GameController : MonoBehaviour
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
+
+    private void ShowTutorialTip()
+    {
+        if (textTutorialPosition < tutorialTexts.Count)
+        {
+            textTip.GetComponent<Text>().text = tutorialTexts[textTutorialPosition];
+            textTutorialPosition++;
+        }
+    }
 
 }

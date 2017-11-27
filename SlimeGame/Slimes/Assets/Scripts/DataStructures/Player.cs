@@ -96,7 +96,15 @@ public class Player {
 	public List<Slime> GetSlimes(){
 		return slimes;
 	}
-    public bool isTutorialAction(SlimeAction slimeAction)
+
+    private bool RightSlime(Slime whoActions)
+    {
+        if (positionTutorial == 2 || positionTutorial == 5 || positionTutorial == 6)
+            return whoActions == slimes[1];
+        else
+            return whoActions == slimes[0];
+    }
+    public bool isTutorialAction(SlimeAction slimeAction, Slime whoActions)
     {
         if (positionTutorial >= tutorialActions.Count)
         {
@@ -104,7 +112,7 @@ public class Player {
         }
         if (tutorialActions[positionTutorial].GetAction() == ActionType.ATTACK || tutorialActions[positionTutorial].GetAction() == ActionType.FUSION)
             tutorialActions[positionTutorial].ChangeTileForSlime();
-        if (slimeAction.IsEqual(tutorialActions[positionTutorial]))
+        if (slimeAction.IsEqual(tutorialActions[positionTutorial]) && RightSlime(whoActions))
         {
             positionTutorial++;
             return true;
