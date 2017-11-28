@@ -15,5 +15,4 @@ public class DialogInfo : MonoBehaviour {
 		gameObject.SetActive (b);
 		active = b;
 	}
-
 }
