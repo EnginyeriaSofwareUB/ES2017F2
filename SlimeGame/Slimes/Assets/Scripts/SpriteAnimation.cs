@@ -32,7 +32,7 @@ public class SpriteAnimation
 		
 		sprites = new List<Sprite> ();
 		for (int i = 0; i < imgQuantity; i++) {
-			sprites.Add (Resources.Load<Sprite>(name+i));
+			sprites.Add (SpritesLoader.GetInstance().GetResource(name+i));
 		}
 	}
 

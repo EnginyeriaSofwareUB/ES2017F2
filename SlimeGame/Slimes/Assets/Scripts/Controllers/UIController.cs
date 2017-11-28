@@ -15,9 +15,16 @@ public class UIController : MonoBehaviour {
 
 	private List<SpriteRenderer> currentUIRenderer;
 
+	public int xLimit;
+    public int yLimit;
+    public int minZoom;
+    public int maxZoom;
+    public int speed;
     // Use this for initialization
     void Start () {
-		
+		speed = 30;
+        minZoom = 3;
+        maxZoom = 13;
 		gameController = Camera.main.GetComponent<GameController>();
         canvasInfo = GameObject.Find("Dialog");
         DisableCanvas();
@@ -25,9 +32,9 @@ public class UIController : MonoBehaviour {
         //Si clica OK desactiva el canvas
         canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
 
-		TileMoveSprite = Resources.Load<Sprite> ("Test/movementRangeFilter");
-		TileAttackSprite = Resources.Load<Sprite> ("Test/attackRangeFilter");
-		TileSplitSprite = Resources.Load<Sprite> ("Test/movementRangeFilter");
+		TileMoveSprite = SpritesLoader.GetInstance().GetResource("Test/movementRangeFilter");
+		TileAttackSprite = SpritesLoader.GetInstance().GetResource("Test/attackRangeFilter");
+		TileSplitSprite = SpritesLoader.GetInstance().GetResource("Test/movementRangeFilter");
 		currentUIRenderer = new List<SpriteRenderer> ();
 
 	}
@@ -129,4 +136,84 @@ public class UIController : MonoBehaviour {
 		}
 		currentUIRenderer.Clear ();
 	}
+	public void InitMapSize(Vector2 mapSize){
+		xLimit = (int) mapSize.x;
+        yLimit = (int) mapSize.y;
+	}
+	public void ZoomIn(){
+		if(this.GetComponent<Camera> ().orthographicSize > minZoom){
+			this.GetComponent<Camera> ().orthographicSize--;
+		}
+	}
+	public void ZoomOut(){
+		float horzExtent = 0.8f* this.GetComponent<Camera> ().orthographicSize * this.GetComponent<Camera> ().aspect;
+		float vertExtent = 0.8f* this.GetComponent<Camera> ().orthographicSize;
+		if(vertExtent<yLimit || horzExtent<xLimit){
+			this.GetComponent<Camera> ().orthographicSize++;
+		}
+	}
+	public void MoveUp(){
+		float orto = 1f/this.GetComponent<Camera> ().orthographicSize;
+		if (this.transform.position.y < yLimit) {
+			this.transform.position += (new Vector3 (0, speed*orto*2, 0) * Time.deltaTime);
+		}
+	}
+	public void MoveDown(){
+		float orto = 1f/this.GetComponent<Camera> ().orthographicSize;
+		if (this.transform.position.y > -yLimit) {
+			this.transform.position -= (new Vector3 (0, speed*orto*2, 0) * Time.deltaTime);
+		}
+	}
+	public void MoveLeft(){
+		float orto = 1f/this.GetComponent<Camera> ().orthographicSize;
+		if (this.transform.position.x > -xLimit) {
+			this.transform.position -= (new Vector3 (speed*orto*2, 0, 0) * Time.deltaTime);
+		}
+	}
+	public void MoveRight(){
+		float orto = 1f/this.GetComponent<Camera> ().orthographicSize;
+		if (this.transform.position.x < xLimit) {
+			this.transform.position += (new Vector3 (speed*orto*2, 0, 0) * Time.deltaTime);
+		}
+	}
+
+	public Rect GetRectWithAllPoints(List<Vector2> vectors, float aspect){
+		if(vectors.Count<=0)return new Rect(0,0,0,0);
+		float invaspect = 1.0f/aspect;
+		Rect rect = new Rect(vectors[0].x,vectors[0].y,aspect,1);
+		foreach(Vector2 vect in vectors){
+			if(!rect.Contains(vect)){
+				float diff;			
+				if((diff = vect.x-rect.xMax)>0f){
+					rect.xMax = vect.x;
+					rect.yMax += diff*invaspect;
+				}
+				if((diff = rect.xMin-vect.x)>0f){
+					rect.xMin = vect.x;
+					rect.yMin -= diff*invaspect;
+				}
+				if((diff = vect.y-rect.yMax)>0f){
+					rect.yMax = vect.y;
+					rect.xMax += diff*invaspect;
+				}
+				if((diff = rect.yMin-vect.y)>0f){
+					rect.yMin = vect.y;
+					rect.xMin -= diff*invaspect;
+				}
+			}
+			
+		}		
+		return rect;
+	}
+	public void ChangeCamera(List<Slime> slimes){
+		List<Vector2> vects = new List<Vector2>();
+		foreach(Slime slime in slimes){
+			vects.Add(slime.actualTile.getPosition());
+		}
+		Rect rect = GetRectWithAllPoints(vects,this.GetComponent<Camera> ().aspect);
+		//GUI.Label(rect,"465");
+		//this.transform.position+=(new Vector3(rect.center.x,rect.center.y,0)* Time.deltaTime*speed);
+	}
+	
+	
 }

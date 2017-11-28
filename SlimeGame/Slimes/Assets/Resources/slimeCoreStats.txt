@@ -25,5 +25,23 @@
 		"startingHP":80,
 		"attackCost":0,
 		"picDirection":"Sprites/BasicCore/slime_gluttony_core_"
+	},
+		"3":{
+		"name":"TutorialPlayer",
+		"attack":20,
+		"movementRange":2,
+		"attackRange":2,
+		"startingHP":100,
+		"attackCost":0,
+		"picDirection":"Sprites/BasicCore/slime_gluttony_core_"
+	},
+		"4":{
+		"name":"TutorialIA",
+		"attack":3,
+		"movementRange":2,
+		"attackRange":2,
+		"startingHP":40,
+		"attackCost":0,
+		"picDirection":"Sprites/BasicCore/slime_sloth_core_"
 	}
 }
