@@ -8,13 +8,8 @@ using SimpleJSON;
 public class GameController : MonoBehaviour
 {
 
-<<<<<<< HEAD
     private const int MAX_TURNS = 20;
     
-=======
-
-    private const int MAX_TURNS = 10;
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
     private Slime selectedSlime;
     public Matrix matrix;
     private List<Player> players;
@@ -30,7 +25,7 @@ public class GameController : MonoBehaviour
 
 	public GameObject healthBar;
 
-    public int tutorial;
+    public static int tutorial;
     private List<string> tutorialTexts;
     private int textTutorialPosition;
     
@@ -41,7 +36,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         textTutorialPosition = 0;
-        tutorial = 1;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
@@ -78,12 +72,6 @@ public class GameController : MonoBehaviour
         panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-<<<<<<< HEAD
-		players.Add(new Player("Jugador 1", 1,cores[GameSelection.player1Core])); // Test with 2 players
-		players.Add(new Player("Jugador 2", 1,cores[GameSelection.player2Core], new AIAggressive())); // Test with 2 players
-		players[0].SetColor(GameSelection.player1Color);
-		players[1].SetColor(GameSelection.player2Color);
-=======
 
         if (tutorial == 1)
         {
@@ -91,7 +79,7 @@ public class GameController : MonoBehaviour
             ShowTutorialTip();
             players.Add(new Player("Jugador 1", 1, cores[3]));
             players.Add(new Player("IA", 1, cores[4]));
-            players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo
+            players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo??
             players[1].SetColor(GameSelection.player2Color);
             matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
@@ -102,8 +90,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            players.Add(new Player("Jugador 1", 2, cores[GameSelection.player1Core])); // Test with 2 players
-            players.Add(new Player("Jugador 2", 2, cores[GameSelection.player2Core]));
+            players.Add(new Player("Jugador 1", 1, cores[GameSelection.player1Core])); // Test with 2 players
+            players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core], new AIAggressive()));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -119,24 +107,18 @@ public class GameController : MonoBehaviour
             instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
         }
 
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
 
         currentTurn = 0;
         currentPlayer = 0;
         playerActions = 0;
-<<<<<<< HEAD
-=======
-		foreach(Player p in players){
-            p.updateActions();
-            foreach (Slime s in p.GetSlimes()) {
-				allSlimes.Add (s);
-			}
-		}
 
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
+		foreach(Player p in players)
+            p.updateActions();
+
         //iniciem la informacio de game over
         GameOverInfo.Init();
+		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
 
     }
 
@@ -146,19 +128,6 @@ public class GameController : MonoBehaviour
 		if (status == GameControllerStatus.CHECKINGLOGIC) {
 			checkLogic ();
 		}
-<<<<<<< HEAD
-        bool ended = IsGameEnded();
-
-		if (status == GameControllerStatus.WAITINGFORACTION && 
-				players [currentPlayer].isPlayerAI ()) {
-			AISlimeAction aiAction = players [currentPlayer].GetAction (this);
-			if(aiAction != null){ 
-				SetSelectedSlime(aiAction.GetSlime());
-				DoAction ((SlimeAction) aiAction);
-			} else NextPlayer();
-		}
-=======
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
 
         foreach (Player player in players)
         {
@@ -178,33 +147,32 @@ public class GameController : MonoBehaviour
             SceneManager.LoadScene("GameOver");
         }
 
-        if (players [currentPlayer].isPlayerAI () && playerActions < players[currentPlayer].GetActions() && !ended) {
-			DoAction (players [currentPlayer].GetAction (this));
-            //Hi ha bugs si trec aquesta linea
-            selectedSlime = null;
+        //S'ha de posar despres de la comprovacio de ended
+        // Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
+        if (status == GameControllerStatus.WAITINGFORACTION &&
+                players[currentPlayer].isPlayerAI())
+        {
+            //Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
+            AISlimeAction aiAction = players[currentPlayer].GetAction(this);
+            // AISlimeAction contiene la slime que hace la accion y la acción que hace.
+            if (aiAction != null)
+            {
+                SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
+                DoAction((SlimeAction)aiAction); // Hacemos la accion.
+            } else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
         }
     }
 
 	public void checkLogic(){
 		if (playerActions >= players [currentPlayer].GetActions ()) {
-<<<<<<< HEAD
 			NextPlayer();
-=======
-			currentPlayer++;
             foreach (Player pl in players) {
                 pl.updateActions();
             }
-            if (currentPlayer >= players.Count) {
-				currentPlayer = 0;
-				currentTurn++;
-			}
-            //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
-			playerActions = 0;
             if(currentPlayer == 0 && tutorial == 1)
             {
                 MarkAndShowInfoTutorial();
             }
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
 		}
 		status = GameControllerStatus.WAITINGFORACTION;
 	}
@@ -306,8 +274,7 @@ public class GameController : MonoBehaviour
         if (currentPlayer >= players.Count)
         {
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
-            NextTurn();
-            
+            NextTurn();        
         }
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
@@ -317,17 +284,9 @@ public class GameController : MonoBehaviour
 	 */
     public void NextTurn()
     {
-<<<<<<< HEAD
         currentPlayer = 0;
+        playerActions = 0;
         currentTurn++;
-=======
-        if (tutorial != 1)
-        {
-            currentPlayer = 0;
-            playerActions = 0;
-            currentTurn++;
-        }
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
     }
 
     private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
@@ -338,7 +297,7 @@ public class GameController : MonoBehaviour
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
 		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
-        slime.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+		slime.GetComponent<SpriteRenderer>().sortingLayerName = "TileElement";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
 
@@ -404,11 +363,11 @@ public class GameController : MonoBehaviour
 			AttackSlime (action.GetSlime());
 			break;
 		case ActionType.CONQUER:
-			Debug.Log("CONQUER");
+			//Debug.Log("CONQUER");
 			ConquerTile (action.GetTile());
 			break;
 		case ActionType.SPLIT:
-			Debug.Log("SPLIT");
+			//Debug.Log("SPLIT");
 			SplitSlime (action.GetTile());
 			break;
 		case ActionType.EAT:
@@ -417,10 +376,11 @@ public class GameController : MonoBehaviour
 			MoveSlime (action.GetTile());
 			break;
 		case ActionType.FUSION:
-			Debug.Log("FUSION");
+			//Debug.Log("FUSION");
 			FusionSlime (action.GetSlime());
 			break;
 		}
+		SetSelectedSlime(null);
 	}
 
     private void MoveSlime(Tile tile)
@@ -444,17 +404,10 @@ public class GameController : MonoBehaviour
 
 	private void SplitSlime(Tile targetTile){
 		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
-<<<<<<< HEAD
 		/*players [currentPlayer].AddSlime (newSlime);
 		targetTile.SetSlimeOnTop (newSlime);
 		newSlime.SetActualTile (targetTile);*/
 
-=======
-		//players [currentPlayer].AddSlime (newSlime);
-		allSlimes.Add (newSlime);
-		targetTile.SetSlimeOnTop (newSlime.gameObject);
-		newSlime.SetActualTile (targetTile);
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
 		newSlime.SetMass (selectedSlime.GetMass()/2.0f);
 		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
 		playerActions++;
@@ -463,32 +416,31 @@ public class GameController : MonoBehaviour
 
 	private void AttackSlime(Slime targetSlime){
 		playerActions++;
-		status = GameControllerStatus.CHECKINGLOGIC;
+		//status = GameControllerStatus.CHECKINGLOGIC;
         RangedAttack(targetSlime);
 	}
 
 	private void RangedAttack(Slime toAttack)
     {
         GameObject projectile = new GameObject("projectile");
-		Sprite sprite = SpritesLoader.GetInstance().GetResource("Sprites/Proj");
+		Sprite sprite = SpritesLoader.GetInstance().GetResource("Projectiles/water_projectile");
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
-        projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+        projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
+<<<<<<< HEAD
 		status = GameControllerStatus.PLAYINGACTION;
+=======
+        SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
+>>>>>>> e7fcbf5811024b2ceffb22587a0d25b4aedc567e
     }
 
-	private void FusionSlime(Slime fusionTarget)
+    private void FusionSlime(Slime fusionTarget)
 	{
-<<<<<<< HEAD
 		RemoveSlime(selectedSlime);
-=======
-		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
         players[currentPlayer].updateActions();
-		allSlimes.Remove(selectedSlime);
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
 
@@ -498,10 +450,10 @@ public class GameController : MonoBehaviour
 	}
 
 	private void ConquerTile(Tile tile){
-		tile.tileElementLayer.sprite = conquerSprite;
+		tile.tileConquerLayer.sprite = conquerSprite;
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
-		tile.tileElementLayer.color = c;
+		tile.tileConquerLayer.color = c;
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
@@ -547,9 +499,9 @@ public class GameController : MonoBehaviour
 
 	public void RemoveSlime(Slime slimeToRemove){
 		foreach (Player player in players){
-<<<<<<< HEAD
 			if (player.IsSlimeOwner(slimeToRemove)) player.RemoveSlime(slimeToRemove);
-		}
+            player.updateActions();
+            }
 	}
 
 	public void OnProjectileAnimationEnded(){
@@ -588,10 +540,6 @@ public class GameController : MonoBehaviour
 					distance.Add (prevD + 1);
 				}
 			}
-=======
-			if (player.GetSlimes().Contains(slimeToRemove)) player.GetSlimes().Remove(slimeToRemove);
-            player.updateActions();
->>>>>>> c391c107d20cc6c3034b399f27df5d6d36204f03
 		}
 		visited.RemoveAt(0);
 		return visited;

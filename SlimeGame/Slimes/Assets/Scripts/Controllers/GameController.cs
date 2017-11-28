@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour
 
 	public GameObject healthBar;
 
-    public int tutorial;
+    public static int tutorial;
     private List<string> tutorialTexts;
     private int textTutorialPosition;
     
@@ -36,7 +36,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         textTutorialPosition = 0;
-        tutorial = 1;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
@@ -92,7 +91,7 @@ public class GameController : MonoBehaviour
         else
         {
             players.Add(new Player("Jugador 1", 1, cores[GameSelection.player1Core])); // Test with 2 players
-            players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core], new AIRandom()));
+            players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core], new AIAggressive()));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -119,6 +118,7 @@ public class GameController : MonoBehaviour
 
         //iniciem la informacio de game over
         GameOverInfo.Init();
+		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
 
     }
 
@@ -297,7 +297,7 @@ public class GameController : MonoBehaviour
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
 		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
-        slime.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+		slime.GetComponent<SpriteRenderer>().sortingLayerName = "TileElement";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
 
@@ -423,17 +423,18 @@ public class GameController : MonoBehaviour
 	private void RangedAttack(Slime toAttack)
     {
         GameObject projectile = new GameObject("projectile");
-		Sprite sprite = SpritesLoader.GetInstance().GetResource("Sprites/Proj");
+		Sprite sprite = SpritesLoader.GetInstance().GetResource("Projectiles/water_projectile");
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
-        projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+        projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
 		status = GameControllerStatus.PLAYINGACTION;
+        SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
     }
 
-	private void FusionSlime(Slime fusionTarget)
+    private void FusionSlime(Slime fusionTarget)
 	{
 		RemoveSlime(selectedSlime);
         players[currentPlayer].updateActions();
@@ -446,10 +447,10 @@ public class GameController : MonoBehaviour
 	}
 
 	private void ConquerTile(Tile tile){
-		tile.tileElementLayer.sprite = conquerSprite;
+		tile.tileConquerLayer.sprite = conquerSprite;
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
-		tile.tileElementLayer.color = c;
+		tile.tileConquerLayer.color = c;
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}

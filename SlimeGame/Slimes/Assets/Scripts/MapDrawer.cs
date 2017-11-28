@@ -59,12 +59,14 @@ public class MapDrawer {
             
 			newTile.transform.position =vec;
 			newTile.GetComponent<Tile>().startUILayer (vec,localScale);
+			newTile.GetComponent<Tile> ().startConquerLayer (vec,localScale);
 			newTile.GetComponent<Tile>().startElementLayer (vec,localScale);
 			SetTileAt(newTile.GetComponent<Tile> (),x,y);
 		}
         return size;
 
 	}
+
 	public static Vector2 drawInternCoordenates(Vector2 axial){		
 		Vector2 tileWorldPosition = new Vector2 ();
 		int x = (int)axial.x;
@@ -74,6 +76,7 @@ public class MapDrawer {
 		tileWorldPosition.y=-tileWorldPosition.y;
 		return tileWorldPosition;
 	}
+
 	public interface MapCoordinates{
 
 		Vector2 getPosition();

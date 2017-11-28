@@ -54,7 +54,9 @@ public class ProjectileTrajectory : MonoBehaviour {
 			toAttack.GetPlayer ().GetSlimes ().Remove (toAttack);
             Destroy(toAttack.gameObject);
             GameObject.Find ("Main Camera").GetComponent<GameController> ().RemoveSlime(toAttack);
+
 		}
         GameObject.Find ("Main Camera").GetComponent<GameController> ().OnProjectileAnimationEnded();
+
     }
 }
