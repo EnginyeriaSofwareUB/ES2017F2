@@ -21,8 +21,6 @@ public class GameController : MonoBehaviour
 
 	private Sprite conquerSprite;
 
-	public List<Slime> allSlimes;
-
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
@@ -37,7 +35,6 @@ public class GameController : MonoBehaviour
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
-		allSlimes = new List<Slime> ();
 		for (int i = 0; i < n.Count; i++) {
 			JSONNode slime = n[i.ToString()];
 			SlimeCoreData slimeData = new SlimeCoreData (
@@ -54,7 +51,7 @@ public class GameController : MonoBehaviour
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
 		players.Add(new Player("Jugador 1", 1,cores[GameSelection.player1Core])); // Test with 2 players
-		players.Add(new Player("Jugador 2", 1,cores[GameSelection.player2Core], new AIRandom())); // Test with 2 players
+		players.Add(new Player("Jugador 2", 1,cores[GameSelection.player2Core], new AIAggressive())); // Test with 2 players
 		players[0].SetColor(GameSelection.player1Color);
 		players[1].SetColor(GameSelection.player2Color);
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
@@ -67,17 +64,11 @@ public class GameController : MonoBehaviour
 		instantiateSlime(cores[0], players[0],(int)slime2.x, (int)slime2.y);
         Vector2 slime3 = matrix.GetRandomTile();
 		instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
-		instantiateSlime(cores[1], players[1], (int)slime3.x-1, (int)slime3.y);
         Vector2 slime4 = matrix.GetRandomTile();
 		instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
         currentTurn = 0;
         currentPlayer = 0;
         playerActions = 0;
-		foreach(Player p in players){
-			foreach (Slime s in p.GetSlimes()) {
-				allSlimes.Add (s);
-			}
-		}
         //iniciem la informacio de game over
         GameOverInfo.Init();
 
@@ -93,9 +84,11 @@ public class GameController : MonoBehaviour
 
 		if (status == GameControllerStatus.WAITINGFORACTION && 
 				players [currentPlayer].isPlayerAI ()) {
-			AISlimeAction aiAction =players [currentPlayer].GetAction (this);
-			SetSelectedSlime(aiAction.GetSlime());
-			DoAction ((SlimeAction) aiAction);
+			AISlimeAction aiAction = players [currentPlayer].GetAction (this);
+			if(aiAction != null){ 
+				SetSelectedSlime(aiAction.GetSlime());
+				DoAction ((SlimeAction) aiAction);
+			} else NextPlayer();
 		}
 
         if (ended)
@@ -219,6 +212,7 @@ public class GameController : MonoBehaviour
             NextTurn();
             
         }
+		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
     /*
@@ -288,9 +282,11 @@ public class GameController : MonoBehaviour
 			AttackSlime (action.GetSlime());
 			break;
 		case ActionType.CONQUER:
+			Debug.Log("CONQUER");
 			ConquerTile (action.GetTile());
 			break;
 		case ActionType.SPLIT:
+			Debug.Log("SPLIT");
 			SplitSlime (action.GetTile());
 			break;
 		case ActionType.EAT:
@@ -299,6 +295,7 @@ public class GameController : MonoBehaviour
 			MoveSlime (action.GetTile());
 			break;
 		case ActionType.FUSION:
+			Debug.Log("FUSION");
 			FusionSlime (action.GetSlime());
 			break;
 		}
@@ -325,10 +322,10 @@ public class GameController : MonoBehaviour
 
 	private void SplitSlime(Tile targetTile){
 		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
-		players [currentPlayer].AddSlime (newSlime);
-		allSlimes.Add (newSlime);
+		/*players [currentPlayer].AddSlime (newSlime);
 		targetTile.SetSlimeOnTop (newSlime);
-		newSlime.SetActualTile (targetTile);
+		newSlime.SetActualTile (targetTile);*/
+
 		newSlime.SetMass (selectedSlime.GetMass()/2.0f);
 		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
 		playerActions++;
@@ -356,8 +353,7 @@ public class GameController : MonoBehaviour
 
 	private void FusionSlime(Slime fusionTarget)
 	{
-		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
-		allSlimes.Remove(selectedSlime);
+		RemoveSlime(selectedSlime);
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
 
@@ -376,9 +372,8 @@ public class GameController : MonoBehaviour
 	}
 
 	public void RemoveSlime(Slime slimeToRemove){
-		allSlimes.Remove (slimeToRemove);
 		foreach (Player player in players){
-			if (player.GetSlimes().Contains(slimeToRemove)) player.GetSlimes().Remove(slimeToRemove);
+			if (player.IsSlimeOwner(slimeToRemove)) player.RemoveSlime(slimeToRemove);
 		}
 	}
 
@@ -427,11 +422,13 @@ public class GameController : MonoBehaviour
 		Player currentPlayer = GetCurrentPlayer ();
 		List<Slime> canAttack = new List<Slime> ();
 		Vector2 myPos = slime.GetActualTile().getPosition();
-		foreach(Slime s in allSlimes){
-			if (currentPlayer != s.GetPlayer()){
-				Vector2 slPos = s.GetActualTile().getPosition();		
-				if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
-					canAttack.Add(s);
+		foreach(Player p in players){
+			if (p != slime.GetPlayer()){
+				foreach(Slime s in p.GetSlimes()){
+					Vector2 slPos = s.GetActualTile().getPosition();		
+					if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
+						canAttack.Add(s);
+					}
 				}
 			}
 		}
@@ -454,7 +451,6 @@ public class GameController : MonoBehaviour
             Slime overSlime = tile.GetSlimeOnTop();
             if (overSlime != null && overSlime.GetPlayer() == slime.GetPlayer())
             {
-				Debug.Log("UEEE");
                 fusionSlimes.Add(overSlime);
             }
         }

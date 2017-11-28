@@ -64,6 +64,10 @@ public class Player {
 		return isAI;
 	}
 
+	public void RemoveSlime(Slime sl){
+		this.slimes.Remove(sl);
+	}
+
 
 	public string GetName(){
 		return name;

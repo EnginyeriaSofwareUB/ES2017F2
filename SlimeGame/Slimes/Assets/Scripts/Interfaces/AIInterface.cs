@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public abstract class AIInterface{
     abstract public AISlimeAction GetAction(GameController gameController);
+    //abstract public double GetStateEvaluation(GameController gameController);
 
     protected List<AISlimeAction> GetLegalActions(GameController gameController){
         /* Cada slime pot:
@@ -19,7 +20,7 @@ public abstract class AIInterface{
 
          foreach(Slime slime in slimes){
              legalActions.AddRange(GetAttackActions(gameController, slime));
-             //legalActions.AddRange(GetMoveActions(gameController, slime));
+             legalActions.AddRange(GetMoveActions(gameController, slime));
              legalActions.AddRange(GetConquerActions(gameController, slime));
              legalActions.AddRange(GetSplitActions(gameController, slime));
              legalActions.AddRange(GetFusionActions(gameController, slime));
@@ -29,7 +30,7 @@ public abstract class AIInterface{
          return legalActions;
     }
 
-    private List<AISlimeAction> GetAttackActions(GameController gameController, Slime slime){
+    public List<AISlimeAction> GetAttackActions(GameController gameController, Slime slime){
         List<AISlimeAction> actions = new List<AISlimeAction>();
         foreach(Slime toAttack in gameController.GetSlimesInAttackRange(slime)){
             actions.Add(new AISlimeAction(slime, ActionType.ATTACK, toAttack));
@@ -37,7 +38,17 @@ public abstract class AIInterface{
         return actions;
     }
 
-    private List<AISlimeAction> GetMoveActions(GameController gameController, Slime slime){
+    public List<AISlimeAction> GetAttackActions(GameController gameController){
+        List<AISlimeAction> actions = new List<AISlimeAction>();
+        foreach(Slime slime in gameController.GetCurrentPlayer().GetSlimes()){
+            foreach(Slime toAttack in gameController.GetSlimesInAttackRange(slime)){
+                actions.Add(new AISlimeAction(slime, ActionType.ATTACK, toAttack));
+            }
+        }
+        return actions;
+    }
+
+    public List<AISlimeAction> GetMoveActions(GameController gameController, Slime slime){
         List<AISlimeAction> actions = new List<AISlimeAction>();
         foreach(Tile tile in gameController.GetPossibleMovements(slime)){
             actions.Add(new AISlimeAction(slime, ActionType.MOVE, tile));
@@ -45,13 +56,13 @@ public abstract class AIInterface{
         return actions;
     }
 
-    private List<AISlimeAction> GetConquerActions(GameController gameController, Slime slime){
+    public List<AISlimeAction> GetConquerActions(GameController gameController, Slime slime){
         List<AISlimeAction> actions = new List<AISlimeAction>();
         actions.Add(new AISlimeAction(slime, ActionType.CONQUER, slime.GetActualTile()));
         return actions;
     }
 
-    private List<AISlimeAction> GetSplitActions(GameController gameController, Slime slime){
+    public List<AISlimeAction> GetSplitActions(GameController gameController, Slime slime){
         List<AISlimeAction> actions = new List<AISlimeAction>();
         foreach(Tile tile in gameController.GetSplitRangeTiles(slime)){
             actions.Add(new AISlimeAction(slime, ActionType.SPLIT, tile));
@@ -59,7 +70,7 @@ public abstract class AIInterface{
         return actions;
     }
 
-    private List<AISlimeAction> GetFusionActions(GameController gameController, Slime slime){
+    public List<AISlimeAction> GetFusionActions(GameController gameController, Slime slime){
         List<AISlimeAction> actions = new List<AISlimeAction>();
         foreach(Slime sl in gameController.GetFusionTargets(slime)){
             actions.Add(new AISlimeAction(slime, ActionType.FUSION, sl));

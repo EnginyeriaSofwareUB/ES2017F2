@@ -20,7 +20,7 @@ public class ProjectileTrajectory : MonoBehaviour {
 	public void SetTrajectorySlimes(Slime shooter, Slime toAttack){
         this.toAttack = toAttack;
         damage = shooter.getDamage();
-        Vector2 startPosition = shooter.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
+        Vector2 startPosition = shooter.GetActualTile().GetTileData().GetRealWorldPosition();
         transform.position = startPosition;
         this.endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
         direction = (this.endPos - startPosition).normalized;

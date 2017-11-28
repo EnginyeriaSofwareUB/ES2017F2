@@ -3,7 +3,7 @@
 		"name":"Wrath",
 		"attack":8,
 		"movementRange":4,
-		"attackRange":4,
+		"attackRange":2,
 		"startingHP":100,
 		"attackCost":2,
 		"picDirection":"Sprites/BasicCore/slime_wrath_core_"
