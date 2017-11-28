@@ -36,7 +36,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         textTutorialPosition = 0;
-        tutorial = 0;
+        tutorial = 1;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
@@ -92,7 +92,7 @@ public class GameController : MonoBehaviour
         else
         {
             players.Add(new Player("Jugador 1", 1, cores[GameSelection.player1Core])); // Test with 2 players
-            players.Add(new Player("Jugador 2", 8, cores[GameSelection.player2Core], new AIRandom()));
+            players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core], new AIRandom()));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -131,6 +131,7 @@ public class GameController : MonoBehaviour
 
 		if (status == GameControllerStatus.WAITINGFORACTION && 
 				players [currentPlayer].isPlayerAI ()) {
+			Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
 			AISlimeAction aiAction = players [currentPlayer].GetAction (this);
 			if(aiAction != null){ 
 				SetSelectedSlime(aiAction.GetSlime());
@@ -413,7 +414,7 @@ public class GameController : MonoBehaviour
 
 	private void AttackSlime(Slime targetSlime){
 		playerActions++;
-		status = GameControllerStatus.CHECKINGLOGIC;
+		//status = GameControllerStatus.CHECKINGLOGIC;
         RangedAttack(targetSlime);
 	}
 

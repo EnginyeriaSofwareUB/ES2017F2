@@ -29,11 +29,13 @@ public class Player {
 		isAI = false;
 	}
 
-	public Player(string name, int actions,SlimeCoreData slimeCoreData, AIInterface brain){
+	public Player(string name, float actionsPerSlime,SlimeCoreData slimeCoreData, AIInterface brain){
 		this.name = name;
-		this.actions = actions;
+		//this.actions = actions;
+		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
 		this.slimeCoreData = slimeCoreData;
+        updateActions();
 		SetBrain(brain);
 	}
 
