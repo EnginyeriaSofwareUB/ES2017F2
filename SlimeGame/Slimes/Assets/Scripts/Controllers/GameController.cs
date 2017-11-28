@@ -424,7 +424,7 @@ public class GameController : MonoBehaviour
 	private void RangedAttack(Slime toAttack)
     {
         GameObject projectile = new GameObject("projectile");
-		Sprite sprite = SpritesLoader.GetInstance().GetResource("Sprites/Proj");
+		Sprite sprite = SpritesLoader.GetInstance().GetResource("Projectiles/water_projectile");
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
