@@ -17,7 +17,7 @@
    id="svg8"
    sodipodi:docname="tile_earthj.svg"
    inkscape:version="0.92.1 r15371"
-   inkscape:export-filename="C:\Users\palme_000\Documents\Grado en Ingenieria Informatica UB\Cuarto Curso\Test\ES2017F2\Wiki Resources\Sprites\tile_earth\tile_earth_11.png"
+   inkscape:export-filename="C:\Users\palme_000\Documents\Grado en Ingenieria Informatica UB\Cuarto Curso\Test\ES2017F2\Wiki Resources\Sprites\tile_earth\tile_earth_7.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
   <defs
@@ -644,7 +644,7 @@
      inkscape:cx="273.0649"
      inkscape:cy="196.15783"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer11"
+     inkscape:current-layer="layer7"
      showgrid="false"
      units="px"
      inkscape:window-width="1366"
@@ -2883,8 +2883,7 @@
      inkscape:groupmode="layer"
      id="layer7"
      inkscape:label="Layer 7"
-     style="display:none"
-     sodipodi:insensitive="true">
+     style="display:inline">
     <path
        inkscape:connector-curvature="0"
        id="path6107"
@@ -3324,6 +3323,11 @@
          d="m 107.11039,198.72949 -17.563819,16.7823 -12.561668,19.24341 -1.069078,6.1472 10.156243,-0.26723 11.416609,-9.03153 7.750823,-10.15624 z"
          style="fill:#4a4a4a;fill-opacity:1;stroke:#585858;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
+    <path
+       inkscape:connector-curvature="0"
+       id="path5657-7"
+       d="m 72.760412,87.01012 -2.456843,-3.40178 0.377976,-8.882451 -3.023807,-9.449401 2.362351,-25.040918 -1.559152,-2.693081 -7.039809,-2.69308 1.322917,-4.72471 -0.755952,-15.68601 10.205357,2.17336 17.76488,-0.66146 9.260414,-2.07886 -4.157734,23.43452 0.188984,8.882441 -2.240198,2.232729 -10.557148,3.073601 -8.819894,-0.400902 2.138156,18.30796 3.644495,6.491602 0.337569,7.336679 -1.511905,2.26786 z"
+       style="display:inline;fill:url(#linearGradient963-1);fill-opacity:1;stroke:#a05600;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <g
        style="display:inline"
        transform="matrix(0.09828009,-0.06293831,0.06293831,0.09828009,63.73962,65.53168)"
@@ -3424,11 +3428,6 @@
          d="m 107.11039,198.72949 -17.563819,16.7823 -12.561668,19.24341 -1.069078,6.1472 10.156243,-0.26723 11.416609,-9.03153 7.750823,-10.15624 z"
          style="fill:#4a4a4a;fill-opacity:1;stroke:#585858;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
-    <path
-       inkscape:connector-curvature="0"
-       id="path5657-7"
-       d="m 72.760412,87.01012 -2.456843,-3.40178 0.377976,-8.882451 -3.023807,-9.449401 2.362351,-25.040918 -1.559152,-2.693081 -7.039809,-2.69308 1.322917,-4.72471 -0.755952,-15.68601 10.205357,2.17336 17.76488,-0.66146 9.260414,-2.07886 -4.157734,23.43452 0.188984,8.882441 -2.240198,2.232729 -10.557148,3.073601 -8.819894,-0.400902 2.138156,18.30796 3.644495,6.491602 0.337569,7.336679 -1.511905,2.26786 z"
-       style="display:inline;fill:url(#linearGradient963-1);fill-opacity:1;stroke:#a05600;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
        sodipodi:nodetypes="ccccccccccccc"
        inkscape:original-d="m 82.647652,24.723387 c 0,0 2.258821,-3.4785 3.388032,-5.21756 1.581074,0.94843 3.162296,1.89715 4.743244,2.84595 0.0453,0.0225 0.09048,0.0451 0.135521,0.0678 0.699496,-1.21837 1.40052,-2.43951 2.10058,-3.65906 2.06075,0.69724 4.121876,1.39506 6.182569,2.0932 -0.0051,0.003 -0.01052,0.005 -0.01635,0.009 -1.883239,-0.25039 -3.749305,-0.49812 -5.624132,-0.74661 -0.632347,1.44554 -1.264732,2.89099 -1.897298,4.33668 -0.06763,0.0451 -0.135387,0.0903 -0.203282,0.13552 -1.697751,-0.97358 -3.387897,-1.9426 -5.082048,-2.9137 -1.242175,1.0163 -3.726834,3.04922 -3.726834,3.04922 z"
@@ -5115,7 +5114,7 @@
      inkscape:groupmode="layer"
      id="layer11"
      inkscape:label="Layer 11"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <path
        style="display:inline;fill:#070707;fill-opacity:1;stroke:#000000;stroke-width:0.13415919px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
