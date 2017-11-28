@@ -237,7 +237,7 @@ public class GameController : MonoBehaviour
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
 		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
-        slime.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+        slime.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
 
@@ -374,10 +374,10 @@ public class GameController : MonoBehaviour
 	}
 
 	private void ConquerTile(Tile tile){
-		tile.tileElementLayer.sprite = conquerSprite;
+		tile.tileConquerLayer.sprite = conquerSprite;
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
-		tile.tileElementLayer.color = c;
+		tile.tileConquerLayer.color = c;
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}

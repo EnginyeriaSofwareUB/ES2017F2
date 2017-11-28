@@ -6,6 +6,7 @@ public class Tile : MonoBehaviour {
 	
 	private TileData data;
 	private SpriteAnimation animation;
+	public SpriteRenderer tileConquerLayer;
 	public SpriteRenderer tileUILayer;
 	public SpriteRenderer tileElementLayer;
 
@@ -47,6 +48,18 @@ public class Tile : MonoBehaviour {
 		tileUILayer.sortingLayerName = "TileUI";
 		tileUILayer.color = new Color (1f, 1f, 1f, 0.5f);
 	}
+
+
+	public void startConquerLayer(Vector3 pos, Vector3 size){
+		GameObject gotileUILayer = new GameObject ("TileConquerLayer");
+		gotileUILayer.GetComponent<Transform> ().SetParent (this.transform);
+		tileConquerLayer = gotileUILayer.AddComponent<SpriteRenderer> ();
+		tileConquerLayer.gameObject.transform.position = pos;
+		tileConquerLayer.gameObject.transform.localScale = new Vector2(1f,1f);;
+		tileConquerLayer.sortingLayerName = "TileConquest";
+		tileConquerLayer.color = new Color (1f, 1f, 1f, 1f);
+	}
+
 
 	public void startElementLayer(Vector3 pos, Vector3 size){
 		GameObject gotileElementLayer = new GameObject ("TileElementLayer");

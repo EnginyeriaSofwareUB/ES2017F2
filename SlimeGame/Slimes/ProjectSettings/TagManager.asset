@@ -52,15 +52,15 @@ TagManager:
   - name: TileContent
     uniqueID: 2041538511
     locked: 0
+  - name: TileConquest
+    uniqueID: 3286035819
+    locked: 0
   - name: TileElement
     uniqueID: 599997821
     locked: 0
   - name: TileUI
     uniqueID: 3446741769
     locked: 0
-  - name: SlimeBorder
+  - name: Slime
     uniqueID: 1619399483
-    locked: 0
-  - name: SlimeCore
-    uniqueID: 2516353617
     locked: 0
