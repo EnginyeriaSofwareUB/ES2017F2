@@ -5,11 +5,15 @@ using UnityEngine;
 public class SoundController {
 	public AudioSource efxSource;
 	public AudioSource musicSource;
-	public static SoundController instance = null; 
+	public static SoundController instance = null;
+    string jsonData = PlayerPrefs.GetString("SettingsVolume");
 
-	public SoundController(){
+    public SoundController(){
 		efxSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
 		musicSource = GameObject.Find("EventSystem").GetComponent<AudioSource>();
+        SaveSettings loadedData = JsonUtility.FromJson<SaveSettings>(jsonData);
+        efxSource.volume = loadedData.effects;
+        musicSource.volume = loadedData.music;
 	}
 
 	public static SoundController GetInstance(){
@@ -28,4 +32,11 @@ public class SoundController {
 		musicSource.loop = true;
 		musicSource.Play ();
 	}
+
+    public class SaveSettings
+    {
+        public float effects = 1;
+        public float music = 1;
+    }
+
 }
