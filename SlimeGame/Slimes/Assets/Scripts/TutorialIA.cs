@@ -38,11 +38,10 @@ public class TutorialIA : AIInterface {
         {
             actions[position] = new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-1, -1).GetSlimeOnTop());
         }
-        if(position>= actions.Count)
+        if (position >= actions.Count)
         {
             return new AISlimeAction(actionSlime, ActionType.CONQUER, gameController.GetSelectedSlime().actualTile);
         }
-
         return new AISlimeAction(actionSlime, actions[position]);
     }
 }

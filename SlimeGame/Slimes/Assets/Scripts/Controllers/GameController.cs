@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour
             ShowTutorialTip();
             players.Add(new Player("Jugador 1", 1, cores[3]));
             players.Add(new Player("IA", 1, cores[4]));
-            players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo
+            players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo??
             players[1].SetColor(GameSelection.player2Color);
             matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
@@ -129,17 +129,6 @@ public class GameController : MonoBehaviour
 			checkLogic ();
 		}
 
-		// Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
-		if (status == GameControllerStatus.WAITINGFORACTION && 
-				players [currentPlayer].isPlayerAI ()) {
-			//Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
-			AISlimeAction aiAction = players [currentPlayer].GetAction (this);
-			// AISlimeAction contiene la slime que hace la accion y la acción que hace.
-			if(aiAction != null){ 
-				SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
-				DoAction ((SlimeAction) aiAction); // Hacemos la accion.
-			} else NextPlayer();
-		}
         foreach (Player player in players)
         {
             if (player.GetNumSlimes() == 0)
@@ -156,6 +145,21 @@ public class GameController : MonoBehaviour
         {
             GameOverInfo.SetWinner(players[0]);
             SceneManager.LoadScene("GameOver");
+        }
+
+        //S'ha de posar despres de la comprovacio de ended
+        // Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
+        if (status == GameControllerStatus.WAITINGFORACTION &&
+                players[currentPlayer].isPlayerAI())
+        {
+            //Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
+            AISlimeAction aiAction = players[currentPlayer].GetAction(this);
+            // AISlimeAction contiene la slime que hace la accion y la acción que hace.
+            if (aiAction != null)
+            {
+                SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
+                DoAction((SlimeAction)aiAction); // Hacemos la accion.
+            } //else NextPlayer(); //whyyyy aixo es fa al check logic
         }
     }
 
@@ -270,8 +274,7 @@ public class GameController : MonoBehaviour
         if (currentPlayer >= players.Count)
         {
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
-            NextTurn();
-            
+            NextTurn();        
         }
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
@@ -281,12 +284,9 @@ public class GameController : MonoBehaviour
 	 */
     public void NextTurn()
     {
-        if (tutorial != 1)
-        {
-            currentPlayer = 0;
-            playerActions = 0;
-            currentTurn++;
-        }
+        currentPlayer = 0;
+        playerActions = 0;
+        currentTurn++;
     }
 
     private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
