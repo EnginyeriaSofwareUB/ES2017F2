@@ -58,8 +58,10 @@ public class Tile : MonoBehaviour {
 		tileElementLayer.color = new Color (1f, 1f, 1f, 0.5f);
 		//tileElementLayer.material = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
 		animation = new SpriteAnimation (tileElementLayer);
-		animation.LoadSprites ("Tiles/Fire/full",6);
-		animation.playAnimation ();
+        //animation.LoadSprites ("Tiles/Fire/full",6);
+        animation.LoadSprites("Tiles/Water/tile_water_", 36);
+        animation.mode = SpriteAnimationMode.SUBBOUNCE;
+        animation.playAnimation ();
 	}
 
 	public void SetSlimeOnTop(GameObject obj){
