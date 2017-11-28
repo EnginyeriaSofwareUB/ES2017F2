@@ -129,13 +129,15 @@ public class GameController : MonoBehaviour
 			checkLogic ();
 		}
 
+		// Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
 		if (status == GameControllerStatus.WAITINGFORACTION && 
 				players [currentPlayer].isPlayerAI ()) {
-			Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
+			//Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
 			AISlimeAction aiAction = players [currentPlayer].GetAction (this);
+			// AISlimeAction contiene la slime que hace la accion y la acción que hace.
 			if(aiAction != null){ 
-				SetSelectedSlime(aiAction.GetSlime());
-				DoAction ((SlimeAction) aiAction);
+				SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
+				DoAction ((SlimeAction) aiAction); // Hacemos la accion.
 			} else NextPlayer();
 		}
         foreach (Player player in players)
