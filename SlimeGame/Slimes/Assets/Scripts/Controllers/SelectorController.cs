@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using SimpleJSON;
+
 public class SelectorController : MonoBehaviour {
     private string sprite;
 	private List<string> corePaths;
@@ -22,17 +24,17 @@ public class SelectorController : MonoBehaviour {
 	void Start () {
 		slimeSelector1 = 0;
 		slimeSelector2 = 1;
-		mapSelector = 2;
+		mapSelector = 0;
 		colorSelector1 = 0;
 		colorSelector2 = 1;
 		mapTypes = new List<MapTypeSelection> ();
-		foreach(MapTypes type in Enum.GetValues(typeof(MapTypes))){
+		/*foreach(MapTypes type in Enum.GetValues(typeof(MapTypes))){
 			mapTypes.Add(new MapTypeSelection(type));
-		}
+		}*/
 		foreach(SeededMap seed in GetAllInterestingSeededMaps()){
 			mapTypes.Add(new MapTypeSelection(seed));
 		}
-		//mapTypes.Add(new MapTypeSelection());
+		mapTypes.Add(new MapTypeSelection());
 		corePaths = new List<string> ();
 		corePaths.Add ("Sprites/Wrath");
 		corePaths.Add ("Sprites/Sloth");
@@ -160,16 +162,27 @@ public class SelectorController : MonoBehaviour {
 			System.Random rnd = new System.Random();
 			map=new Matrix(rnd.Next(7,35),(float)rnd.NextDouble(),Guid.NewGuid().GetHashCode());
 		}
-		MapDrawer.instantiateMap(map.getIterable(),-1000,0);
+		
+		Vector2 size = MapDrawer.instantiateMap(map.getIterable(),-1000,0);
+		size.x -= 1000;
+		GameObject.FindGameObjectWithTag("PreviewCamera").GetComponent<PreviewCameraController>().SetSize(size);
 		GameSelection.map=map;
 	}
 	private List<SeededMap> GetAllInterestingSeededMaps(){
-		List<SeededMap> seededMap = new List<SeededMap>();
-		seededMap.Add(new SeededMap(11,0.3f,00000));
-		seededMap.Add(new SeededMap(25,0.4f,000011));
-		seededMap.Add(new SeededMap(35,0.5f,0007887));
-		seededMap.Add(new SeededMap(17,0.9f,0007887));
-		return seededMap;
+		string stats = (Resources.Load ("levels") as TextAsset).text;
+		JSONNode n = JSON.Parse (stats);
+		List<SeededMap> allSeeded = new List<SeededMap> ();
+		for (int i = 0; i < n.Count; i++) {
+			JSONNode json = n[i.ToString()];
+			SeededMap slimeData = new SeededMap(json);
+			allSeeded.Add(slimeData);
+		}
+		//List<SeededMap> seededMap = new List<SeededMap>();
+		//seededMap.Add(new SeededMap(11,0.3f,00000));
+		//seededMap.Add(new SeededMap(25,0.4f,000011));
+		//seededMap.Add(new SeededMap(35,0.5f,0007887));
+		//seededMap.Add(new SeededMap(17,0.9f,000712341237));
+		return allSeeded;
 	}
 }
  enum MapTypeSelectionTypes{
@@ -185,6 +198,11 @@ class SeededMap{
 		this.maxim=maxim;
 		this.nullProbability=nullProbability;
 		this.seed=seed;
+	}
+	public SeededMap(JSONNode data){
+		this.maxim = data["maxim"];
+		this.nullProbability = data["nullProbability"];
+		this.seed = data["seed"];		
 	}
 }
 

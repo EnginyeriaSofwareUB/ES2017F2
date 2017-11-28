@@ -56,7 +56,7 @@ public class Tile : MonoBehaviour {
 		tileElementLayer.gameObject.transform.localScale = new Vector2(1f,1f);
 		tileElementLayer.sortingLayerName = "TileElement";
 		tileElementLayer.color = new Color (1f, 1f, 1f, 0.5f);
-		tileElementLayer.material = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+		//tileElementLayer.material = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
 		animation = new SpriteAnimation (tileElementLayer);
 		animation.LoadSprites ("Tiles/Fire/full",6);
 		animation.playAnimation ();

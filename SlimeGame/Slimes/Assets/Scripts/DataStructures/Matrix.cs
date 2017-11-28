@@ -320,7 +320,7 @@ tile.SetTileType(nearestCenter.getTileType());
 		List<Vector3> alltilesnorth = AllTilesNorth(maxim);
 		int createTilesNum = (int)Math.Round((double)((1-probabilityNull)*(alltilesnorth.Count-maxim+1)));
 		System.Random rnd = new System.Random(seed);
-		if(rnd.NextDouble()>probabilityNull)AddTileToMap(TileType.Sand, 0,0);
+		if(rnd.NextDouble()<probabilityNull*probabilityNull)AddTileToMap(TileType.Sand, 0,0);
 		if(probabilityNull<=0) return alltilesnorth;
 		Dictionary<int, Dictionary<int, Dictionary<int, bool>>> dictionary = new Dictionary<int, Dictionary<int, Dictionary<int, bool>>>();		
 		

@@ -8,8 +8,8 @@ using SimpleJSON;
 public class GameController : MonoBehaviour
 {
 
-    private const int MAX_TURNS = 10;
 
+    private const int MAX_TURNS = 10;
     private Slime selectedSlime;
     public Matrix matrix;
     private List<Player> players;
@@ -33,13 +33,15 @@ public class GameController : MonoBehaviour
     
 	public Material tileMaterial;
 
+    private UIController uiController;
     // Use this for initialization
     void Start()
     {
         textTutorialPosition = 0;
         tutorial = 1;
         FloatingTextController.Initialize ();
-
+        uiController = Camera.main.GetComponent<UIController>();
+		FloatingTextController.Initialize ();
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
@@ -168,6 +170,7 @@ public class GameController : MonoBehaviour
 				currentPlayer = 0;
 				currentTurn++;
 			}
+            //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
 			playerActions = 0;
             if(currentPlayer == 0 && tutorial == 1)
             {
@@ -269,10 +272,12 @@ public class GameController : MonoBehaviour
     {
         currentPlayer++;
         playerActions = 0;
+        //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
         if (currentPlayer >= players.Count)
         {
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
             NextTurn();
+            
         }
     }
 
@@ -410,14 +415,6 @@ public class GameController : MonoBehaviour
     }
 
 	private void AttackSlime(Slime targetSlime){
-		FloatingTextController.CreateFloatingText ((-selectedSlime.getDamage ()).ToString(),targetSlime.transform);
-		targetSlime.changeMass (-selectedSlime.getDamage ());
-		if (!targetSlime.isAlive ()) {
-			targetSlime.GetTileData ().SetSlimeOnTop (null);
-			targetSlime.GetPlayer ().GetSlimes ().Remove (targetSlime);
-			Destroy (targetSlime.gameObject);
-			allSlimes.Remove (targetSlime);
-		}
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
         RangedAttack(targetSlime);
@@ -432,9 +429,7 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
-        Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
-        Vector2 endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
-        projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
+        projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
     }
 
 	private void FusionSlime(Slime fusionTarget)
@@ -458,8 +453,6 @@ public class GameController : MonoBehaviour
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
-
-
 
     //nomes cridar quan sigui torn les player 0 en el tutorial
     private void MarkAndShowInfoTutorial()
@@ -499,4 +492,12 @@ public class GameController : MonoBehaviour
         //Aqui es marxara la tile que entra per parametre
         //Debug.Log(tile);
     }
+
+	public void RemoveSlime(Slime slimeToRemove){
+		allSlimes.Remove (slimeToRemove);
+		foreach (Player player in players){
+			if (player.GetSlimes().Contains(slimeToRemove)) player.GetSlimes().Remove(slimeToRemove);
+            player.updateActions();
+		}
+	}
 }
