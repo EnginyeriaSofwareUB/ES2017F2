@@ -8,7 +8,8 @@ public class Tile : MonoBehaviour {
 	private SpriteAnimation animation;
 	public SpriteRenderer tileConquerLayer;
 	public SpriteRenderer tileUILayer;
-	public SpriteRenderer tileElementLayer;
+	public SpriteRenderer tileElementLayerBack;
+	public SpriteRenderer tileElementLayerFront;
 
 	// Use this for initialization
 	void Start () {
@@ -17,7 +18,9 @@ public class Tile : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		animation.update ();
+		if (animation != null) {
+			animation.update ();
+		}
 	}
 
 	public Vector2 getPosition(){
@@ -49,7 +52,6 @@ public class Tile : MonoBehaviour {
 		tileUILayer.color = new Color (1f, 1f, 1f, 0.5f);
 	}
 
-
 	public void startConquerLayer(Vector3 pos, Vector3 size){
 		GameObject gotileUILayer = new GameObject ("TileConquerLayer");
 		gotileUILayer.GetComponent<Transform> ().SetParent (this.transform);
@@ -60,17 +62,29 @@ public class Tile : MonoBehaviour {
 		tileConquerLayer.color = new Color (1f, 1f, 1f, 1f);
 	}
 
-
 	public void startElementLayer(Vector3 pos, Vector3 size){
 		GameObject gotileElementLayer = new GameObject ("TileElementLayer");
 		gotileElementLayer.GetComponent<Transform> ().SetParent (this.transform);
-		tileElementLayer = gotileElementLayer.AddComponent<SpriteRenderer> ();
-		tileElementLayer.gameObject.transform.position = pos;
-		tileElementLayer.gameObject.transform.localScale = new Vector2(1f,1f);
-		tileElementLayer.sortingLayerName = "TileElement";
-		tileElementLayer.color = new Color (1f, 1f, 1f, 0.5f);
-		//tileElementLayer.material = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
-		animation = new SpriteAnimation (tileElementLayer);
+		tileElementLayerBack = gotileElementLayer.AddComponent<SpriteRenderer> ();
+		tileElementLayerBack.gameObject.transform.position = pos;
+		tileElementLayerBack.gameObject.transform.localScale = new Vector2(1f,1f);
+		tileElementLayerBack.sortingLayerName = "TileElement";
+		tileElementLayerBack.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4);
+		tileElementLayerBack.color = new Color (1f, 1f, 1f, 1f);
+
+		GameObject gotileElementLayer2 = new GameObject ("TileElementLayer2");
+		gotileElementLayer2.GetComponent<Transform> ().SetParent (this.transform);
+		tileElementLayerFront = gotileElementLayer2.AddComponent<SpriteRenderer> ();
+		tileElementLayerFront.gameObject.transform.position = pos;
+		tileElementLayerFront.gameObject.transform.localScale = new Vector2(1f,1f);
+		tileElementLayerFront.sortingLayerName = "TileElement";
+		tileElementLayerFront.color = new Color (1f, 1f, 1f, 1f);
+		tileElementLayerFront.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4+3);
+		if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
+			Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+			tileElementLayerFront.material = mat;
+		}
+		animation = new SpriteAnimation (tileElementLayerFront);
 		animation.LoadSprites ("Tiles/Fire/full",6);
 		animation.playAnimation ();
 	}

@@ -38,7 +38,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         textTutorialPosition = 0;
-        tutorial = 1;
+        tutorial = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
