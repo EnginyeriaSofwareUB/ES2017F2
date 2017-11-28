@@ -111,7 +111,7 @@ public class Tile : MonoBehaviour {
 			break;
 			//Water case
 			case 2:
-			tileElementLayerFront.gameObject.transform.position = pos;
+			tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.0f,+0.2f);
 			//Animations
 			frontAnimation = new SpriteAnimation (tileElementLayerFront);
 			frontAnimation.LoadSprites("Tiles/Water/tile_water_", 36);
@@ -120,6 +120,21 @@ public class Tile : MonoBehaviour {
 			break;
 			//Earth case
 			case 3:
+			tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.75f,-0.25f);
+			tileElementLayerBack.gameObject.transform.position = pos+new Vector3(-0.5f,+0.55f);
+			tileElementLayerFront.gameObject.transform.localScale = new Vector2(0.6f,0.6f);
+			tileElementLayerBack.gameObject.transform.localScale = new Vector2(0.85f,0.85f);
+
+			//Animations
+			frontAnimation = new SpriteAnimation (tileElementLayerFront);
+			frontAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+			frontAnimation.mode = SpriteAnimationMode.LOOP;
+			frontAnimation.playAnimation ();
+
+			backAnimation = new SpriteAnimation (tileElementLayerBack);
+			backAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+			backAnimation.mode = SpriteAnimationMode.LOOP;
+			backAnimation.playAnimation ();
 			break;
 		default:
 			
