@@ -125,6 +125,7 @@ public class GameController : MonoBehaviour
 
         //iniciem la informacio de game over
         GameOverInfo.Init();
+		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
 
     }
 
@@ -430,9 +431,10 @@ public class GameController : MonoBehaviour
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
+        SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
     }
 
-	private void FusionSlime(Slime fusionTarget)
+    private void FusionSlime(Slime fusionTarget)
 	{
 		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
         players[currentPlayer].updateActions();
