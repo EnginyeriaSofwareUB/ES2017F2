@@ -159,7 +159,7 @@ public class GameController : MonoBehaviour
             {
                 SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
                 DoAction((SlimeAction)aiAction); // Hacemos la accion.
-            } //else NextPlayer(); //whyyyy aixo es fa al check logic
+            } else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
         }
     }
 
