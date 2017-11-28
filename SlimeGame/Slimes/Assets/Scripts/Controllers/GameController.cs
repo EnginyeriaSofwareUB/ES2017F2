@@ -8,8 +8,8 @@ using SimpleJSON;
 public class GameController : MonoBehaviour
 {
 
-    private const int MAX_TURNS = 5;
-    
+
+    private const int MAX_TURNS = 10;
     private Slime selectedSlime;
     public Matrix matrix;
     private List<Player> players;
@@ -26,12 +26,20 @@ public class GameController : MonoBehaviour
 	private GameControllerStatus status;
 
 	public GameObject healthBar;
+
+    public int tutorial;
+    private List<string> tutorialTexts;
+    private int textTutorialPosition;
+    
 	public Material tileMaterial;
 
     private UIController uiController;
     // Use this for initialization
     void Start()
     {
+        textTutorialPosition = 0;
+        tutorial = 1;
+        FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
@@ -45,7 +53,22 @@ public class GameController : MonoBehaviour
 			);
 			cores.Add (slimeData);
 		}
-		conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
+
+        if(tutorial == 1)
+        {
+            string textTutorial = (Resources.Load("textTutorial") as TextAsset).text;
+            tutorialTexts = new List<string>();
+            JSONNode s = JSON.Parse(textTutorial);
+            for (int i = 0; i < s.Count; i++)
+            {
+                JSONNode text = s[i.ToString()];
+                tutorialTexts.Add(text["text"]);
+            }
+        }
+
+
+
+        conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
         //MapDrawer.InitTest ();
 		status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
@@ -53,30 +76,53 @@ public class GameController : MonoBehaviour
         panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-		players.Add(new Player("Jugador 1", 2,cores[GameSelection.player1Core])); // Test with 2 players
-		players.Add(new Player("Jugador 2", 3,cores[GameSelection.player2Core])); // Test with 2 players
-		players[0].SetColor(GameSelection.player1Color);
-		players[1].SetColor(GameSelection.player2Color);
+
+        if (tutorial == 1)
+        {
+            panelTip.GetComponent<DialogInfo>().Active(true);
+            ShowTutorialTip();
+            players.Add(new Player("Jugador 1", 1, cores[3]));
+            players.Add(new Player("IA", 1, cores[4]));
+            players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo
+            players[1].SetColor(GameSelection.player2Color);
+            matrix = new Matrix(11, 0.3f, 1234567);
+            MapDrawer.instantiateMap(matrix.getIterable());
+            instantiateSlime(cores[3], players[0], 3, -4);
+            instantiateSlime(cores[4], players[1], -4, 1);
+            players[1].SetBrain(new TutorialIA());
+            players[0].setTutorialActions();
+        }
+        else
+        {
+            players.Add(new Player("Jugador 1", 2, cores[GameSelection.player1Core])); // Test with 2 players
+            players.Add(new Player("Jugador 2", 2, cores[GameSelection.player2Core]));
+            players[0].SetColor(GameSelection.player1Color);
+            players[1].SetColor(GameSelection.player2Color);
+            matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
+            if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
+            MapDrawer.instantiateMap(matrix.getIterable());
+            Vector2 slime1 = matrix.GetRandomTile();
+            instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
+            Vector2 slime2 = matrix.GetRandomTile();
+            instantiateSlime(cores[0], players[0], (int)slime2.x, (int)slime2.y);
+            Vector2 slime3 = matrix.GetRandomTile();
+            instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
+            Vector2 slime4 = matrix.GetRandomTile();
+            instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
+        }
+
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
-        matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-        if(matrix==null) matrix= new Matrix(11, 0.3f, 1234567);
-        MapDrawer.instantiateMap(matrix.getIterable());
-        Vector2 slime1 = matrix.GetRandomTile();
-		instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
-        Vector2 slime2 = matrix.GetRandomTile();
-		instantiateSlime(cores[0], players[0],(int)slime2.x, (int)slime2.y);
-        Vector2 slime3 = matrix.GetRandomTile();
-		instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
-        Vector2 slime4 = matrix.GetRandomTile();
-		instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
+
         currentTurn = 0;
         currentPlayer = 0;
         playerActions = 0;
 		foreach(Player p in players){
-			foreach (Slime s in p.GetSlimes()) {
+            p.updateActions();
+            foreach (Slime s in p.GetSlimes()) {
 				allSlimes.Add (s);
 			}
 		}
+
         //iniciem la informacio de game over
         GameOverInfo.Init();
 
@@ -88,37 +134,48 @@ public class GameController : MonoBehaviour
 		if (status == GameControllerStatus.CHECKINGLOGIC) {
 			checkLogic ();
 		}
-        bool ended = IsGameEnded();
 
-		if (players [currentPlayer].isPlayerAI ()) {
-			DoAction (players [currentPlayer].GetAction (this));
-		}
-
-        if (ended)
+        foreach (Player player in players)
         {
-            GameOverInfo.SetWinner(players[0]);
-            SceneManager.LoadScene("GameOver");
-        }
-        foreach ( Player player in players)
-        {
-            if(player.GetNumSlimes() == 0)
+            if (player.GetNumSlimes() == 0)
             {
                 //This player loses
                 GameOverInfo.SetLoser(player);
                 players.Remove(player);
             }
         }
+
+        bool ended = IsGameEnded();
+
+        if (ended)
+        {
+            GameOverInfo.SetWinner(players[0]);
+            SceneManager.LoadScene("GameOver");
+        }
+
+        if (players [currentPlayer].isPlayerAI () && playerActions < players[currentPlayer].GetActions() && !ended) {
+			DoAction (players [currentPlayer].GetAction (this));
+            //Hi ha bugs si trec aquesta linea
+            selectedSlime = null;
+        }
     }
 
 	public void checkLogic(){
 		if (playerActions >= players [currentPlayer].GetActions ()) {
 			currentPlayer++;
-			if (currentPlayer >= players.Count) {
+            foreach (Player pl in players) {
+                pl.updateActions();
+            }
+            if (currentPlayer >= players.Count) {
 				currentPlayer = 0;
 				currentTurn++;
 			}
             //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
 			playerActions = 0;
+            if(currentPlayer == 0 && tutorial == 1)
+            {
+                MarkAndShowInfoTutorial();
+            }
 		}
 		status = GameControllerStatus.WAITINGFORACTION;
 	}
@@ -159,6 +216,7 @@ public class GameController : MonoBehaviour
 
     /*
     Funció que comprova si hi ha accions suficients i si n'hi ha les utilitza.
+    TODO no s'utilitza
      */
     private bool UseActions(int numberOfActions)
     {
@@ -208,6 +266,7 @@ public class GameController : MonoBehaviour
 
     /*
 	Funció que avança al seguent jugador.
+    TODO no se usa
 	 */
     private void NextPlayer()
     {
@@ -227,10 +286,12 @@ public class GameController : MonoBehaviour
 	 */
     public void NextTurn()
     {
-        currentPlayer = 0;
-        playerActions = 0;
-        
-        currentTurn++;
+        if (tutorial != 1)
+        {
+            currentPlayer = 0;
+            playerActions = 0;
+            currentTurn++;
+        }
     }
 
     private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
@@ -286,6 +347,22 @@ public class GameController : MonoBehaviour
 		if (action == null) {
 			return;
 		}
+        if(tutorial == 1 && currentPlayer == 0)
+        {
+            Player pl = players[0];
+            if (!pl.isTutorialAction(action, selectedSlime))
+            {
+                return;
+            }
+            else
+            {
+                UnmarkTiles();
+                if(playerActions < pl.GetActions() -1)
+                {
+                    MarkAndShowInfoTutorial();
+                }
+            }
+        }
 		switch(action.GetAction()) {
 		case ActionType.ATTACK:
 			AttackSlime (action.GetSlime());
@@ -327,7 +404,7 @@ public class GameController : MonoBehaviour
 
 	private void SplitSlime(Tile targetTile){
 		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
-		players [currentPlayer].AddSlime (newSlime);
+		//players [currentPlayer].AddSlime (newSlime);
 		allSlimes.Add (newSlime);
 		targetTile.SetSlimeOnTop (newSlime.gameObject);
 		newSlime.SetActualTile (targetTile);
@@ -335,7 +412,7 @@ public class GameController : MonoBehaviour
 		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
-	}
+    }
 
 	private void AttackSlime(Slime targetSlime){
 		playerActions++;
@@ -358,6 +435,7 @@ public class GameController : MonoBehaviour
 	private void FusionSlime(Slime fusionTarget)
 	{
 		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
+        players[currentPlayer].updateActions();
 		allSlimes.Remove(selectedSlime);
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
@@ -376,10 +454,50 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
+    //nomes cridar quan sigui torn les player 0 en el tutorial
+    private void MarkAndShowInfoTutorial()
+    {
+        Player pl = players[0];
+        ShowTutorialTip();
+        if (pl.RightSlime(pl.GetSlimes()[0]))
+        {
+            MarkTile(pl.GetSlimes()[0].actualTile);
+        }
+        else
+        {
+            MarkTile(pl.GetSlimes()[1].actualTile);
+        }
+        if (pl.nextAction().GetAction() == ActionType.MOVE || pl.nextAction().GetAction() == ActionType.ATTACK
+            || pl.nextAction().GetAction() == ActionType.SPLIT)
+        {
+            MarkTile((Tile)pl.nextAction().GetData());
+        }
+    }
+
+    private void ShowTutorialTip()
+    {
+        if (textTutorialPosition < tutorialTexts.Count)
+        {
+            textTip.GetComponent<Text>().text = tutorialTexts[textTutorialPosition];
+            textTutorialPosition++;
+        }
+    }
+
+    private void UnmarkTiles()
+    {
+        //Aqui es desmarcaran totes les casselles marcades
+    }
+    private void MarkTile(Tile tile)
+    {
+        //Aqui es marxara la tile que entra per parametre
+        //Debug.Log(tile);
+    }
+
 	public void RemoveSlime(Slime slimeToRemove){
 		allSlimes.Remove (slimeToRemove);
 		foreach (Player player in players){
 			if (player.GetSlimes().Contains(slimeToRemove)) player.GetSlimes().Remove(slimeToRemove);
+            player.updateActions();
 		}
 	}
 }
