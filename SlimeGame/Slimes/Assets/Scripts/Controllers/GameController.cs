@@ -169,6 +169,10 @@ public class GameController : MonoBehaviour
 				currentTurn++;
 			}
 			playerActions = 0;
+            if(currentPlayer == 0 && tutorial == 1)
+            {
+                MarkAndShowInfoTutorial();
+            }
 		}
 		status = GameControllerStatus.WAITINGFORACTION;
 	}
@@ -209,6 +213,7 @@ public class GameController : MonoBehaviour
 
     /*
     Funció que comprova si hi ha accions suficients i si n'hi ha les utilitza.
+    TODO no s'utilitza
      */
     private bool UseActions(int numberOfActions)
     {
@@ -258,6 +263,7 @@ public class GameController : MonoBehaviour
 
     /*
 	Funció que avança al seguent jugador.
+    TODO no se usa
 	 */
     private void NextPlayer()
     {
@@ -275,9 +281,12 @@ public class GameController : MonoBehaviour
 	 */
     public void NextTurn()
     {
-        currentPlayer = 0;
-        playerActions = 0;
-        currentTurn++;
+        if (tutorial != 1)
+        {
+            currentPlayer = 0;
+            playerActions = 0;
+            currentTurn++;
+        }
     }
 
     private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
@@ -335,13 +344,18 @@ public class GameController : MonoBehaviour
 		}
         if(tutorial == 1 && currentPlayer == 0)
         {
-            if (!players[0].isTutorialAction(action, selectedSlime))
+            Player pl = players[0];
+            if (!pl.isTutorialAction(action, selectedSlime))
             {
                 return;
             }
             else
             {
-                ShowTutorialTip();
+                UnmarkTiles();
+                if(playerActions < pl.GetActions() -1)
+                {
+                    MarkAndShowInfoTutorial();
+                }
             }
         }
 		switch(action.GetAction()) {
@@ -445,6 +459,28 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
+
+
+    //nomes cridar quan sigui torn les player 0 en el tutorial
+    private void MarkAndShowInfoTutorial()
+    {
+        Player pl = players[0];
+        ShowTutorialTip();
+        if (pl.RightSlime(pl.GetSlimes()[0]))
+        {
+            MarkTile(pl.GetSlimes()[0].actualTile);
+        }
+        else
+        {
+            MarkTile(pl.GetSlimes()[1].actualTile);
+        }
+        if (pl.nextAction().GetAction() == ActionType.MOVE || pl.nextAction().GetAction() == ActionType.ATTACK
+            || pl.nextAction().GetAction() == ActionType.SPLIT)
+        {
+            MarkTile((Tile)pl.nextAction().GetData());
+        }
+    }
+
     private void ShowTutorialTip()
     {
         if (textTutorialPosition < tutorialTexts.Count)
@@ -454,4 +490,13 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void UnmarkTiles()
+    {
+        //Aqui es desmarcaran totes les casselles marcades
+    }
+    private void MarkTile(Tile tile)
+    {
+        //Aqui es marxara la tile que entra per parametre
+        //Debug.Log(tile);
+    }
 }

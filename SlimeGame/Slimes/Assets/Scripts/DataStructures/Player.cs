@@ -43,7 +43,7 @@ public class Player {
         tutorialActions.Add(new SlimeAction(ActionType.MOVE, MapDrawer.GetTileAt(0, -1))); //Slime 1
         tutorialActions.Add(new SlimeAction(ActionType.FUSION, MapDrawer.GetTileAt(-1, -1))); //Slime 1
         tutorialActions.Add(new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-3, 0)));
-        tutorialActions.Add(new SlimeAction(ActionType.CONQUER, MapDrawer.GetTileAt(-1, -1)));
+        //tutorialActions.Add(new SlimeAction(ActionType.CONQUER, MapDrawer.GetTileAt(-1, -1)));
         tutorialActions.Add(new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-2, 1)));
     }
     public void updateActions()
@@ -97,13 +97,23 @@ public class Player {
 		return slimes;
 	}
 
-    private bool RightSlime(Slime whoActions)
+    //Nomes usar per al tutorial
+    public bool RightSlime(Slime whoActions)
     {
         if (positionTutorial == 2 || positionTutorial == 5 || positionTutorial == 6)
             return whoActions == slimes[1];
         else
             return whoActions == slimes[0];
     }
+
+
+    //Nomes usar per al tutorial
+    public SlimeAction nextAction()
+    {
+        return tutorialActions[positionTutorial];
+    }
+
+    //Nomes usar per al tutorial
     public bool isTutorialAction(SlimeAction slimeAction, Slime whoActions)
     {
         if (positionTutorial >= tutorialActions.Count)
