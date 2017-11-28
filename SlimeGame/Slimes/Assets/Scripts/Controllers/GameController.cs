@@ -37,13 +37,10 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-<<<<<<< HEAD
-=======
         textTutorialPosition = 0;
-        tutorial = 1;
+        tutorial = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
->>>>>>> development
 		FloatingTextController.Initialize ();
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
@@ -433,17 +430,11 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
-<<<<<<< HEAD
-        Vector2 startPos = selectedSlime.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
-        Vector2 endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
-        projectile.GetComponent<ProjectileTrajectory>().SetTrajectoryPoints(startPos, endPos);
-        SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
-=======
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
->>>>>>> development
+        SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
     }
 
-	private void FusionSlime(Slime fusionTarget)
+    private void FusionSlime(Slime fusionTarget)
 	{
 		players [currentPlayer].GetSlimes ().Remove(selectedSlime);
         players[currentPlayer].updateActions();
