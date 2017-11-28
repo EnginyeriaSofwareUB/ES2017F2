@@ -5,7 +5,8 @@ using UnityEngine;
 public class Tile : MonoBehaviour {
 	
 	private TileData data;
-	private SpriteAnimation animation;
+	private SpriteAnimation backAnimation;
+	private SpriteAnimation frontAnimation;
 	public SpriteRenderer tileConquerLayer;
 	public SpriteRenderer tileUILayer;
 	public SpriteRenderer tileElementLayerBack;
@@ -18,8 +19,11 @@ public class Tile : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (animation != null) {
-			animation.update ();
+		if (backAnimation != null) {
+			backAnimation.update ();
+		}
+		if (frontAnimation != null) {
+			frontAnimation.update ();
 		}
 	}
 
@@ -66,7 +70,7 @@ public class Tile : MonoBehaviour {
 		GameObject gotileElementLayer = new GameObject ("TileElementLayer");
 		gotileElementLayer.GetComponent<Transform> ().SetParent (this.transform);
 		tileElementLayerBack = gotileElementLayer.AddComponent<SpriteRenderer> ();
-		tileElementLayerBack.gameObject.transform.position = pos;
+		tileElementLayerBack.gameObject.transform.position = pos+new Vector3(0.0f,+0.5f);;
 		tileElementLayerBack.gameObject.transform.localScale = new Vector2(1f,1f);
 		tileElementLayerBack.sortingLayerName = "TileElement";
 		tileElementLayerBack.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4);
@@ -75,18 +79,28 @@ public class Tile : MonoBehaviour {
 		GameObject gotileElementLayer2 = new GameObject ("TileElementLayer2");
 		gotileElementLayer2.GetComponent<Transform> ().SetParent (this.transform);
 		tileElementLayerFront = gotileElementLayer2.AddComponent<SpriteRenderer> ();
-		tileElementLayerFront.gameObject.transform.position = pos;
+		tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.0f,-0.25f);
 		tileElementLayerFront.gameObject.transform.localScale = new Vector2(1f,1f);
 		tileElementLayerFront.sortingLayerName = "TileElement";
 		tileElementLayerFront.color = new Color (1f, 1f, 1f, 1f);
 		tileElementLayerFront.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4+3);
+
 		if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
 			Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
 			tileElementLayerFront.material = mat;
 		}
-		animation = new SpriteAnimation (tileElementLayerFront);
-		animation.LoadSprites ("Tiles/Fire/full",6);
-		animation.playAnimation ();
+
+		if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
+			Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+			tileElementLayerBack.material = mat;
+		}
+			
+		frontAnimation = new SpriteAnimation (tileElementLayerFront);
+		frontAnimation.LoadSprites ("Tiles/Fire/front",6);
+		frontAnimation.playAnimation ();
+		backAnimation = new SpriteAnimation (tileElementLayerBack);
+		backAnimation.LoadSprites ("Tiles/Fire/back",6);
+		backAnimation.playAnimation ();
 	}
 
 	public void SetSlimeOnTop(GameObject obj){

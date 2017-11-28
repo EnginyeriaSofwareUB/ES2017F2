@@ -303,7 +303,7 @@ public class GameController : MonoBehaviour
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
 		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
-        slime.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
+		slime.GetComponent<SpriteRenderer>().sortingLayerName = "TileElement";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
 
@@ -427,7 +427,7 @@ public class GameController : MonoBehaviour
 		Sprite sprite = SpritesLoader.GetInstance().GetResource("Sprites/Proj");
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
-        projectile.GetComponent<SpriteRenderer>().sortingLayerName = "SlimeBorder";
+        projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
