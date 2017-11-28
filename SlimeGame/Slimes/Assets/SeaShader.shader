@@ -62,7 +62,7 @@ Shader "Unlit/SeaShader"
                 //sum = tex2D(_MainTex,float2(i.uv.x+(1-i.uv.y)*sin((_Time.w+i.uv.y)*2.3),i.uv.y))*screenPos.y;//*_SinTime.w
                 sum = tex2D(_MainTex,float2(i.uv.x,(1-maxY)*i.uv.y));//*_SinTime.w
                 if(sum.w<0.9){
-                sum = fixed4(0.0h,0.0h,0.0h,0.0h);
+                	sum = fixed4(0.0h,0.0h,0.0h,0.0h);
                 }
                	//sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*screenPos.y;
                 return sum;
