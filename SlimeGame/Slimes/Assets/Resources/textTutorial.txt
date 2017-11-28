@@ -1,0 +1,35 @@
+{
+	"0":{
+		"text":"Split to (3,-3)"
+	},
+	"1":{
+		"text":"Move from (3,-4) to (1,-2)"
+	},
+	"2":{
+		"text":"Move from (3,-3) to (1,-1)"
+	},
+	"3":{
+		"text":"Move from (1,-2) to (-1,-1)"
+	},
+	"4":{
+		"text":"Conquer (-1,-1)"
+	},
+	"5":{
+		"text":"Move from (1,-1) to (0,-1)"
+	},
+	"6":{
+		"text":"Join using (0,-1)"
+	},
+	"7":{
+		"text":"Attack to (-3,0)"
+	},
+	"8":{
+		"text":"Attack to (-2,1)"
+	},
+	"9":{
+		"text":"Aquest es el text 9"
+	},
+	"10":{
+		"text":"Aquest es el text 10"
+	}
+}

@@ -12,6 +12,7 @@ TagManager:
   - AttackRange
   - DivisionRange
   - FusionRange
+  - PreviewCamera
   layers:
   - Default
   - TransparentFX
