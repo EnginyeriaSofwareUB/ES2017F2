@@ -9,9 +9,14 @@ public class UIController : MonoBehaviour {
     GameObject canvasInfo;
 	GameController gameController;
 
-	private Sprite TileMoveSprite;
-	private Sprite TileAttackSprite;
-	private Sprite TileSplitSprite;
+	private Sprite TileSprite;
+
+	private Color moveColor = new Color (0f,0xa5,1f);
+	private Color attackColor = new Color (1f,0f,0f);
+	private Color splitColor = new Color (1f,0xdd,0f);
+	private Color joinColor = new Color (0x21,1f,0f);
+	private Color conquerColor = new Color (0xce,0x0c,0xc1);
+	private Color specialColor = new Color (1f,0x6a,0f);
 
 	private List<SpriteRenderer> currentUIRenderer;
 
@@ -32,9 +37,7 @@ public class UIController : MonoBehaviour {
         //Si clica OK desactiva el canvas
         canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
 
-		TileMoveSprite = SpritesLoader.GetInstance().GetResource("Test/movementRangeFilter");
-		TileAttackSprite = SpritesLoader.GetInstance().GetResource("Test/attackRangeFilter");
-		TileSplitSprite = SpritesLoader.GetInstance().GetResource("Test/movementRangeFilter");
+		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
 		currentUIRenderer = new List<SpriteRenderer> ();
 
 	}
@@ -63,7 +66,8 @@ public class UIController : MonoBehaviour {
 		List<Tile> splitTiles = new List<Tile> ();
 		foreach (TileData td in neighbours) {
 			Tile t = td.getTile ();
-			t.tileUILayer.sprite = TileSplitSprite;
+			t.tileUILayer.sprite = TileSprite;
+			t.tileUILayer.color = splitColor;
 			currentUIRenderer.Add(t.tileUILayer);
 			splitTiles.Add (t);
 		}
@@ -107,7 +111,8 @@ public class UIController : MonoBehaviour {
 		visited.RemoveAt(0);
 		foreach (Tile t in visited) {
 			moveTiles.Add (t);
-			t.tileUILayer.sprite = TileMoveSprite;
+			t.tileUILayer.sprite = TileSprite;
+			t.tileUILayer.color = moveColor;
 			currentUIRenderer.Add (t.tileUILayer);
 		}
 		return moveTiles;
@@ -121,7 +126,8 @@ public class UIController : MonoBehaviour {
 			if (currentPlayer != s.GetPlayer()){
 				Vector2 slPos = s.GetActualTile().getPosition();		
 				if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
-					s.GetActualTile ().tileUILayer.sprite = TileAttackSprite;
+					s.GetActualTile ().tileUILayer.sprite = TileSprite;
+					s.GetActualTile ().tileUILayer.color = attackColor;
 					currentUIRenderer.Add (s.GetActualTile ().tileUILayer);
 					attackTiles.Add (s.GetActualTile ());
 				}

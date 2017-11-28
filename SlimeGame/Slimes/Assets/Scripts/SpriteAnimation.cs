@@ -139,5 +139,18 @@ public class SpriteAnimation
 	public void notifyParent(){
 	} 
 
+
+	public void StopAnimation(){
+		status = SpriteAnimationStatus.ENDED;
+	}
+
+	public void PauseAnimation(){
+		status = SpriteAnimationStatus.PAUSED;
+	}
+
+	public void RandomStart(){
+		currentImg = Random.Range (0, sprites.Count);
+		subbounceCounter = Random.Range (0,3);
+	}
 }
 
