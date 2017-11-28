@@ -9,6 +9,10 @@ public class AISlimeAction : SlimeAction{
         this.actionSlime = slime;
 	}
 
+	public AISlimeAction(Slime actionSlime, SlimeAction action) : base(action.GetAction(), action.GetData()){
+        this.actionSlime = actionSlime;
+	}
+
     public Slime GetSlime(){
         return this.actionSlime;
     }
