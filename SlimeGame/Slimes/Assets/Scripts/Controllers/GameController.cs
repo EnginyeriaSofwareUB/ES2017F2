@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
 
 	public GameObject healthBar;
 
-    public int tutorial;
+    public static int tutorial;
     private List<string> tutorialTexts;
     private int textTutorialPosition;
     
@@ -38,7 +38,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         textTutorialPosition = 0;
-        tutorial = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
