@@ -7,6 +7,7 @@ public enum SpriteAnimationMode {
 	ONESHOT,
 	LOOP,
 	BOUNCE,
+    SUBBOUNCE,
 	REVERSE
 
 }

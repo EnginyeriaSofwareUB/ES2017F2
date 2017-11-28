@@ -65,6 +65,7 @@ public class Tile : MonoBehaviour {
 	public void startElementLayer(Vector3 pos, Vector3 size){
 		GameObject gotileElementLayer = new GameObject ("TileElementLayer");
 		gotileElementLayer.GetComponent<Transform> ().SetParent (this.transform);
+<<<<<<< HEAD
 		tileElementLayerBack = gotileElementLayer.AddComponent<SpriteRenderer> ();
 		tileElementLayerBack.gameObject.transform.position = pos;
 		tileElementLayerBack.gameObject.transform.localScale = new Vector2(1f,1f);
@@ -87,6 +88,19 @@ public class Tile : MonoBehaviour {
 		animation = new SpriteAnimation (tileElementLayerFront);
 		animation.LoadSprites ("Tiles/Fire/full",6);
 		animation.playAnimation ();
+=======
+		tileElementLayer = gotileElementLayer.AddComponent<SpriteRenderer> ();
+		tileElementLayer.gameObject.transform.position = pos;
+		tileElementLayer.gameObject.transform.localScale = new Vector2(1f,1f);
+		tileElementLayer.sortingLayerName = "TileElement";
+		tileElementLayer.color = new Color (1f, 1f, 1f, 0.5f);
+		//tileElementLayer.material = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+		animation = new SpriteAnimation (tileElementLayer);
+        //animation.LoadSprites ("Tiles/Fire/full",6);
+        animation.LoadSprites("Tiles/Water/tile_water_", 36);
+        animation.mode = SpriteAnimationMode.SUBBOUNCE;
+        animation.playAnimation ();
+>>>>>>> waterTile
 	}
 
 	public void SetSlimeOnTop(GameObject obj){
