@@ -88,15 +88,17 @@ public class Tile : MonoBehaviour {
 
 		switch(Random.Range(1,5)){
 			//Fire case
-			case 1:
-			tileElementLayerBack.gameObject.transform.position = pos+new Vector3(0.0f,+0.5f);
-			tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.0f,-0.25f);
+		case 1:
+			tileElementLayerBack.gameObject.transform.position = pos + new Vector3 (0.0f, +0.5f);
+			tileElementLayerFront.gameObject.transform.position = pos + new Vector3 (0.0f, -0.25f);
 			//Animations
 			frontAnimation = new SpriteAnimation (tileElementLayerFront);
-			frontAnimation.LoadSprites ("Tiles/Fire/front",6);
+			frontAnimation.LoadSprites ("Tiles/Fire/front", 6);
+			frontAnimation.RandomStart ();
 			frontAnimation.playAnimation ();
 			backAnimation = new SpriteAnimation (tileElementLayerBack);
 			backAnimation.LoadSprites ("Tiles/Fire/back",6);
+			backAnimation.RandomStart ();
 			backAnimation.playAnimation ();
 			//Shader
 			if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
@@ -115,6 +117,7 @@ public class Tile : MonoBehaviour {
 			//Animations
 			frontAnimation = new SpriteAnimation (tileElementLayerFront);
 			frontAnimation.LoadSprites("Tiles/Water/tile_water_", 36);
+			frontAnimation.RandomStart ();
 			frontAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
 			frontAnimation.playAnimation ();
 			break;
@@ -128,11 +131,13 @@ public class Tile : MonoBehaviour {
 			//Animations
 			frontAnimation = new SpriteAnimation (tileElementLayerFront);
 			frontAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+			frontAnimation.RandomStart ();
 			frontAnimation.mode = SpriteAnimationMode.LOOP;
 			frontAnimation.playAnimation ();
 
 			backAnimation = new SpriteAnimation (tileElementLayerBack);
 			backAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+			backAnimation.RandomStart ();
 			backAnimation.mode = SpriteAnimationMode.LOOP;
 			backAnimation.playAnimation ();
 			break;
@@ -141,6 +146,17 @@ public class Tile : MonoBehaviour {
 			break;
 		}
 
+	}
+
+	public void StopAnimations(){
+		if (backAnimation != null) {
+			backAnimation.StopAnimation ();
+			backAnimation = null;
+		}
+		if (frontAnimation != null) {
+			frontAnimation.StopAnimation ();
+			frontAnimation = null;
+		}
 	}
 
 	public void SetSlimeOnTop(GameObject obj){

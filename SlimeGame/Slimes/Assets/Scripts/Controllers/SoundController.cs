@@ -12,8 +12,10 @@ public class SoundController {
 		efxSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
 		musicSource = GameObject.Find("EventSystem").GetComponent<AudioSource>();
         SaveSettings loadedData = JsonUtility.FromJson<SaveSettings>(jsonData);
-        efxSource.volume = loadedData.effects;
-        musicSource.volume = loadedData.music;
+		if (loadedData != null) {
+			efxSource.volume = loadedData.effects;
+			musicSource.volume = loadedData.music;
+		}
 	}
 
 	public static SoundController GetInstance(){
