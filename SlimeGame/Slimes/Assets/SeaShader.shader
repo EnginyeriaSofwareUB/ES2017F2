@@ -57,10 +57,10 @@ Shader "Unlit/SeaShader"
                 float2 screenPos = i.screenPos.xy / i.screenPos.w;
                 float _half = (top + bottom)*0.5;
                 float _diff = (bottom - top)*0.5;
-                float maxY = 1 - abs(sin(i.uv.x+_Time.z+screenPos.y));
+                float maxY = (-abs(sin(i.uv.x*15+_Time.w+screenPos.y)))*0.8;
                 fixed4 sum = fixed4(0.0h,0.0h,0.0h,0.0h);
                 //sum = tex2D(_MainTex,float2(i.uv.x+(1-i.uv.y)*sin((_Time.w+i.uv.y)*2.3),i.uv.y))*screenPos.y;//*_SinTime.w
-                sum = tex2D(_MainTex,float2(i.uv.x,maxY*i.uv.y));//*_SinTime.w
+                sum = tex2D(_MainTex,float2(i.uv.x,(1-maxY)*i.uv.y));//*_SinTime.w
                	//sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*screenPos.y;
                 return sum;
             }

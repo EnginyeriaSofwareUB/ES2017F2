@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 43da4c2ed48f1ac44b8c88c1a814b210
+timeCreated: 1511899524
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Conventional Wisdom
+  fontNames:
+  - Conventional Wisdom
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
