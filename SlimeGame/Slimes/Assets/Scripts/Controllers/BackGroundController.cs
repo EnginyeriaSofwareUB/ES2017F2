@@ -32,8 +32,8 @@ public class BackGroundController : MonoBehaviour {
 			s1.transform.position = pos-i*(new Vector3(0f,1f,0f));
 			s2.transform.position = pos-(new Vector3(0f,0.5f,0f))+i*(new Vector3(0f,1f,0f));
 
-			s1.transform.localScale = new Vector3 (2f, 1f,1f);
-			s2.transform.localScale = new Vector3 (2f, 1f,1f);
+			s1.transform.localScale = new Vector3 (2f*(1+Random.Range(0,5)/5.0f), 1f,1f);
+			s2.transform.localScale = new Vector3 (2f*(1+Random.Range(0,5)/5.0f), 1f,1f);
 
 			s1.AddComponent<SpriteRenderer> ().sprite = spriteList[Random.Range(0,spriteList.Count)];
 			s2.AddComponent<SpriteRenderer> ().sprite = spriteList[Random.Range(0,spriteList.Count)];

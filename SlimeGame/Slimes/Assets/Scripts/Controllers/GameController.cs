@@ -52,7 +52,6 @@ public class GameController : MonoBehaviour
 			);
 			cores.Add (slimeData);
 		}
-		tutorial = 0;
         if(tutorial == 1)
         {
             string textTutorial = (Resources.Load("textTutorial") as TextAsset).text;

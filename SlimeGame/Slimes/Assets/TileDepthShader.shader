@@ -9,6 +9,7 @@ Shader "Unlit/TileDepthShader"
         // Color property for material inspector, default to white
 		_MainTex ("Texture", 2D) = "white" {}
         _Color ("Main Color", Color) = (1,1,1,1)
+        _RandomStart ("RandomStart",float) = 1
 
     }
     SubShader
@@ -30,6 +31,7 @@ Shader "Unlit/TileDepthShader"
             float4 _MainTex_ST;
             uniform float4 _TexCoords;
             fixed4 _Color;
+            fixed _RandomStart;
             float top;
             float bottom;
 
@@ -54,6 +56,11 @@ Shader "Unlit/TileDepthShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                
+                //float offsett = i.position.x*i.position.y;//Llamas rotas
+                //float offsett = i.position.x+i.position.y;//Llamas ralladas
+                float offsett = _TexCoords.x;
+
                 float2 screenPos = i.screenPos.xy / i.screenPos.w;
                 float _half = (top + bottom)*0.5;
                 float _diff = (bottom - top)*0.5;
@@ -62,7 +69,8 @@ Shader "Unlit/TileDepthShader"
                 screenPos.y = (screenPos.y+1)*0.5;
                 fixed4 sum = fixed4(0.0h,0.0h,0.0h,0.0h);
                 //sum = tex2D(_MainTex,float2(i.uv.x+(1-i.uv.y)*sin((_Time.w+i.uv.y)*2.3),i.uv.y))*screenPos.y;//*_SinTime.w
-                sum = tex2D(_MainTex,float2(i.uv.x+i.uv.y/8*sin((_Time.z+(1-i.uv.y))*2.3),i.uv.y));//*_SinTime.w
+
+                sum = tex2D(_MainTex,float2(i.uv.x+i.uv.y/8*sin((_Time.z+(1-i.uv.y))*2.3+_RandomStart),i.uv.y));//*_SinTime.w
                	//sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*screenPos.y;
                	if(sum.w<0.02h){
                		return fixed4(0.0h,0.0h,0.0h,0.0);

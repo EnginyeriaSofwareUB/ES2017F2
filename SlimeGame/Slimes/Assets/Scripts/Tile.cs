@@ -101,14 +101,17 @@ public class Tile : MonoBehaviour {
 			backAnimation.RandomStart ();
 			backAnimation.playAnimation ();
 			//Shader
+			int baseOffset = Random.Range(0,20);
 			if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
 				Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
 				tileElementLayerFront.material = mat;
+				tileElementLayerFront.material.SetFloat ("_RandomStart",Mathf.PI+baseOffset);
 			}
 
 			if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
 				Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
 				tileElementLayerBack.material = mat;
+				tileElementLayerBack.material.SetFloat ("_RandomStart",2*Mathf.PI+baseOffset);
 			}
 			break;
 			//Water case
