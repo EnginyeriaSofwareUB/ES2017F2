@@ -1,0 +1,32 @@
+{
+	"0":{
+		"nullProbability":0.3,
+		"maxim":11,
+		"seed":012391238,		
+	},
+	"1":{
+		"nullProbability":0.3,
+		"maxim":13,
+		"seed":0123474585,		
+	},
+	"2":{
+		"nullProbability":0.3,
+		"maxim":15,
+		"seed":0123456897,		
+	},
+	"2":{
+		"nullProbability":0.3,
+		"maxim":15,
+		"seed":0123456897,		
+	},
+	"3":{
+		"nullProbability":0.3,
+		"maxim":17,
+		"seed":465877955,		
+	},
+	"4":{
+		"nullProbability":0.3,
+		"maxim":19,
+		"seed":554676898,		
+	},
+}

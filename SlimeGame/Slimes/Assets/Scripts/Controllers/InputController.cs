@@ -7,11 +7,7 @@ public class InputController : MonoBehaviour
 
     GameController gameController;
     UIController uiController;
-    public int xLimit;
-    public int yLimit;
-    public int minZoom;
-    public int maxZoom;
-    public int speed;
+    
 
 	List<Tile> attackTiles;
 	List<Tile> moveTiles;
@@ -19,14 +15,9 @@ public class InputController : MonoBehaviour
 
     void Start()
     {
-        speed = 25;
-        
-        xLimit = (int) MapDrawer.MapSize().x;
-        yLimit = (int) MapDrawer.MapSize().y;
-        minZoom = 3;
-        maxZoom = 13;
-		gameController = Camera.main.GetComponent<GameController>();
+        gameController = Camera.main.GetComponent<GameController>();
         uiController = Camera.main.GetComponent<UIController>();
+		uiController.InitMapSize(MapDrawer.MapSize());
 		moveTiles = new List<Tile> ();
 		attackTiles = new List<Tile> ();
 		splitTiles = new List<Tile> ();
@@ -54,7 +45,7 @@ public class InputController : MonoBehaviour
 						//s = col.gameObject.GetComponent<Slime>().ToString();
 */ 
 					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
-						gameController.ConquerTile (col.gameObject.GetComponent<Slime> ().GetActualTile());
+						gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
@@ -70,13 +61,13 @@ public class InputController : MonoBehaviour
 						if ((isMoveTile || isAttackTile) && gameController.GetSelectedSlime () != null) {
 							if (isMoveTile) {
 								Debug.Log (Time.time + "Move");
-								gameController.MoveSlime (target);
+								gameController.DoAction(new SlimeAction(ActionType.MOVE,target));
 								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							} else if (isAttackTile) {
 								Debug.Log (Time.time + "Attack");
-								gameController.AttackSlime (target.GetSlimeOnTop ());
+								gameController.DoAction(new SlimeAction(ActionType.ATTACK,target.GetSlimeOnTop ()));
 								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
@@ -103,13 +94,13 @@ public class InputController : MonoBehaviour
 					}
 					if (s != null && s!=gameController.GetSelectedSlime()) {
 						Debug.Log (Time.time+"Join");
-						gameController.FusionSlime (s);
+						gameController.DoAction(new SlimeAction(ActionType.FUSION,s));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 					}else if(t!=null && splitTiles.Contains(t)){
 						Debug.Log (Time.time+"Split");
-						gameController.SlplitSlime (t);
+						gameController.DoAction(new SlimeAction(ActionType.SPLIT,t));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
@@ -123,26 +114,18 @@ public class InputController : MonoBehaviour
 				gameController.SetSelectedSlime (null);
 				uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
-			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0 && this.GetComponent<Camera> ().orthographicSize > minZoom) {
-				this.GetComponent<Camera> ().orthographicSize--;
-			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0 && this.GetComponent<Camera> ().orthographicSize < maxZoom) {
-				this.GetComponent<Camera> ().orthographicSize++;
+			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
+				uiController.ZoomIn();
+			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
+				uiController.ZoomOut();				
 			} else if (Input.GetKey (KeyCode.UpArrow)) {
-				if (this.transform.position.y < yLimit) {
-					this.transform.position += (new Vector3 (0, speed, 0) * Time.deltaTime);
-				}
+				uiController.MoveUp();				
 			} else if (Input.GetKey (KeyCode.DownArrow)) {
-				if (this.transform.position.y > -yLimit) {
-					this.transform.position -= (new Vector3 (0, speed, 0) * Time.deltaTime);
-				}
+				uiController.MoveDown();				
 			} else if (Input.GetKey (KeyCode.LeftArrow)) {
-				if (this.transform.position.x > -xLimit) {
-					this.transform.position -= (new Vector3 (speed, 0, 0) * Time.deltaTime);
-				}
+				uiController.MoveLeft();				
 			} else if (Input.GetKey (KeyCode.RightArrow)) {
-				if (this.transform.position.x < xLimit) {
-					this.transform.position += (new Vector3 (speed, 0, 0) * Time.deltaTime);
-				}
+				uiController.MoveRight();
 			}
 		}
 	}

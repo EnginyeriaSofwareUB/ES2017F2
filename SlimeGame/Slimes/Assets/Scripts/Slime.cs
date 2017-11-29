@@ -9,6 +9,10 @@ public class Slime : MonoBehaviour {
 	public bool rangeUpdated;
 	private float mass;
 	private SpriteAnimation animation;
+	private float maxMass = 300f;
+	private float minMass = 20f;
+	private float maxScale = 0.6f;
+	private float minScale = 0.2f;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
@@ -16,7 +20,7 @@ public class Slime : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		animation.update ();
+		if(animation != null) animation.update ();
 	}
 
 	public void initSpriteAnimation(){
@@ -38,7 +42,7 @@ public class Slime : MonoBehaviour {
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
 		actualTile=newTile;
-		actualTile.SetSlimeOnTop(gameObject);
+		actualTile.SetSlimeOnTop(this);
 	}
 	public Tile GetActualTile(){
 		return actualTile;
@@ -50,7 +54,7 @@ public class Slime : MonoBehaviour {
 
 	public void setPlayer(Player player){
 		this.player = player;
-		mass = player.slimeCoreData.startingHP;
+		SetMass(player.slimeCoreData.startingHP);
 		initSpriteAnimation ();
 		gameObject.GetComponent<SpriteRenderer> ().color = player.GetColor ();
 	}
@@ -68,7 +72,7 @@ public class Slime : MonoBehaviour {
 	}
 
 	public void changeMass(float q){
-		mass += q;
+		SetMass (mass + q);
 	}
 
 	public float getDamage(){
@@ -81,9 +85,23 @@ public class Slime : MonoBehaviour {
 
 	public void SetMass(float mass){
 		this.mass = mass;
+		changeScaleSlime ();
+
 	}
 
 	public float GetMass(){
 		return mass;
+	}
+
+	public void changeScaleSlime(){
+		float scale;
+		if (mass >= maxMass)
+			scale = maxScale;
+		else if (mass <= minMass)
+			scale = minScale;
+		else {
+			scale = (maxScale-minScale)/(maxMass-minMass)*mass+minScale-(minMass*(maxScale-minScale))/(maxMass-minMass);
+		}
+		this.gameObject.transform.localScale = new Vector3(scale, scale, 0.5f);
 	}
 }

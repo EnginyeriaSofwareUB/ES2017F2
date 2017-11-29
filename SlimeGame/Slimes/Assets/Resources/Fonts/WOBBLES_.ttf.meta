@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 8ec80e354f1877e4082f7d7a9d3d551a
+timeCreated: 1511897760
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Wobbles
+  fontNames:
+  - Wobbles
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -16,25 +16,22 @@ public class MapDrawer {
 		testDrawer ();
 	}
 		
-	public static void instantiateMap(System.Collections.IEnumerable map, int offsetx = 0, int offsety = 0){
+	public static Vector2 instantiateMap(System.Collections.IEnumerable map, int offsetx = 0, int offsety = 0){
 
-		Sprite sprite = Resources.Load<Sprite>("Test/testTileFlat");
+		Sprite sprite = SpritesLoader.GetInstance().GetResource("Test/testTileFlat");
 		Hashtable sprites = new Hashtable ();
 		//sprites.Add(TileType.Block, Resources.Load<Sprite>("Test/testTileFlat2"));
-		sprites.Add(TileType.Sand, Resources.Load<Sprite>("Test/testTileFlat3"));
-		sprites.Add(TileType.Water, Resources.Load<Sprite>("Test/testTileFlat"));
+		sprites.Add(TileType.Sand, SpritesLoader.GetInstance().GetResource("Test/testTileFlat3"));
+		sprites.Add(TileType.Water, SpritesLoader.GetInstance().GetResource("Test/testTileFlat"));
 		horizontalOffset = new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*2f), 0f);
 		diagonalOffset =  new Vector2 (sprite.rect.width/(float)(sprite.pixelsPerUnit*4f), 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*8));
 		//verticalOffset =  new Vector2 (0f, 3f*sprite.rect.height/(float)(sprite.pixelsPerUnit*4));
 		tiles = new Tile[MAXMAPSIZE,MAXMAPSIZE];
         size = new Vector2();
-		foreach (TileData tile in map) {
-			
+		foreach (TileData tile in map) {			
 			Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 			int x = (int)tile.getPosition().x;
-			int y = (int)tile.getPosition().y;
-
-            
+			int y = (int)tile.getPosition().y;            
 			/*
 			if (x % 2 == 1 && x!=0) {
 				tileWorldPosition += diagonalOffset;	 
@@ -47,7 +44,7 @@ public class MapDrawer {
             newTile.AddComponent<Tile>();                   //Adding Script
 			newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
 			newTile.GetComponent<SpriteRenderer> ().sortingLayerName = "TileContent";
-			newTile.GetComponent<SpriteRenderer> ().material = GameObject.Find ("Main Camera").GetComponent<GameController> ().tileMaterial;
+			//newTile.GetComponent<SpriteRenderer> ().material = GameObject.Find ("Main Camera").GetComponent<GameController> ().tileMaterial;
 			newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 			newTile.GetComponent<Tile>().SetTileData(tile);
 			Vector3 localScale = new Vector3 (0.5f, 0.5f, 1f);
@@ -57,16 +54,19 @@ public class MapDrawer {
             tileWorldPosition.x+=offsetx;
             tileWorldPosition.y+=offsety;
 			Vector3 vec = new Vector3 (tileWorldPosition.x, tileWorldPosition.y, 0f);
-            if (tileWorldPosition.x > size.x)size.x = tileWorldPosition.x;
-            if (tileWorldPosition.y > size.y)size.y = tileWorldPosition.y;
+            if (Mathf.Abs(tileWorldPosition.x) > size.x)size.x = Mathf.Abs(tileWorldPosition.x);
+            if (Mathf.Abs(tileWorldPosition.y) > size.y)size.y =Mathf.Abs(tileWorldPosition.y);
             
 			newTile.transform.position =vec;
 			newTile.GetComponent<Tile>().startUILayer (vec,localScale);
+			newTile.GetComponent<Tile> ().startConquerLayer (vec,localScale);
 			newTile.GetComponent<Tile>().startElementLayer (vec,localScale);
 			SetTileAt(newTile.GetComponent<Tile> (),x,y);
 		}
+        return size;
 
 	}
+
 	public static Vector2 drawInternCoordenates(Vector2 axial){		
 		Vector2 tileWorldPosition = new Vector2 ();
 		int x = (int)axial.x;
@@ -76,6 +76,7 @@ public class MapDrawer {
 		tileWorldPosition.y=-tileWorldPosition.y;
 		return tileWorldPosition;
 	}
+
 	public interface MapCoordinates{
 
 		Vector2 getPosition();
@@ -122,7 +123,7 @@ public class MapDrawer {
 		
     public static void ShowDivisionRange(Slime currentSlime, Matrix map)
     {
-        Sprite divisionFilter = Resources.Load<Sprite>("Test/attackRangeFilter");
+        Sprite divisionFilter = SpritesLoader.GetInstance().GetResource("Test/attackRangeFilter");
 
         // Por cada casilla a distancia 1 que no este bloqueada...
 		foreach (TileData tile in map.getNeighbours(currentSlime.GetTileData()))
@@ -133,7 +134,7 @@ public class MapDrawer {
 
     public static void ShowFusionRange(Slime currentSlime, Matrix map)
     {
-        Sprite fusionFilter = Resources.Load<Sprite>("Test/attackRangeFilter");
+        Sprite fusionFilter = SpritesLoader.GetInstance().GetResource("Test/attackRangeFilter");
 
         // Por cada casilla a distancia 1 que no este bloqueada...
 		foreach (TileData tile in map.getNeighbours(currentSlime.GetTileData(), true))
