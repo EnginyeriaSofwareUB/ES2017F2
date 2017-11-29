@@ -162,7 +162,7 @@ public class Tile : MonoBehaviour {
 		}
 	}
 
-	public void SetSlimeOnTop(GameObject obj){
+	public void SetSlimeOnTop(Slime obj){
 		data.SetSlimeOnTop (obj);
 	}
 

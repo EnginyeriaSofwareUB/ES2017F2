@@ -6,6 +6,11 @@ public class SlimeAction{
 	private object data;
     private bool changed;
 
+	public SlimeAction(ActionType action, object data){
+		this.action = action;
+		this.data = data;
+	}
+
 	public SlimeAction(ActionType action, Tile data){
 		this.action = action;
 		this.data = data;

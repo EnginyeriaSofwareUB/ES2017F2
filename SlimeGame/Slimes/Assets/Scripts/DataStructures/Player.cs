@@ -29,6 +29,16 @@ public class Player {
 		isAI = false;
 	}
 
+	public Player(string name, float actionsPerSlime,SlimeCoreData slimeCoreData, AIInterface brain){
+		this.name = name;
+		//this.actions = actions;
+		this.actionsPerSlime = actionsPerSlime;
+		slimes = new List<Slime>();
+		this.slimeCoreData = slimeCoreData;
+        updateActions();
+		SetBrain(brain);
+	}
+
 	public void SetColor(Color c){
 		color = c;
 	}
@@ -67,7 +77,7 @@ public class Player {
 	
 	}
 
-	public SlimeAction GetAction(GameController g){
+	public AISlimeAction GetAction(GameController g){
 		if (brain != null) {
 			return brain.GetAction (g);
 		}
@@ -81,6 +91,10 @@ public class Player {
 
 	public bool isPlayerAI(){
 		return isAI;
+	}
+
+	public void RemoveSlime(Slime sl){
+		this.slimes.Remove(sl);
 	}
 
 

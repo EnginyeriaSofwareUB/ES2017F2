@@ -49,6 +49,7 @@ public class GameController : MonoBehaviour
 			);
 			cores.Add (slimeData);
 		}
+
         if(tutorial == 1)
         {
             string textTutorial = (Resources.Load("textTutorial") as TextAsset).text;
@@ -429,8 +430,11 @@ public class GameController : MonoBehaviour
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
+<<<<<<< HEAD
 		status = GameControllerStatus.PLAYINGACTION;
+=======
         SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
+>>>>>>> e7fcbf5811024b2ceffb22587a0d25b4aedc567e
     }
 
     private void FusionSlime(Slime fusionTarget)

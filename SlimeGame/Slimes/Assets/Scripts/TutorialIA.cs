@@ -22,24 +22,26 @@ public class TutorialIA : AIInterface {
         actions.Add(new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-1, -1))); 
     }
 
-    public SlimeAction GetAction(GameController gameController)
+    public override AISlimeAction GetAction(GameController gameController)
     {
         position++;
         //Set selected slime (cutre)
+        Slime actionSlime = null;
         if (position == 3)
-            gameController.SetSelectedSlime(gameController.GetCurrentPlayer().GetSlimes()[1]);
+            actionSlime = gameController.GetCurrentPlayer().GetSlimes()[1];
         else
-            gameController.SetSelectedSlime(gameController.GetCurrentPlayer().GetSlimes()[0]);
+            actionSlime = gameController.GetCurrentPlayer().GetSlimes()[0];
+
 
         //Solucio cutre
         if (actions[position].GetAction() == ActionType.ATTACK)
         {
             actions[position] = new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-1, -1).GetSlimeOnTop());
         }
-        if(position>= actions.Count)
+        if (position >= actions.Count)
         {
-            return new SlimeAction(ActionType.CONQUER, gameController.GetSelectedSlime().actualTile);
+            return new AISlimeAction(actionSlime, ActionType.CONQUER, gameController.GetSelectedSlime().actualTile);
         }
-        return actions[position];
+        return new AISlimeAction(actionSlime, actions[position]);
     }
 }
