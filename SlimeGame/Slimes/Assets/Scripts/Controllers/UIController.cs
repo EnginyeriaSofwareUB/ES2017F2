@@ -14,9 +14,10 @@ public class UIController : MonoBehaviour {
 	private Color moveColor = new Color (0f,0xa5,1f);
 	private Color attackColor = new Color (1f,0f,0f);
 	private Color splitColor = new Color (1f,0xdd,0f);
-	private Color joinColor = new Color (0x21,1f,0f);
+	private Color joinColor = new Color (0.54f,1f,0f);
 	private Color conquerColor = new Color (0xce,0x0c,0xc1);
 	private Color specialColor = new Color (1f,0x6a,0f);
+	private Color selectedColor = new Color (1f, 0.843f, 0f);
 
 	private List<SpriteRenderer> currentUIRenderer;
 
@@ -91,6 +92,25 @@ public class UIController : MonoBehaviour {
 			attackTiles.Add (s.GetActualTile ());
 		}
 		return attackTiles;
+	}
+
+	public List<Tile> showSelectedSlime(Slime slime){
+		List<Tile> selectedSlimeTile = new List<Tile> ();
+		selectedSlimeTile.Add (slime.GetActualTile ());
+		slime.GetActualTile().tileUILayer.sprite = TileSprite;
+		slime.GetActualTile().tileUILayer.color = selectedColor;
+		currentUIRenderer.Add(slime.GetActualTile().tileUILayer);
+		return selectedSlimeTile;
+	}
+
+	public List<Tile> showJoinRange(Slime slime){
+		List<Tile> joinTiles = gameController.GetJoinTile (slime);
+		foreach(Tile t in joinTiles){
+			t.tileUILayer.sprite = TileSprite;
+			t.tileUILayer.color = joinColor;
+			currentUIRenderer.Add(t.tileUILayer);
+		}
+		return joinTiles;
 	}
 
 	public void hideCurrentUITiles(){

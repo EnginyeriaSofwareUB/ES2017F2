@@ -10,4 +10,7 @@ public class GameSelection
 	public static int player2Core=1;
 
 	public static Matrix map=null;
+
+	public static SlimeCoreTypes player1Stats = SlimeCoreTypes.GLUTTONY;
+	public static SlimeCoreTypes player2Stats = SlimeCoreTypes.WRATH;
 }

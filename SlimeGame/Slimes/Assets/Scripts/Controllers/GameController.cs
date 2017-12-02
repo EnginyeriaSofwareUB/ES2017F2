@@ -35,11 +35,12 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		StatsFactory.GetStat (ElementType.EARTH);
         textTutorialPosition = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
-		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
+		string stats = (Resources.Load ("stats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
 		for (int i = 0; i < n.Count; i++) {
@@ -76,34 +77,34 @@ public class GameController : MonoBehaviour
         {
             panelTip.GetComponent<DialogInfo>().Active(true);
             ShowTutorialTip();
-            players.Add(new Player("Jugador 1", 1, cores[3]));
-            players.Add(new Player("IA", 1, cores[4]));
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetTutorialPlayerStats()));
+			players.Add(new Player("IA", 1,  StatsFactory.GetTutorialPlayerStats()));
             players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo??
             players[1].SetColor(GameSelection.player2Color);
             matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
-            instantiateSlime(cores[3], players[0], 3, -4);
-            instantiateSlime(cores[4], players[1], -4, 1);
+            instantiateSlime(players[0], 3, -4);
+            instantiateSlime(players[1], -4, 1);
             players[1].SetBrain(new TutorialIA());
             players[0].setTutorialActions();
         }
         else
         {
-            players.Add(new Player("Jugador 1", 1, cores[GameSelection.player1Core])); // Test with 2 players
-            players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core], new AIAggressive()));
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIAggressive()));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
             if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
             Vector2 slime1 = matrix.GetRandomTile();
-            instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
+            instantiateSlime(players[0], (int)slime1.x, (int)slime1.y);
             Vector2 slime2 = matrix.GetRandomTile();
-            instantiateSlime(cores[0], players[0], (int)slime2.x, (int)slime2.y);
+            instantiateSlime(players[0], (int)slime2.x, (int)slime2.y);
             Vector2 slime3 = matrix.GetRandomTile();
-            instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
+            instantiateSlime(players[1], (int)slime3.x, (int)slime3.y);
             Vector2 slime4 = matrix.GetRandomTile();
-            instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
+            instantiateSlime(players[1], (int)slime4.x, (int)slime4.y);
         }
 
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
@@ -288,14 +289,14 @@ public class GameController : MonoBehaviour
         currentTurn++;
     }
 
-    private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
+	private Slime instantiateSlime(Player pl, int x0, int y0)
     {
-
+		
         GameObject slime = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
-		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
+		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(pl.statsCoreInfo.picDirection+0);
 		slime.GetComponent<SpriteRenderer>().sortingLayerName = "TileElement";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
@@ -402,7 +403,7 @@ public class GameController : MonoBehaviour
     }
 
 	private void SplitSlime(Tile targetTile){
-		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
+		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
 		/*players [currentPlayer].AddSlime (newSlime);
 		targetTile.SetSlimeOnTop (newSlime);
 		newSlime.SetActualTile (targetTile);*/
@@ -578,5 +579,23 @@ public class GameController : MonoBehaviour
             }
         }
 		return fusionSlimes;
+	}
+
+	public List<Tile> GetJoinTile(Slime slime){
+		List<Vector2> directions = new List<Vector2> {
+			new Vector2 (0, -1),new Vector2 (1, -1), new Vector2 (1, 0),new Vector2 (0, 1),new Vector2 (-1,1),new Vector2 (-1, 0)
+		};
+		List<Tile> tileList = new List<Tile>();
+		foreach (Vector2 v in directions) {
+			int x = (int) (slime.actualTile.getPosition ().x + v.x);
+			int y = (int) (slime.actualTile.getPosition ().y + v.y);
+			if (MapDrawer.GetTileAt (x, y) != null &&
+			    MapDrawer.GetTileAt (x, y).GetSlimeOnTop () != null &&
+			    MapDrawer.GetTileAt (x, y).GetSlimeOnTop ().GetPlayer () == slime.GetPlayer ()) {
+				tileList.Add (MapDrawer.GetTileAt (x,y));
+			}
+				
+		}
+		return tileList;
 	}
 }

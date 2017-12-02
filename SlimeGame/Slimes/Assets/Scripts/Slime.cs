@@ -25,7 +25,7 @@ public class Slime : MonoBehaviour {
 
 	public void initSpriteAnimation(){
 		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		animation.LoadSprites (player.slimeCoreData.picDirection,5);
+		animation.LoadSprites (player.statsCoreInfo.picDirection,5);
 		animation.playAnimation ();
 
 	}
@@ -54,7 +54,7 @@ public class Slime : MonoBehaviour {
 
 	public void setPlayer(Player player){
 		this.player = player;
-		SetMass(player.slimeCoreData.startingHP);
+		SetMass(player.statsCoreInfo.startingHP);
 		initSpriteAnimation ();
 		gameObject.GetComponent<SpriteRenderer> ().color = player.GetColor ();
 	}
@@ -64,11 +64,11 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
-		return player.slimeCoreData.movementRange;
+		return player.statsCoreInfo.move;
 	}
 
 	public int GetAttackRange(){
-		return player.slimeCoreData.attackRange;
+		return player.statsCoreInfo.range;
 	}
 
 	public void changeMass(float q){
@@ -76,7 +76,7 @@ public class Slime : MonoBehaviour {
 	}
 
 	public float getDamage(){
-		return player.slimeCoreData.attack;
+		return player.statsCoreInfo.attack;
 	}
 
 	public bool isAlive(){

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player {
 
-	public SlimeCoreData slimeCoreData;
+	public StatsContainer statsCoreInfo;
 	private string name;
 	private int actions;
     private float actionsPerSlime;
@@ -17,24 +17,24 @@ public class Player {
 
 	private AIInterface brain;
 
-	public Player(string name, float actionsPerSlime,SlimeCoreData slimeCoreData){
+	public Player(string name, float actionsPerSlime,StatsContainer coreInfo){
 		this.name = name;
 		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
 
         positionTutorial=0;
         tutorialActions = new List<SlimeAction>();
-		this.slimeCoreData = slimeCoreData;
+		this.statsCoreInfo = coreInfo;
         updateActions();
 		isAI = false;
 	}
 
-	public Player(string name, float actionsPerSlime,SlimeCoreData slimeCoreData, AIInterface brain){
+	public Player(string name, float actionsPerSlime,StatsContainer coreInfo, AIInterface brain){
 		this.name = name;
 		//this.actions = actions;
 		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
-		this.slimeCoreData = slimeCoreData;
+		this.statsCoreInfo = coreInfo;
         updateActions();
 		SetBrain(brain);
 	}
