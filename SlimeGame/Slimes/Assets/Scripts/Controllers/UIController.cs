@@ -20,6 +20,10 @@ public class UIController : MonoBehaviour {
 
 	private List<SpriteRenderer> currentUIRenderer;
 
+	private GameObject round;
+	private GameObject playerColor;
+	private GameObject actionsLeft;
+
 	public int xLimit;
     public int yLimit;
     public int minZoom;
@@ -31,15 +35,17 @@ public class UIController : MonoBehaviour {
         minZoom = 3;
         maxZoom = 13;
 		gameController = Camera.main.GetComponent<GameController>();
-        canvasInfo = GameObject.Find("Dialog");
-        DisableCanvas();
+        //canvasInfo = GameObject.Find("Dialog");
+        //DisableCanvas();
 
         //Si clica OK desactiva el canvas
-        canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
+        //canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
 
 		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
 		currentUIRenderer = new List<SpriteRenderer> ();
-
+		round = GameObject.Find ("RoundNum");
+		playerColor = GameObject.Find ("PlayerColor");
+		actionsLeft = GameObject.Find ("ActionsNum");
 	}
 	
 	// Update is called once per frame
@@ -47,8 +53,22 @@ public class UIController : MonoBehaviour {
 		
 	}
 
+
+	public void SetRound(int r){
+		round.GetComponent<Text> ().text = r.ToString();
+	}
+
+	public void SetPlayer(Color c){
+		playerColor.GetComponent<RawImage> ().color = c;
+	}
+
+	public void SetActions(int a){
+		actionsLeft.GetComponent<Text> ().text = a.ToString();
+	
+	}
     //Metode que mostra la info que li passis
-    public void ShowCanvasInfo(string info)
+    /*
+	public void ShowCanvasInfo(string info)
     {
         canvasInfo.SetActive(true);
         Text t = canvasInfo.GetComponentInChildren<Text>();
@@ -59,7 +79,7 @@ public class UIController : MonoBehaviour {
     public void DisableCanvas()
     {
         canvasInfo.SetActive(false);
-    }
+    }*/
 
 	public List<Tile> showSplitRange(Slime slime){
 		List<Tile> splitTiles = gameController.GetSplitRangeTiles(slime);

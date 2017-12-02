@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour
     
 	public Material tileMaterial;
 
+    private SoundController soundController;
     private UIController uiController;
     // Use this for initialization
     void Start()
@@ -39,6 +40,7 @@ public class GameController : MonoBehaviour
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
 		FloatingTextController.Initialize ();
+        soundController = gameObject.GetComponent<SoundController>();
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
@@ -90,7 +92,7 @@ public class GameController : MonoBehaviour
         else
         {
             players.Add(new Player("Jugador 1", 1, cores[GameSelection.player1Core])); // Test with 2 players
-            players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core], new AIAggressive()));
+			players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core]));//, new AIAggressive()));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -112,12 +114,16 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
         playerActions = 0;
 
+		uiController.SetRound(currentTurn+1);
+		uiController.SetPlayer(getCurrentPlayer().GetColor());
+
 		foreach(Player p in players)
             p.updateActions();
-
+		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
         //iniciem la informacio de game over
         GameOverInfo.Init();
-		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
+        AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/music1");
+        soundController.PlayLoop(clip);
 
     }
 
@@ -175,16 +181,6 @@ public class GameController : MonoBehaviour
 		}
 		status = GameControllerStatus.WAITINGFORACTION;
 	}
-
-    void OnGUI()
-    {
-        if (players != null)
-        {
-            GUI.Label(new Rect(10, 10, 100, 20), "TURN:  " + (currentTurn + 1).ToString());
-            GUI.Label(new Rect(10, 30, 200, 40), "PLAYER:  " + getCurrentPlayer().GetName());
-            GUI.Label(new Rect(10, 50, 200, 40), "ACTIONS:  " + (getCurrentPlayer().GetActions() - playerActions));
-        }
-    }
 
 	public GameControllerStatus getStatus(){
 		return status;
@@ -270,10 +266,13 @@ public class GameController : MonoBehaviour
         currentPlayer++;
         playerActions = 0;
         //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
+		uiController.SetPlayer(getCurrentPlayer().GetColor());
+		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
         if (currentPlayer >= players.Count)
         {
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
-            NextTurn();        
+            NextTurn();     
+
         }
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
@@ -286,6 +285,8 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
         playerActions = 0;
         currentTurn++;
+		uiController.SetRound (currentTurn+1);
+		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
     }
 
     private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
@@ -380,6 +381,7 @@ public class GameController : MonoBehaviour
 			break;
 		}
 		SetSelectedSlime(null);
+		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
 	}
 
     private void MoveSlime(Tile tile)
@@ -430,7 +432,8 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
 		status = GameControllerStatus.PLAYINGACTION;
-        SoundController.GetInstance().PlaySingle(Resources.Load<AudioClip>("Sounds/fireball"));
+        AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/fireball");
+        soundController.PlaySingle(clip);
     }
 
     private void FusionSlime(Slime fusionTarget)
