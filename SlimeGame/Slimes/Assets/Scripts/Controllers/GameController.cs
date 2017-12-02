@@ -32,6 +32,15 @@ public class GameController : MonoBehaviour
 	public Material tileMaterial;
 
     private UIController uiController;
+
+    private enum ModosVictoria {ASESINATO, CONQUISTA, MASA};
+    
+
+    private ModosVictoria condicionVictoria;
+    private float massToWin;
+    private int totalTiles;
+    private float percentageTilesToWin;
+
     // Use this for initialization
     void Start()
     {
@@ -117,6 +126,8 @@ public class GameController : MonoBehaviour
             p.updateActions();
 
         //iniciem la informacio de game over
+        totalTiles = matrix.TotalNumTiles();
+        condicionVictoria = ModosVictoria.ASESINATO;
         GameOverInfo.Init();
 		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
 
@@ -139,11 +150,11 @@ public class GameController : MonoBehaviour
             }
         }
 
-        bool ended = IsGameEnded();
+        Player winner = IsGameEndedAndWinner();
 
-        if (ended)
+        if (winner!=null)
         {
-            GameOverInfo.SetWinner(players[0]);
+            GameOverInfo.SetWinner(winner);
             SceneManager.LoadScene("GameOver");
         }
 
@@ -204,11 +215,45 @@ public class GameController : MonoBehaviour
     }
 
     /*
-	Funció que retorna True si s'ha acabat la partida o False sino.
+	Funció que retorna True si s'ha acabat la partida o False si no.
 	 */
-    private bool IsGameEnded()
+    private Player IsGameEndedAndWinner()
     {
-        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
+        Player ret = null; //si no trobem guanyador retornem null
+        int index;
+        bool find;
+        //sempre comprovem la condicio de asesinato
+        if (players.Count == 1){
+            return players[0];
+        }
+        //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
+        switch(condicionVictoria){
+            case ModosVictoria.CONQUISTA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].NumConqueredTiles()/totalTiles>=percentageTilesToWin){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+
+            case ModosVictoria.MASA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].GetTotalMass()>=massToWin){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+        }
+        return ret; //si no troba guanyador retornem null, si hi ha guanyador retornem el guanyador
+
     }
 
     /*
@@ -448,6 +493,12 @@ public class GameController : MonoBehaviour
 
 	private void ConquerTile(Tile tile){
 		tile.tileConquerLayer.sprite = conquerSprite;
+        //afegim la tile conquerida
+        players[currentPlayer].AddConqueredTile(tile);
+        //borrem la tile conquerida de qui la tenia abans
+        foreach(Player player in players){
+            if (player.HasConqueredTile(tile)) player.RemoveConqueredTile(tile);
+        }
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
 		tile.tileConquerLayer.color = c;

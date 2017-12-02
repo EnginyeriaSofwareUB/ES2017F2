@@ -7,6 +7,7 @@ public class Matrix {
 	
 	private Dictionary<int, Dictionary<int,TileData>> map;
 	private int shifted;
+	private int totalNumTiles;
 	public Matrix(List<List<TileType>> matrix){
 		//input 		
 		map = new Dictionary<int, Dictionary<int,TileData>> ();
@@ -41,7 +42,7 @@ public class Matrix {
 		map = new Dictionary<int, Dictionary<int,TileData>> ();
 		int maxim = (int)(diagonal/2);
 		int minim = -maxim;
-		int totalNumTiles = diagonal+(diagonal-1)*diagonal-maxim*(maxim+1);
+		totalNumTiles = diagonal+(diagonal-1)*diagonal-maxim*(maxim+1);
 		/*for(int x = minim;x<=maxim;x++){
 			map [x] = new Dictionary<int,TileData> (); 
 			for(int y = minim;y<=maxim;y++){
@@ -423,5 +424,9 @@ tile.SetTileType(nearestCenter.getTileType());
 		//falten 2 per visitar
 		//que son els dos "de més"
 		return visited.Count==allNodes;
+	}
+
+	public int TotalNumTiles(){
+		return totalNumTiles;
 	}
 }
