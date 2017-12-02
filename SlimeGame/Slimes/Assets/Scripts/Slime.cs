@@ -8,7 +8,7 @@ public class Slime : MonoBehaviour {
 	public Dictionary<TileData,List<TileData>> possibleMovements;
 	public bool rangeUpdated;
 	private float mass;
-	private SpriteAnimation animation;
+	private SpriteAnimation canimation;
 	private float maxMass = 300f;
 	private float minMass = 20f;
 	private float maxScale = 0.6f;
@@ -22,13 +22,13 @@ public class Slime : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(animation != null) animation.update ();
+		if(canimation != null) canimation.update ();
 	}
 
 	public void initSpriteAnimation(){
-		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		animation.LoadSprites (player.statsCoreInfo.picDirection,5);
-		animation.playAnimation ();
+		canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
+		canimation.LoadSprites (player.statsCoreInfo.picDirection,5);
+		canimation.playAnimation ();
 
 	}
 

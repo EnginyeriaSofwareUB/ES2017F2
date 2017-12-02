@@ -15,8 +15,8 @@ public class UIController : MonoBehaviour {
 	private Color attackColor = new Color (1f,0f,0f);
 	private Color splitColor = new Color (1f,0xdd,0f);
 	private Color joinColor = new Color (0.54f,1f,0f);
-	private Color conquerColor = new Color (0xce,0x0c,0xc1);
-	private Color specialColor = new Color (1f,0x6a,0f);
+	//private Color conquerColor = new Color (0xce,0x0c,0xc1);
+	//private Color specialColor = new Color (1f,0x6a,0f);
 	private Color selectedColor = new Color (1f, 0.843f, 0f);
 
 	private List<SpriteRenderer> currentUIRenderer;

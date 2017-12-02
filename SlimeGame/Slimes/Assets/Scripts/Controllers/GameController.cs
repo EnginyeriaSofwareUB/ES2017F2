@@ -83,8 +83,8 @@ public class GameController : MonoBehaviour
             players[1].SetColor(GameSelection.player2Color);
             matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
-            instantiateSlime(players[0], 3, -4);
-            instantiateSlime(players[1], -4, 1);
+            SlimeFactory.instantiateSlime(players[0], 3, -4);
+			SlimeFactory.instantiateSlime(players[1], -4, 1);
             players[1].SetBrain(new TutorialIA());
             players[0].setTutorialActions();
         }
@@ -97,14 +97,10 @@ public class GameController : MonoBehaviour
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
             if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
-            Vector2 slime1 = matrix.GetRandomTile();
-            instantiateSlime(players[0], (int)slime1.x, (int)slime1.y);
-            Vector2 slime2 = matrix.GetRandomTile();
-            instantiateSlime(players[0], (int)slime2.x, (int)slime2.y);
-            Vector2 slime3 = matrix.GetRandomTile();
-            instantiateSlime(players[1], (int)slime3.x, (int)slime3.y);
-            Vector2 slime4 = matrix.GetRandomTile();
-            instantiateSlime(players[1], (int)slime4.x, (int)slime4.y);
+			SlimeFactory.instantiateSlime(players[0], matrix.GetRandomTile());
+			SlimeFactory.instantiateSlime(players[0], matrix.GetRandomTile());
+			SlimeFactory.instantiateSlime(players[1], matrix.GetRandomTile());
+			SlimeFactory.instantiateSlime(players[1], matrix.GetRandomTile());
         }
 
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
@@ -289,42 +285,6 @@ public class GameController : MonoBehaviour
         currentTurn++;
     }
 
-	private Slime instantiateSlime(Player pl, int x0, int y0)
-    {
-		
-        GameObject slime = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
-        slime.AddComponent<SpriteRenderer>();
-        slime.tag = "Slime";
-        slime.AddComponent<Slime>();
-		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(pl.statsCoreInfo.picDirection+0);
-		slime.GetComponent<SpriteRenderer>().sortingLayerName = "TileElement";
-        slime.AddComponent<BoxCollider2D>();
-        slime.AddComponent<SlimeMovement>();
-
-		pl.AddSlime(slime.GetComponent<Slime>());
-
-		slime.GetComponent<Slime> ().changeScaleSlime ();
-		Tile tile = MapDrawer.GetTileAt(x0, y0);
-		Vector2 tileWorldPosition = tile.GetTileData().GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
-        slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
-        slime.GetComponent<Slime>().SetActualTile(tile);
-        slime.GetComponent<Slime>().setPlayer(pl);
-		//CONFIGURACIO BARRA VIDA PER SLIME
-		//afegim canvas al gameObject per despres posar les imatges de la barra de vida
-		GameObject newCanvas = new GameObject("Canvas");
-		newCanvas.layer = 8;
-		Canvas c = newCanvas.AddComponent<Canvas>();
-		c.renderMode = RenderMode.WorldSpace;
-		//es el fill del slime 
-		newCanvas.transform.SetParent (slime.transform);
-		RectTransform rect = newCanvas.GetComponent<RectTransform> ();
-		//posicion del canvas, dins hi haura la barra de vida
-		rect.localPosition = new Vector3 (0f,1f,0f);
-		rect.sizeDelta = new Vector2 (1.5f,0.25f);
-
-        return slime.GetComponent<Slime> ();
-    }
-
     public Slime GetSelectedSlime()
     {
         return selectedSlime;
@@ -403,7 +363,7 @@ public class GameController : MonoBehaviour
     }
 
 	private void SplitSlime(Tile targetTile){
-		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
+		Slime newSlime = SlimeFactory.instantiateSlime(selectedSlime.GetPlayer(),new Vector2(targetTile.GetTileData().getPosition().x, targetTile.GetTileData().getPosition().y));
 		/*players [currentPlayer].AddSlime (newSlime);
 		targetTile.SetSlimeOnTop (newSlime);
 		newSlime.SetActualTile (targetTile);*/
@@ -543,7 +503,6 @@ public class GameController : MonoBehaviour
 	}
 
 	public List<Slime> GetSlimesInAttackRange(Slime slime){
-		Player currentPlayer = GetCurrentPlayer ();
 		List<Slime> canAttack = new List<Slime> ();
 		Vector2 myPos = slime.GetActualTile().getPosition();
 		foreach(Player p in players){
