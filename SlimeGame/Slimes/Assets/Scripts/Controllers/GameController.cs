@@ -32,12 +32,14 @@ public class GameController : MonoBehaviour
 	public Material tileMaterial;
 
     private UIController uiController;
+    private CameraController camController;
     // Use this for initialization
     void Start()
     {
         textTutorialPosition = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
+        camController = Camera.main.GetComponent<CameraController>();
 		FloatingTextController.Initialize ();
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
@@ -60,12 +62,8 @@ public class GameController : MonoBehaviour
                 tutorialTexts.Add(text["text"]);
             }
         }
-
-
-
         conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
-        //MapDrawer.InitTest ();
-		status = GameControllerStatus.WAITINGFORACTION;
+        status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
         textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
         panelTip.GetComponent<DialogInfo>().Active(false);
@@ -275,6 +273,7 @@ public class GameController : MonoBehaviour
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
             NextTurn();        
         }
+        camController.GlobalCamera();
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 

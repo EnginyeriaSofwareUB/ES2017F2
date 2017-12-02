@@ -789,6 +789,7 @@ GameObject:
   - component: {fileID: 608162605}
   - component: {fileID: 608162608}
   - component: {fileID: 608162609}
+  - component: {fileID: 608162610}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -877,11 +878,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7274611f9cbf044ebd64990380617a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xLimit: 0
-  yLimit: 0
-  minZoom: 0
-  maxZoom: 0
-  speed: 0
 --- !u!114 &608162606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,7 +890,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fire: {fileID: 2100000, guid: 915986c0ee44cb0499b50cb943d47bfe, type: 2}
-  allSlimes: []
   healthBar: {fileID: 1002717027723656, guid: 948a448c03a258b488449708fc34cf61, type: 2}
   tileMaterial: {fileID: 2100000, guid: 915986c0ee44cb0499b50cb943d47bfe, type: 2}
 --- !u!114 &608162607
@@ -1003,6 +998,20 @@ MonoBehaviour:
   sea1: []
   sea2: []
   spriteList: []
+--- !u!114 &608162610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 608162599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dadac00d55ab294c8b3d0c5786c98b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minZoom: 0
+  maxZoom: 0
+  speed: 0
 --- !u!1 &722411931
 GameObject:
   m_ObjectHideFlags: 0

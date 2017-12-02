@@ -63,6 +63,7 @@ public class MapDrawer {
 			newTile.GetComponent<Tile>().startElementLayer (vec,localScale);
 			SetTileAt(newTile.GetComponent<Tile> (),x,y);
 		}
+        CameraController.InitMapSize(size);
         return size;
 
 	}
