@@ -6,13 +6,6 @@ using System.Collections;
 public class StatsFactory
 {
 	private static Hashtable statsContainer;
-	private static StatsContainer fire;
-	private static StatsContainer water;
-	private static StatsContainer earth;
-	private static StatsContainer none;
-	private static StatsContainer sloth;
-	private static StatsContainer wrath;
-	private static StatsContainer gluttony;
 
 	private static bool initedStats = false;
 
