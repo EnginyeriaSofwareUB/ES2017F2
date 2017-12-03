@@ -45,7 +45,7 @@ public class SettingsController : MonoBehaviour {
 		
 	private void saveSettings(){
 		string jsonData = JsonUtility.ToJson (this);
-		Debug.Log ("Saving "+jsonData);
+		//Debug.Log ("Saving "+jsonData);
 		PlayerPrefs.SetString ("SettingsVolume", jsonData);
 		PlayerPrefs.Save ();
 	}
@@ -54,7 +54,7 @@ public class SettingsController : MonoBehaviour {
 		SaveSettings loadedData = JsonUtility.FromJson<SaveSettings> (jsonData);
 		effects = loadedData.effects;
 		music = loadedData.music;
-		Debug.Log ("Loading: "+jsonData);
+		//Debug.Log ("Loading: "+jsonData);
 	}
 		
 }

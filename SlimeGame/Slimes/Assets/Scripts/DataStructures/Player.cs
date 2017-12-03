@@ -158,17 +158,17 @@ public class Player {
 	}
 
 	public void AddConqueredTile(Tile tile){
-		conqueredTiles.Add(tile);
+		if (!HasConqueredTile(tile)) conqueredTiles.Add(tile);
 	}
 
 	public bool HasConqueredTile(Tile tile){
-		if (NumConqueredTiles()!=0)
+		if (NumConqueredTiles()!=0 && tile!=null)
 			return conqueredTiles.Contains(tile);
 		return false;
 	}
 
 	public void RemoveConqueredTile(Tile tile){
-		conqueredTiles.Remove(tile);
+		if (HasConqueredTile(tile)) conqueredTiles.Remove(tile);
 	}
 
 	public int NumConqueredTiles(){

@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
     private ModosVictoria condicionVictoria;
     private float massToWin;
     private int totalTiles;
-    private float percentageTilesToWin;
+    private float percentageTilesToWin = 0.03f;
 
     // Use this for initialization
     void Start()
@@ -108,12 +108,12 @@ public class GameController : MonoBehaviour
             MapDrawer.instantiateMap(matrix.getIterable());
             Vector2 slime1 = matrix.GetRandomTile();
             instantiateSlime(players[0], (int)slime1.x, (int)slime1.y);
-            Vector2 slime2 = matrix.GetRandomTile();
-            instantiateSlime(players[0], (int)slime2.x, (int)slime2.y);
+            //Vector2 slime2 = matrix.GetRandomTile();
+            //instantiateSlime(players[0], (int)slime2.x, (int)slime2.y);
             Vector2 slime3 = matrix.GetRandomTile();
             instantiateSlime(players[1], (int)slime3.x, (int)slime3.y);
-            Vector2 slime4 = matrix.GetRandomTile();
-            instantiateSlime(players[1], (int)slime4.x, (int)slime4.y);
+            //Vector2 slime4 = matrix.GetRandomTile();
+            //instantiateSlime(players[1], (int)slime4.x, (int)slime4.y);
         }
 
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
@@ -127,7 +127,8 @@ public class GameController : MonoBehaviour
 
         //iniciem la informacio de game over
         totalTiles = matrix.TotalNumTiles();
-        condicionVictoria = ModosVictoria.ASESINATO;
+        Debug.Log("TILES TOTALS: "+ totalTiles);
+        condicionVictoria = ModosVictoria.CONQUISTA;
         GameOverInfo.Init();
 		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
 
@@ -139,8 +140,17 @@ public class GameController : MonoBehaviour
 		if (status == GameControllerStatus.CHECKINGLOGIC) {
 			checkLogic ();
 		}
-
-        foreach (Player player in players)
+        for (int i = players.Count-1;i>=0;i--){
+            if (players[i].GetNumSlimes() == 0)
+            {
+                //This player loses
+                GameOverInfo.SetLoser(players[i]);
+                players.RemoveAt(i);
+            }
+        }
+        
+        //Tenia problemes amb el remove de dins del foreach
+        /*foreach (Player player in players)
         {
             if (player.GetNumSlimes() == 0)
             {
@@ -148,7 +158,7 @@ public class GameController : MonoBehaviour
                 GameOverInfo.SetLoser(player);
                 players.Remove(player);
             }
-        }
+        }*/
 
         Player winner = IsGameEndedAndWinner();
 
@@ -232,7 +242,7 @@ public class GameController : MonoBehaviour
                 find = false;
                 index = 0;
                 while (!find && index<players.Count){
-                    if (players[index].NumConqueredTiles()/totalTiles>=percentageTilesToWin){
+                    if (players[index].NumConqueredTiles()/percentageTilesToWin>=totalTiles){
                         find = true;
                         ret = players[index];
                     }
@@ -493,12 +503,12 @@ public class GameController : MonoBehaviour
 
 	private void ConquerTile(Tile tile){
 		tile.tileConquerLayer.sprite = conquerSprite;
-        //afegim la tile conquerida
-        players[currentPlayer].AddConqueredTile(tile);
         //borrem la tile conquerida de qui la tenia abans
         foreach(Player player in players){
             if (player.HasConqueredTile(tile)) player.RemoveConqueredTile(tile);
         }
+        //afegim la tile conquerida
+        players[currentPlayer].AddConqueredTile(tile);
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
 		tile.tileConquerLayer.color = c;
