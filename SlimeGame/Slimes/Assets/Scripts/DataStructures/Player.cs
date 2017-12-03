@@ -36,6 +36,7 @@ public class Player {
 		//this.actions = actions;
 		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
+		conqueredTiles = new List<Tile>();
 		this.statsCoreInfo = coreInfo;
         updateActions();
 		SetBrain(brain);
