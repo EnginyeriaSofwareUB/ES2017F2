@@ -1,5 +1,5 @@
 ﻿{
-	"0":{
+	"Wrath":{
 		"name":"Wrath",
 		"attack":8,
 		"movementRange":4,
@@ -8,7 +8,7 @@
 		"attackCost":2,
 		"picDirection":"Sprites/BasicCore/slime_wrath_core_"
 	},
-	"1":{
+	"Sloth":{
 		"name":"Sloth",
 		"attack":4,
 		"movementRange":1,
@@ -17,7 +17,7 @@
 		"attackCost":1,
 		"picDirection":"Sprites/BasicCore/slime_sloth_core_"
 	},
-	"2":{
+	"Gluttony":{
 		"name":"Gluttony",
 		"attack":3,
 		"movementRange":3,
@@ -26,7 +26,7 @@
 		"attackCost":0,
 		"picDirection":"Sprites/BasicCore/slime_gluttony_core_"
 	},
-		"3":{
+	"TutorialPlayer":{
 		"name":"TutorialPlayer",
 		"attack":20,
 		"movementRange":2,
@@ -35,7 +35,7 @@
 		"attackCost":0,
 		"picDirection":"Sprites/BasicCore/slime_gluttony_core_"
 	},
-		"4":{
+	"TutorialIA":{
 		"name":"TutorialIA",
 		"attack":3,
 		"movementRange":2,
@@ -43,5 +43,41 @@
 		"startingHP":40,
 		"attackCost":0,
 		"picDirection":"Sprites/BasicCore/slime_sloth_core_"
+	},
+	"None":{
+		"name":"None",
+		"attack":0,
+		"movementRange":0,
+		"attackRange":0,
+		"startingHP":0,
+		"attackCost":0,
+		"picDirection":"TODO IMPLEMENT"
+	},
+	"Fire":{
+		"name":"Fire",
+		"attack":1,
+		"movementRange":0,
+		"attackRange":0,
+		"startingHP":0,
+		"attackCost":0,
+		"picDirection":"TODO IMPLEMENT"
+	},
+	"Water":{
+		"name":"Water",
+		"attack":0,
+		"movementRange":1,
+		"attackRange":0,
+		"startingHP":0,
+		"attackCost":0,
+		"picDirection":"TODO IMPLEMENT"
+	},
+	"Earth":{
+		"name":"Earth",
+		"attack":0,
+		"movementRange":0,
+		"attackRange":1,
+		"startingHP":0,
+		"attackCost":0,
+		"picDirection":"TODO IMPLEMENT"
 	}
 }

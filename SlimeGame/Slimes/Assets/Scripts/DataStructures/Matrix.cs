@@ -422,4 +422,8 @@ tile.SetTileType(nearestCenter.getTileType());
 		//que son els dos "de més"
 		return visited.Count==allNodes;
 	}
+
+	public int TotalNumTiles(){
+		return GetTotalTiles().Count;
+	}
 }

@@ -13,9 +13,11 @@ public class Slime : MonoBehaviour {
 	private float minMass = 20f;
 	private float maxScale = 0.6f;
 	private float minScale = 0.2f;
+	private StatsContainer element;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
+		element = StatsFactory.GetStat (ElementType.NONE);
 	}
 	
 	// Update is called once per frame
@@ -25,7 +27,7 @@ public class Slime : MonoBehaviour {
 
 	public void initSpriteAnimation(){
 		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		animation.LoadSprites (player.slimeCoreData.picDirection,5);
+		animation.LoadSprites (player.statsCoreInfo.picDirection,5);
 		animation.playAnimation ();
 
 	}
@@ -54,7 +56,7 @@ public class Slime : MonoBehaviour {
 
 	public void setPlayer(Player player){
 		this.player = player;
-		SetMass(player.slimeCoreData.startingHP);
+		SetMass(player.statsCoreInfo.startingHP);
 		initSpriteAnimation ();
 		gameObject.GetComponent<SpriteRenderer> ().color = player.GetColor ();
 	}
@@ -64,11 +66,11 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
-		return player.slimeCoreData.movementRange;
+		return player.statsCoreInfo.move + element.move;
 	}
 
 	public int GetAttackRange(){
-		return player.slimeCoreData.attackRange;
+		return player.statsCoreInfo.range + element.range;
 	}
 
 	public void changeMass(float q){
@@ -76,7 +78,7 @@ public class Slime : MonoBehaviour {
 	}
 
 	public float getDamage(){
-		return player.slimeCoreData.attack;
+		return player.statsCoreInfo.attack + element.attack;
 	}
 
 	public bool isAlive(){

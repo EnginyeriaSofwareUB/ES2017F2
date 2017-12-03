@@ -12,6 +12,7 @@ public class InputController : MonoBehaviour
 	List<Tile> attackTiles;
 	List<Tile> moveTiles;
 	List<Tile> splitTiles;
+	List<Tile> joinTiles;
 
     void Start()
     {
@@ -21,6 +22,7 @@ public class InputController : MonoBehaviour
 		moveTiles = new List<Tile> ();
 		attackTiles = new List<Tile> ();
 		splitTiles = new List<Tile> ();
+		joinTiles = new List<Tile> ();
     }
 
     void Update()
@@ -38,6 +40,7 @@ public class InputController : MonoBehaviour
 						gameController.GetSelectedSlime() != col.gameObject.GetComponent<Slime>()) {
 						uiController.hideCurrentUITiles ();
 						splitTiles = uiController.showSplitRange (col.gameObject.GetComponent<Slime> ());
+						joinTiles = uiController.showJoinRange (col.gameObject.GetComponent<Slime> ());
 						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
 						s = col.gameObject.GetComponent<Slime>().ToString();
 						break;
@@ -92,7 +95,7 @@ public class InputController : MonoBehaviour
 							s = c.gameObject.GetComponent<Slime> ();
 						}
 					}
-					if (s != null && s!=gameController.GetSelectedSlime()) {
+					if (s != null && s!=gameController.GetSelectedSlime() && joinTiles.Contains(s.actualTile)) {
 						Debug.Log (Time.time+"Join");
 						gameController.DoAction(new SlimeAction(ActionType.FUSION,s));
 						uiController.DisableCanvas ();
@@ -109,6 +112,7 @@ public class InputController : MonoBehaviour
 						moveTiles = uiController.showMoveRange (gameController.GetSelectedSlime());
 						attackTiles = uiController.showAttackRange (gameController.GetSelectedSlime());
 						List<Tile> tiles = new List<Tile>();
+						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
 						tiles.AddRange(moveTiles);
 						tiles.AddRange(attackTiles);
 						cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);

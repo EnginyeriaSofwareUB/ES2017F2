@@ -17,11 +17,13 @@ public class SelectorController : MonoBehaviour {
 	private int colorSelector1;
 	private int colorSelector2;
 	private int mapSelector;
+	private int modoVictoria;
 
 	public Matrix map;
 
 	// Use this for initialization
 	void Start () {
+		modoVictoria = 0;
 		slimeSelector1 = 0;
 		slimeSelector2 = 1;
 		mapSelector = 0;
@@ -68,6 +70,7 @@ public class SelectorController : MonoBehaviour {
 		GameSelection.player2Color = colors [colorSelector2];
 		GameSelection.player1Core = slimeSelector1;
 		GameSelection.player2Core = slimeSelector2;
+		GameSelection.modoVictoria = modoVictoria;
 	}
 	
 	// Update is called once per frame
@@ -183,6 +186,23 @@ public class SelectorController : MonoBehaviour {
 		//seededMap.Add(new SeededMap(35,0.5f,0007887));
 		//seededMap.Add(new SeededMap(17,0.9f,000712341237));
 		return allSeeded;
+	}
+
+	public void ModeSelection(){
+		GameObject s = GameObject.Find("ModeSelection");
+		modoVictoria = (int)s.GetComponent<Slider>().value;
+		GameSelection.modoVictoria = modoVictoria;
+		switch(modoVictoria){
+			case 0:
+				s.transform.Find("TextMode").GetComponent<Text>().text = "Asesinato";
+				break;
+			case 1:
+				s.transform.Find("TextMode").GetComponent<Text>().text = "Conquista";
+				break;
+			case 2:
+				s.transform.Find("TextMode").GetComponent<Text>().text = "Masa";
+				break;
+		}
 	}
 }
  enum MapTypeSelectionTypes{
