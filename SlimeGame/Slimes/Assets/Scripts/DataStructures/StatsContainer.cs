@@ -9,6 +9,7 @@ public class StatsContainer
 	public int attackCost;
 	public int startingHP;
 	public string picDirection;
+	public int picCount;
 
 	public StatsContainer (SimpleJSON.JSONNode data)
 	{
@@ -18,6 +19,7 @@ public class StatsContainer
 		attackCost = data ["attackCost"];
 		startingHP = data ["startingHP"];
 		picDirection = data ["picDirection"];
+		picCount = data ["picCount"];
 	}
 
 }

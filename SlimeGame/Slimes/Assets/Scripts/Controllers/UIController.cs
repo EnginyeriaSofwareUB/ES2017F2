@@ -36,9 +36,10 @@ public class UIController : MonoBehaviour {
         DisableCanvas();
 
         //Si clica OK desactiva el canvas
-        canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
-
-		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
+		if (canvasInfo != null) {
+			canvasInfo.GetComponentInChildren<Button> ().onClick.AddListener (DisableCanvas);
+		}
+		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/new_border");
 		currentUIRenderer = new List<SpriteRenderer> ();
 
 	}
@@ -59,7 +60,9 @@ public class UIController : MonoBehaviour {
     //Desactiva el canvas
     public void DisableCanvas()
     {
-        canvasInfo.SetActive(false);
+		if (canvasInfo != null) {
+			canvasInfo.SetActive (false);
+		}
     }
 
 	public List<Tile> showSplitRange(Slime slime){

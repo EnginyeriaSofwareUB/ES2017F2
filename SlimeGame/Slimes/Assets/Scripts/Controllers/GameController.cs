@@ -35,6 +35,10 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		TipDialog t = new TipDialog();
+		t.setButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
+		t.setBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
+
 		StatsFactory.GetStat (ElementType.EARTH);
         textTutorialPosition = 0;
         FloatingTextController.Initialize ();
@@ -412,6 +416,8 @@ public class GameController : MonoBehaviour
 		c.a = 0.5f;
 		tile.tileConquerLayer.color = c;
 		playerActions++;
+		selectedSlime.ChangeElement (tile.elementType);
+		tile.RemoveElement ();
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
@@ -509,7 +515,7 @@ public class GameController : MonoBehaviour
 			if (p != slime.GetPlayer()){
 				foreach(Slime s in p.GetSlimes()){
 					Vector2 slPos = s.GetActualTile().getPosition();		
-					if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
+					if (Matrix.GetDistance(slPos, myPos) <= slime.GetAttackRange()){
 						canAttack.Add(s);
 					}
 				}

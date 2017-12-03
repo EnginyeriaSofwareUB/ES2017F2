@@ -51,7 +51,8 @@
 		"attackRange":0,
 		"startingHP":0,
 		"attackCost":0,
-		"picDirection":"TODO IMPLEMENT"
+		"picDirection":"Slimes/Elements/None_",
+		"picCount":5
 	},
 	"Fire":{
 		"name":"Fire",
@@ -60,7 +61,8 @@
 		"attackRange":0,
 		"startingHP":0,
 		"attackCost":0,
-		"picDirection":"TODO IMPLEMENT"
+		"picDirection":"Slimes/Elements/Fire_",
+		"picCount":6
 	},
 	"Water":{
 		"name":"Water",
@@ -69,7 +71,8 @@
 		"attackRange":0,
 		"startingHP":0,
 		"attackCost":0,
-		"picDirection":"TODO IMPLEMENT"
+		"picDirection":"Slimes/Elements/Water_",
+		"picCount":5
 	},
 	"Earth":{
 		"name":"Earth",
@@ -78,6 +81,7 @@
 		"attackRange":1,
 		"startingHP":0,
 		"attackCost":0,
-		"picDirection":"TODO IMPLEMENT"
+		"picDirection":"Slimes/Elements/Earth_",
+		"picCount":5
 	}
 }

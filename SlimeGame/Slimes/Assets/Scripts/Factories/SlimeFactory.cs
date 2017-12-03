@@ -7,7 +7,10 @@ public class SlimeFactory{
 		GameObject slime = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
 		slime.AddComponent<SpriteRenderer>();
 		slime.tag = "Slime";
-		slime.AddComponent<Slime>();
+		GameObject face = new GameObject ("SlimeFace");
+		face.AddComponent<SpriteRenderer> ();
+		face.transform.SetParent (slime.transform);
+		slime.AddComponent<Slime>().face = face;
 		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(pl.statsCoreInfo.picDirection+0);
 		slime.GetComponent<SpriteRenderer>().sortingLayerName = "TileElement";
 		slime.AddComponent<BoxCollider2D>();
@@ -21,18 +24,7 @@ public class SlimeFactory{
 		slime.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
 		slime.GetComponent<Slime>().SetActualTile(tile);
 		slime.GetComponent<Slime>().setPlayer(pl);
-		//CONFIGURACIO BARRA VIDA PER SLIME
-		//afegim canvas al gameObject per despres posar les imatges de la barra de vida
-		GameObject newCanvas = new GameObject("Canvas");
-		newCanvas.layer = 8;
-		Canvas c = newCanvas.AddComponent<Canvas>();
-		c.renderMode = RenderMode.WorldSpace;
-		//es el fill del slime 
-		newCanvas.transform.SetParent (slime.transform);
-		RectTransform rect = newCanvas.GetComponent<RectTransform> ();
-		//posicion del canvas, dins hi haura la barra de vida
-		rect.localPosition = new Vector3 (0f,1f,0f);
-		rect.sizeDelta = new Vector2 (1.5f,0.25f);
+
 
 		return slime.GetComponent<Slime> ();
 	}

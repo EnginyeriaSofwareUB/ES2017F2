@@ -13,11 +13,14 @@ public class Slime : MonoBehaviour {
 	private float minMass = 20f;
 	private float maxScale = 0.6f;
 	private float minScale = 0.2f;
+	private ElementType elementType;
 	private StatsContainer element;
+	public GameObject face;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
-		element = StatsFactory.GetStat (ElementType.NONE);
+		elementType = ElementType.NONE;
+		ChangeElement(elementType);
 	}
 	
 	// Update is called once per frame
@@ -26,9 +29,9 @@ public class Slime : MonoBehaviour {
 	}
 
 	public void initSpriteAnimation(){
-		canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		canimation.LoadSprites (player.statsCoreInfo.picDirection,5);
-		canimation.playAnimation ();
+		//canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
+		//canimation.LoadSprites (player.statsCoreInfo.picDirection,5);
+		//canimation.playAnimation ();
 
 	}
 
@@ -105,5 +108,15 @@ public class Slime : MonoBehaviour {
 			scale = (maxScale-minScale)/(maxMass-minMass)*mass+minScale-(minMass*(maxScale-minScale))/(maxMass-minMass);
 		}
 		this.gameObject.transform.localScale = new Vector3(scale, scale, 0.5f);
+	}
+
+	public void ChangeElement(ElementType newElement){
+		if (elementType == ElementType.NONE) {
+			elementType = newElement;
+			element = StatsFactory.GetStat (elementType);
+			canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer> ());
+			canimation.LoadSprites (element.picDirection, element.picCount);
+			canimation.playAnimation ();
+		}
 	}
 }
