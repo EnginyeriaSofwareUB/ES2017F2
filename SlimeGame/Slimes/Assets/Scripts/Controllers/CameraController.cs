@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour {
 	float newZoom;
 	float beforeZoom;
 	float MaxZoom;
+	float MinZoom;
 	private Vector3? center;
 	private Vector3? beforeMovePosition;
 	private Vector3 originalCenter;
@@ -25,6 +26,7 @@ public class CameraController : MonoBehaviour {
 		newZoom=-1;
 		beforeZoom=-1;
 		MaxZoom=-1;
+		MinZoom=3;
 		center=null;
 		controller = this.GetComponent<GameController>();
 		originalCenter = new Vector3(this.transform.position.x,this.transform.position.y,this.transform.position.z);
@@ -49,7 +51,13 @@ public class CameraController : MonoBehaviour {
 			}else{
 				int zoomin = -1;
 				if(newZoom-beforeZoom>0)zoomin = 1;
-				cam.orthographicSize+=zoomin*Time.deltaTime*GetSpeedZoom();
+				float ortosizenew = cam.orthographicSize+zoomin*Time.deltaTime*GetSpeedZoom();
+				if(ortosizenew<=MaxZoom &&ortosizenew>=MinZoom){
+					cam.orthographicSize=ortosizenew;
+				}else{
+					newZoom=-1;
+					beforeZoom=-1;
+				}
 			}			
 		}		
 		if(center.HasValue){
@@ -129,7 +137,7 @@ public class CameraController : MonoBehaviour {
 	
 	
 	public void ChangeZoom(float newZoom){
-		if(newZoom<=MaxZoom){
+		if(newZoom<=MaxZoom&& newZoom>=MinZoom){
 			this.newZoom=newZoom;
 			this.beforeZoom=this.GetComponent<Camera>().orthographicSize;
 		}		
@@ -150,6 +158,19 @@ public class CameraController : MonoBehaviour {
 	}
 	public void CenterCamera(){
 		CenterCamera(originalCenter);//new Vector3(0,0,-1);
+	}
+
+	public void AllTilesInCamera(Tile center, List<Tile> tiles){
+		Vector2 centerPos = center.transform.position;
+		Vector2 size = new Vector2();
+		foreach(Tile tile in tiles){
+			Vector3 tileWorldPosition = tile.transform.position-center.transform.position;
+			if (Mathf.Abs(tileWorldPosition.x) > size.x)size.x = Mathf.Abs(tileWorldPosition.x);
+            if (Mathf.Abs(tileWorldPosition.y) > size.y)size.y =Mathf.Abs(tileWorldPosition.y);
+			
+		}		
+		CenterCamera(new Vector2(centerPos.x,centerPos.y));
+		ChangeZoom(Mathf.Max(MaxZoom*size.y/(yLimit),MaxZoom*size.x/(xLimit)));
 	}
 	
 }

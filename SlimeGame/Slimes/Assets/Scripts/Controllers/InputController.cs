@@ -108,12 +108,17 @@ public class InputController : MonoBehaviour
 						uiController.hideCurrentUITiles ();
 						moveTiles = uiController.showMoveRange (gameController.GetSelectedSlime());
 						attackTiles = uiController.showAttackRange (gameController.GetSelectedSlime());
+						List<Tile> tiles = new List<Tile>();
+						tiles.AddRange(moveTiles);
+						tiles.AddRange(attackTiles);
+						cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
 					}
 				}
 			} else if (Input.GetMouseButtonDown (1)) {
 				gameController.SetSelectedSlime (null);
 				uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
+				cameraController.GlobalCamera();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
 				cameraController.ZoomIn();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
