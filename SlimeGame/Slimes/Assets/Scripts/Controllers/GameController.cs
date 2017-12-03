@@ -32,6 +32,16 @@ public class GameController : MonoBehaviour
 	public Material tileMaterial;
 
     private UIController uiController;
+    private CameraController camController;
+
+    private enum ModosVictoria {ASESINATO=0, CONQUISTA=1, MASA=2};
+    
+
+    private ModosVictoria condicionVictoria;
+    private float massToWin;
+    private int totalTiles;
+    private float percentageTilesToWin;
+
     // Use this for initialization
     void Start()
     {
@@ -43,7 +53,7 @@ public class GameController : MonoBehaviour
         textTutorialPosition = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
-		FloatingTextController.Initialize ();
+        camController = Camera.main.GetComponent<CameraController>();
 		string stats = (Resources.Load ("stats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
@@ -65,12 +75,8 @@ public class GameController : MonoBehaviour
                 tutorialTexts.Add(text["text"]);
             }
         }
-
-
-
         conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
-        //MapDrawer.InitTest ();
-		status = GameControllerStatus.WAITINGFORACTION;
+        status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
         textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
         panelTip.GetComponent<DialogInfo>().Active(false);
@@ -117,9 +123,34 @@ public class GameController : MonoBehaviour
             p.updateActions();
 
         //iniciem la informacio de game over
+        totalTiles = matrix.TotalNumTiles();
+        Debug.Log("TILES TOTALS: "+ totalTiles);
+        
+        if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
+            condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
+            Debug.Log("MODO DE VICTORIA: "+condicionVictoria.ToString());
+            switch(condicionVictoria){
+                case ModosVictoria.CONQUISTA:
+                    //define percentage tiles to win
+                    percentageTilesToWin = 0.25f;
+                    Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
+                    break;
+                case ModosVictoria.MASA:
+                    //define mass to win
+                    massToWin = 0;
+                    foreach(Player player in players){
+                        if (player.GetTotalMass()>massToWin) massToWin = player.GetTotalMass();
+                    }
+                    massToWin*=2;
+                    Debug.Log("Masa total del jugador para ganar: "+massToWin);
+                    break;
+            }
+        }else{
+            condicionVictoria = ModosVictoria.ASESINATO; //por defecto
+        }
         GameOverInfo.Init();
 		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
-
+        camController.InitMaxZoom();
     }
 
     // Update is called once per frame
@@ -128,8 +159,17 @@ public class GameController : MonoBehaviour
 		if (status == GameControllerStatus.CHECKINGLOGIC) {
 			checkLogic ();
 		}
-
-        foreach (Player player in players)
+        for (int i = players.Count-1;i>=0;i--){
+            if (players[i].GetNumSlimes() == 0)
+            {
+                //This player loses
+                GameOverInfo.SetLoser(players[i]);
+                players.RemoveAt(i);
+            }
+        }
+        
+        //Tenia problemes amb el remove de dins del foreach
+        /*foreach (Player player in players)
         {
             if (player.GetNumSlimes() == 0)
             {
@@ -137,13 +177,13 @@ public class GameController : MonoBehaviour
                 GameOverInfo.SetLoser(player);
                 players.Remove(player);
             }
-        }
+        }*/
 
-        bool ended = IsGameEnded();
+        Player winner = IsGameEndedAndWinner();
 
-        if (ended)
+        if (winner!=null)
         {
-            GameOverInfo.SetWinner(players[0]);
+            GameOverInfo.SetWinner(winner);
             SceneManager.LoadScene("GameOver");
         }
 
@@ -204,11 +244,45 @@ public class GameController : MonoBehaviour
     }
 
     /*
-	Funció que retorna True si s'ha acabat la partida o False sino.
+	Funció que retorna True si s'ha acabat la partida o False si no.
 	 */
-    private bool IsGameEnded()
+    private Player IsGameEndedAndWinner()
     {
-        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
+        Player ret = null; //si no trobem guanyador retornem null
+        int index;
+        bool find;
+        //sempre comprovem la condicio de asesinato
+        if (players.Count == 1){
+            return players[0];
+        }
+        //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
+        switch(condicionVictoria){
+            case ModosVictoria.CONQUISTA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].NumConqueredTiles()/percentageTilesToWin>=totalTiles){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+
+            case ModosVictoria.MASA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].GetTotalMass()>=massToWin){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+        }
+        return ret; //si no troba guanyador retornem null, si hi ha guanyador retornem el guanyador
+
     }
 
     /*
@@ -276,6 +350,7 @@ public class GameController : MonoBehaviour
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
             NextTurn();        
         }
+        camController.GlobalCamera();
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
@@ -412,6 +487,12 @@ public class GameController : MonoBehaviour
 
 	private void ConquerTile(Tile tile){
 		tile.tileConquerLayer.sprite = conquerSprite;
+        //borrem la tile conquerida de qui la tenia abans
+        foreach(Player player in players){
+            if (player.HasConqueredTile(tile)) player.RemoveConqueredTile(tile);
+        }
+        //afegim la tile conquerida
+        players[currentPlayer].AddConqueredTile(tile);
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
 		tile.tileConquerLayer.color = c;

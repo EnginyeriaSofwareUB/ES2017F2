@@ -27,6 +27,7 @@ public class MapDrawer {
 
 			SetTileAt(TileFactory.instantiateTile(x,y,offsetx,offsety,tile),x,y);
 		}
+        CameraController.InitMapSize(size);
         return size;
 
 	}

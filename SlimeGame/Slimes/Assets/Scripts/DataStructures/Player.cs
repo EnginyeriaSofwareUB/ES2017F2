@@ -9,6 +9,7 @@ public class Player {
 	private int actions;
     private float actionsPerSlime;
 	private List<Slime> slimes;
+	private List<Tile> conqueredTiles;
     private List<SlimeAction> tutorialActions;
     private int positionTutorial;
 	private Color color;
@@ -21,6 +22,7 @@ public class Player {
 		this.name = name;
 		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
+		conqueredTiles = new List<Tile>();
 
         positionTutorial=0;
         tutorialActions = new List<SlimeAction>();
@@ -34,6 +36,7 @@ public class Player {
 		//this.actions = actions;
 		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
+		conqueredTiles = new List<Tile>();
 		this.statsCoreInfo = coreInfo;
         updateActions();
 		SetBrain(brain);
@@ -146,4 +149,30 @@ public class Player {
             return false;
         }
     }
+
+	public float GetTotalMass(){
+		float totalMass = 0;
+		foreach (Slime slime in slimes){
+			totalMass+=slime.GetMass();
+		}
+		return totalMass;
+	}
+
+	public void AddConqueredTile(Tile tile){
+		if (!HasConqueredTile(tile)) conqueredTiles.Add(tile);
+	}
+
+	public bool HasConqueredTile(Tile tile){
+		if (NumConqueredTiles()!=0)
+			return conqueredTiles.Contains(tile);
+		return false;
+	}
+
+	public void RemoveConqueredTile(Tile tile){
+		if (HasConqueredTile(tile)) conqueredTiles.Remove(tile);
+	}
+
+	public int NumConqueredTiles(){
+		return conqueredTiles.Count;
+	}
 }

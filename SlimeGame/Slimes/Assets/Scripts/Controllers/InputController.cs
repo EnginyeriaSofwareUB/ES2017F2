@@ -7,7 +7,7 @@ public class InputController : MonoBehaviour
 
     GameController gameController;
     UIController uiController;
-    
+    CameraController cameraController;
 
 	List<Tile> attackTiles;
 	List<Tile> moveTiles;
@@ -18,7 +18,7 @@ public class InputController : MonoBehaviour
     {
         gameController = Camera.main.GetComponent<GameController>();
         uiController = Camera.main.GetComponent<UIController>();
-		uiController.InitMapSize(MapDrawer.MapSize());
+		cameraController = Camera.main.GetComponent<CameraController>();
 		moveTiles = new List<Tile> ();
 		attackTiles = new List<Tile> ();
 		splitTiles = new List<Tile> ();
@@ -111,25 +111,30 @@ public class InputController : MonoBehaviour
 						uiController.hideCurrentUITiles ();
 						moveTiles = uiController.showMoveRange (gameController.GetSelectedSlime());
 						attackTiles = uiController.showAttackRange (gameController.GetSelectedSlime());
+						List<Tile> tiles = new List<Tile>();
 						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
+						tiles.AddRange(moveTiles);
+						tiles.AddRange(attackTiles);
+						cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
 					}
 				}
 			} else if (Input.GetMouseButtonDown (1)) {
 				gameController.SetSelectedSlime (null);
 				uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
+				cameraController.GlobalCamera();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
-				uiController.ZoomIn();
+				cameraController.ZoomIn();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
-				uiController.ZoomOut();				
+				cameraController.ZoomOut();
 			} else if (Input.GetKey (KeyCode.UpArrow)) {
-				uiController.MoveUp();				
+				cameraController.MoveUp();				
 			} else if (Input.GetKey (KeyCode.DownArrow)) {
-				uiController.MoveDown();				
+				cameraController.MoveDown();				
 			} else if (Input.GetKey (KeyCode.LeftArrow)) {
-				uiController.MoveLeft();				
+				cameraController.MoveLeft();				
 			} else if (Input.GetKey (KeyCode.RightArrow)) {
-				uiController.MoveRight();
+				cameraController.MoveRight();
 			}
 		}
 	}
