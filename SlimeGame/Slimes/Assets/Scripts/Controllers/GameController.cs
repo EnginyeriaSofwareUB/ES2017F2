@@ -48,7 +48,6 @@ public class GameController : MonoBehaviour
         textTutorialPosition = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
-		FloatingTextController.Initialize ();
 		string stats = (Resources.Load ("stats") as TextAsset).text;
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
@@ -108,12 +107,12 @@ public class GameController : MonoBehaviour
             MapDrawer.instantiateMap(matrix.getIterable());
             Vector2 slime1 = matrix.GetRandomTile();
             instantiateSlime(players[0], (int)slime1.x, (int)slime1.y);
-            //Vector2 slime2 = matrix.GetRandomTile();
-            //instantiateSlime(players[0], (int)slime2.x, (int)slime2.y);
+            Vector2 slime2 = matrix.GetRandomTile();
+            instantiateSlime(players[0], (int)slime2.x, (int)slime2.y);
             Vector2 slime3 = matrix.GetRandomTile();
             instantiateSlime(players[1], (int)slime3.x, (int)slime3.y);
-            //Vector2 slime4 = matrix.GetRandomTile();
-            //instantiateSlime(players[1], (int)slime4.x, (int)slime4.y);
+            Vector2 slime4 = matrix.GetRandomTile();
+            instantiateSlime(players[1], (int)slime4.x, (int)slime4.y);
         }
 
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
