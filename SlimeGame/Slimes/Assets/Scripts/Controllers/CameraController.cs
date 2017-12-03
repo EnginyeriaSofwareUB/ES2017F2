@@ -5,58 +5,78 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
 	public static int xLimit;
     public static int yLimit;
-    public int minZoom;
-    public int maxZoom;
-    public int speed;
-	int zoomOut=0;
-	int zoomIn=0;
-	private bool GlobalCameraReset=false;
-
+    public int howfar;
+	float newZoom;
+	float beforeZoom;
+	float MaxZoom;
 	private Vector3? center;
-	//private Vector3? beforeMoveCenter;
+	private Vector3? beforeMovePosition;
 	private Vector3 originalCenter;
+
+	private GameController controller;
 	// Use this for initialization
-	void Start () {		
-		speed = 20;
-        minZoom = 3;
-        maxZoom = 13;
+	float speed;
+	float speedZoom;
+	private bool calibrateZoom = false;
+	void Start () {	
+		speed=10;
+		speedZoom=10;	
+		howfar = 1;
+		newZoom=-1;
+		beforeZoom=-1;
+		MaxZoom=-1;
 		center=null;
+		controller = this.GetComponent<GameController>();
 		originalCenter = new Vector3(this.transform.position.x,this.transform.position.y,this.transform.position.z);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(zoomOut>0){
+		if(calibrateZoom && MaxZoom<0){
 			Camera cam = this.GetComponent<Camera> ();
-			cam.orthographicSize+=Time.deltaTime*10;
-			CheckAllConditions(cam);
-			zoomOut--;
-		}
-		if(zoomIn>0){
-			Camera cam = this.GetComponent<Camera> ();
-			cam.orthographicSize-=Time.deltaTime*10;
-			CheckAllConditions(cam);
-			zoomIn--;
-		}
-		if(center.HasValue){
-			Vector3 wantToMove =center.Value- this.transform.position;
-			Vector3 realMove = wantToMove*Time.deltaTime;
-			wantToMove-=realMove;
-			this.transform.position+=realMove;
-			Rect rect = new Rect(0,0,1f,1f);
-			if(rect.Contains(wantToMove)){
-				center = null;	
+			if((GetVerticalExtent(cam)<yLimit || GetHorizontalExtent(cam)<xLimit)){
+				cam.orthographicSize+=Time.deltaTime*10;
+			}else{
+				calibrateZoom=false;
+				MaxZoom=cam.orthographicSize;
 			}
-			
+		}
+		else if(newZoom>0){
+			Camera cam = this.GetComponent<Camera> ();
+			if(Mathf.Abs(newZoom-cam.orthographicSize)<=0.1){
+				newZoom=-1;
+				beforeZoom=-1;
+			}else{
+				int zoomin = -1;
+				if(newZoom-beforeZoom>0)zoomin = 1;
+				cam.orthographicSize+=zoomin*Time.deltaTime*GetSpeedZoom();
+			}			
+		}		
+		if(center.HasValue){
+			Vector3 mogutDeMoment = this.beforeMovePosition.Value-this.transform.position;
+			Vector3 totalPerMoure = this.beforeMovePosition.Value-this.center.Value;
+			float dist =Vector3.Magnitude(totalPerMoure)-Vector3.Magnitude(mogutDeMoment);
+			if(dist<0.1f){
+				center = null;	
+				beforeMovePosition=null;
+			}else{
+				Vector3 realMove = GetVectorSpeed()*Time.deltaTime;
+				this.transform.position-=realMove;
+			}
 		}
 	}
-	public void CheckAllConditions(Camera cam){
-		if(GlobalCameraReset){
-			if(!(GetVerticalExtent(cam)<yLimit || GetHorizontalExtent(cam)<xLimit)){
-				GlobalCameraReset=false;
-				zoomOut=0;
-			}
+	float GetSpeedZoom(){
+		float speed = speedZoom;
+		if(this.beforeMovePosition.HasValue && this.center.HasValue){
+			float x1 = Vector3.Magnitude(this.beforeMovePosition.Value-this.center.Value);
+			float x2 = Mathf.Abs(newZoom-beforeZoom);
+			speed = (Vector3.Magnitude(GetVectorSpeed())*x2)/x1;			
 		}
+		return speed;
+	}
+	Vector3 GetVectorSpeed(){
+		Camera cam = this.GetComponent<Camera>();
+		return (this.beforeMovePosition.Value-this.center.Value).normalized*speed;
 	}
 	float GetHorizontalExtent(Camera cam){
 		return 0.9f* cam.orthographicSize * cam.aspect;
@@ -69,13 +89,13 @@ public class CameraController : MonoBehaviour {
         yLimit = (int) mapSize.y;
 	}
 	public void ZoomIn(){
-		zoomIn=5;
+		//zoom=5;
+		Camera cam = this.GetComponent<Camera>();
+		ChangeZoom(cam.orthographicSize-1);
 	}
 	public void ZoomOut(){
 		Camera cam = this.GetComponent<Camera>();
-		if((GetVerticalExtent(cam)<yLimit || GetHorizontalExtent(cam)<xLimit)){
-			zoomOut=5;
-		} 
+		ChangeZoom(cam.orthographicSize+1);
 		
 	}
 	public void MoveUp(){
@@ -104,54 +124,32 @@ public class CameraController : MonoBehaviour {
 	}
 	public float GetModulo(){
 		float orto = 1f/this.GetComponent<Camera> ().orthographicSize;
-		return speed*orto;
+		return howfar/**orto*/;
 	}
-	public Rect GetRectWithAllPoints(List<Vector2> vectors, float aspect){
-		if(vectors.Count<=0)return new Rect(0,0,0,0);
-		float invaspect = 1.0f/aspect;
-		Rect rect = new Rect(vectors[0].x,vectors[0].y,aspect,1);
-		foreach(Vector2 vect in vectors){
-			if(!rect.Contains(vect)){
-				float diff;			
-				if((diff = vect.x-rect.xMax)>0f){
-					rect.xMax = vect.x;
-					rect.yMax += diff*invaspect;
-				}
-				if((diff = rect.xMin-vect.x)>0f){
-					rect.xMin = vect.x;
-					rect.yMin -= diff*invaspect;
-				}
-				if((diff = vect.y-rect.yMax)>0f){
-					rect.yMax = vect.y;
-					rect.xMax += diff*invaspect;
-				}
-				if((diff = rect.yMin-vect.y)>0f){
-					rect.yMin = vect.y;
-					rect.xMin -= diff*invaspect;
-				}
-			}
-			
+	
+	
+	public void ChangeZoom(float newZoom){
+		if(newZoom<=MaxZoom){
+			this.newZoom=newZoom;
+			this.beforeZoom=this.GetComponent<Camera>().orthographicSize;
 		}		
-		return rect;
 	}
-	public void ChangeCamera(List<Slime> slimes){
-		List<Vector2> vects = new List<Vector2>();
-		foreach(Slime slime in slimes){
-			vects.Add(slime.actualTile.getPosition());
-		}
-		Rect rect = GetRectWithAllPoints(vects,this.GetComponent<Camera> ().aspect);
-		//GUI.Label(rect,"465");
-		//this.transform.position+=(new Vector3(rect.center.x,rect.center.y,0)* Time.deltaTime*speed);
+	public void InitMaxZoom(){
+		calibrateZoom=true;
+
 	}
 	public void GlobalCamera(){
 		CenterCamera();
-		GlobalCameraReset=true;
-		zoomOut=999;
+		Camera cam = this.GetComponent<Camera>();
+		ChangeZoom(MaxZoom);
 	}
 	public void CenterCamera(Vector2 newCenter){
 		this.center = new Vector3(newCenter.x,newCenter.y,originalCenter.z);
+		this.beforeMovePosition = this.transform.position;
+		
 	}
 	public void CenterCamera(){
-		this.center = originalCenter;//new Vector3(0,0,-1);
+		CenterCamera(originalCenter);//new Vector3(0,0,-1);
 	}
+	
 }

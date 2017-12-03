@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour
         //iniciem la informacio de game over
         GameOverInfo.Init();
 		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
-
+        camController.InitMaxZoom();
     }
 
     // Update is called once per frame

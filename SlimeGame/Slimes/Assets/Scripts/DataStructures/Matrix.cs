@@ -30,9 +30,7 @@ public class Matrix {
 				
 				int hexY = firstY+j;
 				if (row[j] != TileType.Null) {
-					TileData tile = new TileData(row[j], new Vector2(hexX,hexY));
-					map [hexX] [hexY] = tile;
-					
+					AddTileToMap(row[j],hexX,hexY);					
 				}
 			}
 		}
