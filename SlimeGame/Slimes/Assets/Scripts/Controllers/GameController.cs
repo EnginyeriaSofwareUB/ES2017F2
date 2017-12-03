@@ -33,13 +33,13 @@ public class GameController : MonoBehaviour
 
     private UIController uiController;
 
-    private enum ModosVictoria {ASESINATO, CONQUISTA, MASA};
+    private enum ModosVictoria {ASESINATO=0, CONQUISTA=1, MASA=2};
     
 
     private ModosVictoria condicionVictoria;
     private float massToWin;
     private int totalTiles;
-    private float percentageTilesToWin = 0.03f;
+    private float percentageTilesToWin;
 
     // Use this for initialization
     void Start()
@@ -127,7 +127,29 @@ public class GameController : MonoBehaviour
         //iniciem la informacio de game over
         totalTiles = matrix.TotalNumTiles();
         Debug.Log("TILES TOTALS: "+ totalTiles);
-        condicionVictoria = ModosVictoria.CONQUISTA;
+        
+        if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
+            condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
+            Debug.Log("MODO DE VICTORIA: "+condicionVictoria.ToString());
+            switch(condicionVictoria){
+                case ModosVictoria.CONQUISTA:
+                    //define percentage tiles to win
+                    percentageTilesToWin = 0.25f;
+                    Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
+                    break;
+                case ModosVictoria.MASA:
+                    //define mass to win
+                    massToWin = 0;
+                    foreach(Player player in players){
+                        if (player.GetTotalMass()>massToWin) massToWin = player.GetTotalMass();
+                    }
+                    massToWin*=2;
+                    Debug.Log("Masa total del jugador para ganar: "+massToWin);
+                    break;
+            }
+        }else{
+            condicionVictoria = ModosVictoria.ASESINATO; //por defecto
+        }
         GameOverInfo.Init();
 		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
 

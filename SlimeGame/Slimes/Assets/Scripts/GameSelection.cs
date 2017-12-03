@@ -13,4 +13,6 @@ public class GameSelection
 
 	public static SlimeCoreTypes player1Stats = SlimeCoreTypes.GLUTTONY;
 	public static SlimeCoreTypes player2Stats = SlimeCoreTypes.WRATH;
+
+	public static int modoVictoria;
 }
