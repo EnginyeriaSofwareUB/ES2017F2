@@ -163,7 +163,7 @@ public class Player {
 	}
 
 	public bool HasConqueredTile(Tile tile){
-		if (NumConqueredTiles()!=0 && tile!=null)
+		if (NumConqueredTiles()!=0)
 			return conqueredTiles.Contains(tile);
 		return false;
 	}
@@ -173,8 +173,6 @@ public class Player {
 	}
 
 	public int NumConqueredTiles(){
-		if(conqueredTiles != null)
-			return conqueredTiles.Count;
-		return 0;
+		return conqueredTiles.Count;
 	}
 }
