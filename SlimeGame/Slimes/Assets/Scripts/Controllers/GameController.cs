@@ -114,12 +114,13 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
         playerActions = 0;
 
-		uiController.SetRound(currentTurn+1);
-		uiController.SetPlayer(getCurrentPlayer().GetColor());
+		uiController.UpdateRound(currentTurn+1);
+		//uiController.HidePanel ();
+		uiController.UpdatePlayer(getCurrentPlayer().GetColor());
 
 		foreach(Player p in players)
             p.updateActions();
-		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
+		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
         //iniciem la informacio de game over
         GameOverInfo.Init();
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/music1");
@@ -266,9 +267,9 @@ public class GameController : MonoBehaviour
         currentPlayer++;
         playerActions = 0;
         //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
-		uiController.SetPlayer(getCurrentPlayer().GetColor());
-		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
-        if (currentPlayer >= players.Count)
+		uiController.UpdatePlayer(getCurrentPlayer().GetColor());
+		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
+		if (currentPlayer >= players.Count)
         {
             // Tots els jugadors han fet la seva accio, passem al seguent torn.
             NextTurn();     
@@ -285,8 +286,8 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
         playerActions = 0;
         currentTurn++;
-		uiController.SetRound (currentTurn+1);
-		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
+		uiController.UpdateRound (currentTurn+1);
+		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
     }
 
     private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
@@ -381,7 +382,7 @@ public class GameController : MonoBehaviour
 			break;
 		}
 		SetSelectedSlime(null);
-		uiController.SetActions(getCurrentPlayer().GetActions()-playerActions);
+		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
 	}
 
     private void MoveSlime(Tile tile)

@@ -24,11 +24,26 @@ public class UIController : MonoBehaviour {
 	private GameObject playerColor;
 	private GameObject actionsLeft;
 
+	public GameObject turnPanel;
+	public GameObject roundPanel;
+
+	float currentTime;
+	float maxTime;
+	float normalizedValue;
+	Vector3 startPos;
+	Vector3 endPos;
+	RectTransform rectTransformT;
+	RectTransform rectTransformR;
+
+
 	public int xLimit;
     public int yLimit;
     public int minZoom;
     public int maxZoom;
     public int speed;
+	public bool outIn;
+	public bool fadingT;
+	public bool fadingR;
     // Use this for initialization
     void Start () {
 		speed = 30;
@@ -46,29 +61,65 @@ public class UIController : MonoBehaviour {
 		round = GameObject.Find ("RoundNum");
 		playerColor = GameObject.Find ("PlayerColor");
 		actionsLeft = GameObject.Find ("ActionsNum");
+		turnPanel = GameObject.Find ("TurnPanel");
+		roundPanel = GameObject.Find ("RoundPanel");
+		fadingT = false;
+		fadingR = false;
+		outIn = false;
+		rectTransformT = turnPanel.GetComponent<RectTransform> ();
+		rectTransformR = roundPanel.GetComponent<RectTransform> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (fadingT) {
+			if (currentTime < maxTime){
+				currentTime += Time.deltaTime;
+				normalizedValue = currentTime / maxTime;
+				rectTransformT.anchoredPosition = Vector3.Lerp (startPos, endPos, normalizedValue);
+			} else {
+				fadingT = false;
+				if (outIn) {
+					outIn = false;
+					ShowPanel ();
+				}
+			}
+		}
 	}
 
 
-	public void SetRound(int r){
+	public void UpdateRound(int r){
 		round.GetComponent<Text> ().text = r.ToString();
 	}
 
-	public void SetPlayer(Color c){
-		playerColor.GetComponent<RawImage> ().color = c;
+	public void UpdatePlayer(Color c){
+		outIn = true;
+		HidePanel ();
+		playerColor.GetComponent<RawImage>().color = c;
+	}
+		
+	public void UpdateActions(int a, int max){
+		actionsLeft.GetComponent<Text> ().text = a.ToString()+" / "+max.ToString();
 	}
 
-	public void SetActions(int a){
-		actionsLeft.GetComponent<Text> ().text = a.ToString();
-	
+	public void HidePanel(){
+		fadingT = true;
+		currentTime = 0;
+		maxTime = 2;
+		startPos = new Vector3 (230, -80, 0);
+		endPos = new Vector3 (230, 120, 0);
 	}
-    //Metode que mostra la info que li passis
-    /*
-	public void ShowCanvasInfo(string info)
+
+	public void ShowPanel(){
+		fadingT = true;
+		currentTime = 0;
+		maxTime = 2;
+		startPos = new Vector3 (230, 120, 0);
+		endPos = new Vector3 (230, -80, 0);
+	}
+
+	//Metode que mostra la info que li passis
+    /*	public void ShowCanvasInfo(string info)
     {
         canvasInfo.SetActive(true);
         Text t = canvasInfo.GetComponentInChildren<Text>();
