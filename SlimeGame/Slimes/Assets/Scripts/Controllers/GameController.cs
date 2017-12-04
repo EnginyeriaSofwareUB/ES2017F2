@@ -7,8 +7,6 @@ using SimpleJSON;
 
 public class GameController : MonoBehaviour
 {
-
-    private const int MAX_TURNS = 20;
     
     private Slime selectedSlime;
     public Matrix matrix;
@@ -23,13 +21,9 @@ public class GameController : MonoBehaviour
 
 	private GameControllerStatus status;
 
-	public GameObject healthBar;
-
     public static int tutorial;
     private List<string> tutorialTexts;
     private int textTutorialPosition;
-    
-	public Material tileMaterial;
 
     private UIController uiController;
     private CameraController camController;
@@ -192,6 +186,8 @@ public class GameController : MonoBehaviour
         if (status == GameControllerStatus.WAITINGFORACTION &&
                 players[currentPlayer].isPlayerAI())
         {
+            //Debug.Log(GetGameState().ToString());
+
             //Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
             AISlimeAction aiAction = players[currentPlayer].GetAction(this);
             // AISlimeAction contiene la slime que hace la accion y la acción que hace.
@@ -472,7 +468,7 @@ public class GameController : MonoBehaviour
 		selectedSlime.SetActualTile (tile);
 		selectedSlime.gameObject.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
 
-		selectedSlime.gameObject.GetComponent<Slime>().rangeUpdated = false;
+		//selectedSlime.gameObject.GetComponent<Slime>().rangeUpdated = false;
 		status = GameControllerStatus.PLAYINGACTION;
 		playerActions++;
     }
@@ -679,4 +675,25 @@ public class GameController : MonoBehaviour
 		}
 		return tileList;
 	}
+
+    public AIGameState GetGameState(){
+        Matrix rawMatrix = matrix.GetRawCopy();
+
+        List<RawPlayer> rawPlayers = new List<RawPlayer>();
+        foreach(Player pl in players){
+            rawPlayers.Add(pl.GetRawCopy());
+        }
+
+		// Recorrem la llista de RawSlimes actualitzant les tiledata de matrix.
+		foreach(RawPlayer pl in rawPlayers){
+			foreach(RawSlime sl in pl.GetSlimes()){
+                // Substituim la RawTileData provisional que te RawSlime per la de la matriu (perque quedin enllaçades)
+                TileData slimeTile = sl.GetTileData();
+				TileData matrixTile = rawMatrix.getTile((int)slimeTile.getPosition().x, (int)slimeTile.getPosition().y);
+                sl.SetTile(matrixTile);
+			}
+		}
+        
+        return new AIGameState(rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions);
+    }
 }

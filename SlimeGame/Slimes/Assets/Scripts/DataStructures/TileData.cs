@@ -3,6 +3,7 @@ public class TileData:MapDrawer.MapCoordinates{
 	private TileType type;
     private Vector2 hexPosition;
 	public Slime slimeOnTop;
+	public RawSlime rawSlimeOnTop;
 	private Tile tile;
     //Tile tile;
 	public TileData(TileType typeEnum, Vector2 position){
@@ -30,8 +31,16 @@ public class TileData:MapDrawer.MapCoordinates{
 	public void SetSlimeOnTop(Slime slimeTop){
 		this.slimeOnTop=slimeTop;
 	}
+	public void SetSlimeOnTop(RawSlime slimeTop){
+		this.rawSlimeOnTop=slimeTop;
+	}
 	public Slime GetSlimeOnTop(){
 		return slimeOnTop;
+	}
+	public RawSlime GetRawSlimeOnTop(){
+		if(rawSlimeOnTop == null && slimeOnTop == null) return null;
+		else if(rawSlimeOnTop == null) return slimeOnTop.GetRawCopy();
+		return rawSlimeOnTop;
 	}
 	public Vector2 GetRealWorldPosition(){
 		return tile.gameObject.transform.position;
@@ -43,5 +52,10 @@ public class TileData:MapDrawer.MapCoordinates{
 
 	public Tile getTile(){
 		return tile;
+	}
+
+	public TileData GetRawCopy(){
+		TileData copy = new TileData(type, new Vector2(hexPosition.x, hexPosition.y));
+		return copy;
 	}
 }

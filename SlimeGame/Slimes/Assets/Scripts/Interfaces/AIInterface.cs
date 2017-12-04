@@ -5,6 +5,11 @@ public abstract class AIInterface{
     abstract public AISlimeAction GetAction(GameController gameController);
     //abstract public double GetStateEvaluation(GameController gameController);
 
+    /*protected AIGameState CreateGameState(GameController gameController){
+        int currentTurn = gameController.GetCurrentTurn();
+        return new AIGameState();
+    }*/
+
     /*
     Función que devuelve todas las posibles acciones en forma de lista de AISlimeAction (slime, accion)
      */

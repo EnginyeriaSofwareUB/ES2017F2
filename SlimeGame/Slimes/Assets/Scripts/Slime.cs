@@ -5,8 +5,6 @@ using UnityEngine;
 public class Slime : MonoBehaviour {
 	private Player player;
 	public Tile actualTile;
-	public Dictionary<TileData,List<TileData>> possibleMovements;
-	public bool rangeUpdated;
 	private float mass;
 	private SpriteAnimation animation;
 	private float maxMass = 300f;
@@ -16,7 +14,6 @@ public class Slime : MonoBehaviour {
 	private StatsContainer element;
 	// Use this for initialization
 	void Start () {
-		rangeUpdated = false;
 		element = StatsFactory.GetStat (ElementType.NONE);
 	}
 	
@@ -106,4 +103,9 @@ public class Slime : MonoBehaviour {
 		}
 		this.gameObject.transform.localScale = new Vector3(scale, scale, 0.5f);
 	}
+
+	public RawSlime GetRawCopy(){
+		return new RawSlime(maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
+	}
+
 }
