@@ -9,6 +9,9 @@ public class UIController : MonoBehaviour {
     GameObject canvasInfo;
 	GameController gameController;
 
+    public Vector2 canvasSizeTile;
+    public Vector2 canvasSizeSlime;
+
 	private Sprite TileSprite;
 
 	private Color moveColor = new Color (0f,0xa5,1f);
@@ -26,10 +29,14 @@ public class UIController : MonoBehaviour {
         canvasInfo = GameObject.Find("Dialog");
         DisableCanvas();
 
+        canvasSizeSlime = new Vector2(200, 250);
+        canvasSizeTile = new Vector2(200, 150);
+
         //Si clica OK desactiva el canvas
         canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
+        canvasInfo.AddComponent<ContentSizeFitter>();
 
-		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
+        TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
 		currentUIRenderer = new List<SpriteRenderer> ();
 
 	}
@@ -42,6 +49,7 @@ public class UIController : MonoBehaviour {
     //Metode que mostra la info que li passis
     public void ShowCanvasInfo(string info)
     {
+        setSize(true);
         canvasInfo.SetActive(true);
         Text t = canvasInfo.GetComponentInChildren<Text>();
         t.text = info;
@@ -110,6 +118,26 @@ public class UIController : MonoBehaviour {
 		}
 		currentUIRenderer.Clear ();
 	}
+
+    public void setSize(bool isSlime)
+    {
+        if (isSlime)
+        {
+            RectTransform rt = canvasInfo.GetComponent(typeof(RectTransform)) as RectTransform;
+            rt.sizeDelta = canvasSizeSlime;
+
+            RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
+            rt2.sizeDelta = canvasSizeSlime;
+        }
+        else
+        {
+            RectTransform rt = canvasInfo.GetComponent(typeof(RectTransform)) as RectTransform;
+            rt.sizeDelta = canvasSizeTile;
+
+            RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
+            rt2.sizeDelta = canvasSizeTile;
+        }
+    }
 	
 	
 	
