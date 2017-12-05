@@ -40,7 +40,7 @@ public class Slime : MonoBehaviour {
     {
         StatsContainer core = player.statsCoreInfo;
         string s = "";
-        s += "Slime de tipo: \n";
+        s += "Slime de "+ player.GetName() + "\n";
         s += "Vida/Masa: " + mass.ToString() + "\n";
         s += "Rango de ataque: " + core.range + "\n";
         s += "Rango de movimiento: " + core.move + "\n";

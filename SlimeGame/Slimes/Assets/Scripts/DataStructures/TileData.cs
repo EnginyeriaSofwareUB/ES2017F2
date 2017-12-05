@@ -14,7 +14,6 @@ public class TileData:MapDrawer.MapCoordinates{
     //Se tiene que modificar si se añaden tipos de tiles
 	override public string ToString(){
         if (type.ToString().Equals(TileType.Sand.ToString()))
-
             return "Casilla de tierra";
         else if (type.ToString().Equals(TileType.Water.ToString()))
             return "Casilla de agua";
