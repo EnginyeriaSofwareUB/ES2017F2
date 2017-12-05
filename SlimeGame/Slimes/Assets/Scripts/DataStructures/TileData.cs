@@ -5,6 +5,8 @@ public class TileData:MapDrawer.MapCoordinates{
 	public Slime slimeOnTop;
 	public RawSlime rawSlimeOnTop;
 	private Tile tile;
+	private RawPlayer conquerer;
+
     //Tile tile;
 	public TileData(TileType typeEnum, Vector2 position){
 		hexPosition = position;
@@ -12,7 +14,7 @@ public class TileData:MapDrawer.MapCoordinates{
 		slimeOnTop=null;
 	}
 
-    //Se tiene que modificar si se añaden tipos de tiles
+    //Se tiene que modificar si se aï¿½aden tipos de tiles
 	override public string ToString(){
         if (type.ToString().Equals(TileType.Sand.ToString()))
             return "Casilla de tierra";
@@ -59,6 +61,14 @@ public class TileData:MapDrawer.MapCoordinates{
 
 	public Tile getTile(){
 		return tile;
+	}
+
+	public void Conquer(RawPlayer pl){
+		this.conquerer = pl;
+	}
+
+	public bool IsConquered(){
+		return this.conquerer  != null;
 	}
 
 	public TileData GetRawCopy(){

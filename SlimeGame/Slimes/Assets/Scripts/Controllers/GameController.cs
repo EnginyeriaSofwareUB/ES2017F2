@@ -193,7 +193,7 @@ public class GameController : MonoBehaviour
             // AISlimeAction contiene la slime que hace la accion y la acción que hace.
             if (aiAction != null)
             {
-                SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
+                SetSelectedSlime(aiAction.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
                 DoAction((SlimeAction)aiAction); // Hacemos la accion.
             } else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
         }
@@ -508,7 +508,7 @@ public class GameController : MonoBehaviour
     private void FusionSlime(Slime fusionTarget)
 	{
 		RemoveSlime(selectedSlime);
-        players[currentPlayer].updateActions();
+        //players[currentPlayer].updateActions();
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
 
@@ -681,7 +681,14 @@ public class GameController : MonoBehaviour
 
         List<RawPlayer> rawPlayers = new List<RawPlayer>();
         foreach(Player pl in players){
-            rawPlayers.Add(pl.GetRawCopy());
+            RawPlayer rawPl = pl.GetRawCopy();
+            rawPlayers.Add(rawPl);
+            // Sync dels conqueredtiles
+            foreach(Tile tile in pl.GetConqueredTiles()){
+                TileData tiledata = tile.GetTileData();
+				TileData matrixTile = rawMatrix.getTile((int)tiledata.getPosition().x, (int)tiledata.getPosition().y);
+                rawPl.Conquer(matrixTile);
+            }
         }
 
 		// Recorrem la llista de RawSlimes actualitzant les tiledata de matrix.

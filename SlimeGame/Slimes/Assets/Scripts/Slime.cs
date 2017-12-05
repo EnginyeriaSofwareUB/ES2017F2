@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
+    private static int ID = 0;
+	private int id;
 	private Player player;
 	public Tile actualTile;
 	private float mass;
@@ -14,6 +16,8 @@ public class Slime : MonoBehaviour {
 	private StatsContainer element;
 	// Use this for initialization
 	void Start () {
+		id = ID;
+		ID++;
 		element = StatsFactory.GetStat (ElementType.NONE);
 	}
 	
@@ -121,7 +125,7 @@ public class Slime : MonoBehaviour {
 	}
 
 	public RawSlime GetRawCopy(){
-		return new RawSlime(maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
+		return new RawSlime(id, maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
 	}
 
 }
