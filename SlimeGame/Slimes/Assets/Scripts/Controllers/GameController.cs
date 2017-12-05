@@ -50,14 +50,9 @@ public class GameController : MonoBehaviour
         textTutorialPosition = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
-<<<<<<< HEAD
-		FloatingTextController.Initialize ();
-        soundController = gameObject.GetComponent<SoundController>();
-		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
-=======
+		soundController = gameObject.GetComponent<SoundController>();
         camController = Camera.main.GetComponent<CameraController>();
 		string stats = (Resources.Load ("stats") as TextAsset).text;
->>>>>>> development
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
 		for (int i = 0; i < n.Count; i++) {
@@ -103,13 +98,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-<<<<<<< HEAD
-            players.Add(new Player("Jugador 1", 1, cores[GameSelection.player1Core])); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core]));//, new AIAggressive()));
-=======
 			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
 			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIAggressive()));
->>>>>>> development
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -165,14 +155,9 @@ public class GameController : MonoBehaviour
             condicionVictoria = ModosVictoria.ASESINATO; //por defecto
         }
         GameOverInfo.Init();
-<<<<<<< HEAD
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/music1");
         soundController.PlayLoop(clip);
-
-=======
-		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
-        camController.InitMaxZoom();
->>>>>>> development
+		camController.InitMaxZoom();
     }
 
     // Update is called once per frame
@@ -357,21 +342,13 @@ public class GameController : MonoBehaviour
         currentPlayer++;
         playerActions = 0;
         //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
-<<<<<<< HEAD
 		if (currentPlayer >= players.Count) {
 			// Tots els jugadors han fet la seva accio, passem al seguent torn.
 			NextTurn ();
 		} else {
 			uiController.NextPlayer(getCurrentPlayer().GetColor(),playerActions,getCurrentPlayer().GetActions());
 		}
-=======
-        if (currentPlayer >= players.Count)
-        {
-            // Tots els jugadors han fet la seva accio, passem al seguent torn.
-            NextTurn();        
-        }
-        camController.GlobalCamera();
->>>>>>> development
+		camController.GlobalCamera();
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 

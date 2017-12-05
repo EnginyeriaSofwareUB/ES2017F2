@@ -20,7 +20,7 @@ public class UIController : MonoBehaviour {
 	private Color selectedColor = new Color (1f, 0.843f, 0f);
 
 	private List<SpriteRenderer> currentUIRenderer;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
 	private GameObject round;
 	private GameObject playerColor;
@@ -57,19 +57,19 @@ public class UIController : MonoBehaviour {
     public int minZoom;
     public int maxZoom;
     public int speed;
-=======
->>>>>>> development
+//=======
+//>>>>>>> development
     // Use this for initialization
     void Start () {
 		gameController = Camera.main.GetComponent<GameController>();
         //canvasInfo = GameObject.Find("Dialog");
         //DisableCanvas();
-
+		/*
         RectTransform rt = canvasInfo.GetComponent(typeof(RectTransform)) as RectTransform;
         rt.sizeDelta =  new Vector2(200, 150); ;
 
         RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
-        rt2.sizeDelta = new Vector2(200, 150);
+        rt2.sizeDelta = new Vector2(200, 150);*/
         //Si clica OK desactiva el canvas
         //canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
 
