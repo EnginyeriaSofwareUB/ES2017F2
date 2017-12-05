@@ -30,9 +30,7 @@ public class Matrix {
 				
 				int hexY = firstY+j;
 				if (row[j] != TileType.Null) {
-					TileData tile = new TileData(row[j], new Vector2(hexX,hexY));
-					map [hexX] [hexY] = tile;
-					
+					AddTileToMap(row[j],hexX,hexY);					
 				}
 			}
 		}
@@ -423,5 +421,9 @@ tile.SetTileType(nearestCenter.getTileType());
 		//falten 2 per visitar
 		//que son els dos "de més"
 		return visited.Count==allNodes;
+	}
+
+	public int TotalNumTiles(){
+		return GetTotalTiles().Count;
 	}
 }

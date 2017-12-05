@@ -7,20 +7,22 @@ public class InputController : MonoBehaviour
 
     GameController gameController;
     UIController uiController;
-    
+    CameraController cameraController;
 
 	List<Tile> attackTiles;
 	List<Tile> moveTiles;
 	List<Tile> splitTiles;
+	List<Tile> joinTiles;
 
     void Start()
     {
         gameController = Camera.main.GetComponent<GameController>();
         uiController = Camera.main.GetComponent<UIController>();
-		uiController.InitMapSize(MapDrawer.MapSize());
+		cameraController = Camera.main.GetComponent<CameraController>();
 		moveTiles = new List<Tile> ();
 		attackTiles = new List<Tile> ();
 		splitTiles = new List<Tile> ();
+		joinTiles = new List<Tile> ();
     }
 
     void Update()
@@ -38,6 +40,7 @@ public class InputController : MonoBehaviour
 						gameController.GetSelectedSlime() != col.gameObject.GetComponent<Slime>()) {
 						uiController.hideCurrentUITiles ();
 						splitTiles = uiController.showSplitRange (col.gameObject.GetComponent<Slime> ());
+						joinTiles = uiController.showJoinRange (col.gameObject.GetComponent<Slime> ());
 						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
 						s = col.gameObject.GetComponent<Slime>().ToString();
 						break;
@@ -73,6 +76,7 @@ public class InputController : MonoBehaviour
 								gameController.SetSelectedSlime (null);
 							}
 						} else {
+                            //Quan selecciona una casella, sense seleccionar cap slime abans
 							s = target.ToString();
 						}
 					}
@@ -92,7 +96,7 @@ public class InputController : MonoBehaviour
 							s = c.gameObject.GetComponent<Slime> ();
 						}
 					}
-					if (s != null && s!=gameController.GetSelectedSlime()) {
+					if (s != null && s!=gameController.GetSelectedSlime() && joinTiles.Contains(s.actualTile)) {
 						Debug.Log (Time.time+"Join");
 						gameController.DoAction(new SlimeAction(ActionType.FUSION,s));
 						//uiController.DisableCanvas ();
@@ -108,24 +112,30 @@ public class InputController : MonoBehaviour
 						uiController.hideCurrentUITiles ();
 						moveTiles = uiController.showMoveRange (gameController.GetSelectedSlime());
 						attackTiles = uiController.showAttackRange (gameController.GetSelectedSlime());
+						List<Tile> tiles = new List<Tile>();
+						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
+						tiles.AddRange(moveTiles);
+						tiles.AddRange(attackTiles);
+						cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
 					}
 				}
 			} else if (Input.GetMouseButtonDown (1)) {
 				gameController.SetSelectedSlime (null);
 //				uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
+				cameraController.GlobalCamera();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
-				uiController.ZoomIn();
+				cameraController.ZoomIn();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
-				uiController.ZoomOut();				
+				cameraController.ZoomOut();
 			} else if (Input.GetKey (KeyCode.UpArrow)) {
-				uiController.MoveUp();				
+				cameraController.MoveUp();				
 			} else if (Input.GetKey (KeyCode.DownArrow)) {
-				uiController.MoveDown();				
+				cameraController.MoveDown();				
 			} else if (Input.GetKey (KeyCode.LeftArrow)) {
-				uiController.MoveLeft();				
+				cameraController.MoveLeft();				
 			} else if (Input.GetKey (KeyCode.RightArrow)) {
-				uiController.MoveRight();
+				cameraController.MoveRight();
 			}
 		}
 	}

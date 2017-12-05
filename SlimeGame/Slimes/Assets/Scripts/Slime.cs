@@ -13,9 +13,11 @@ public class Slime : MonoBehaviour {
 	private float minMass = 20f;
 	private float maxScale = 0.6f;
 	private float minScale = 0.2f;
+	private StatsContainer element;
 	// Use this for initialization
 	void Start () {
 		rangeUpdated = false;
+		element = StatsFactory.GetStat (ElementType.NONE);
 	}
 	
 	// Update is called once per frame
@@ -25,7 +27,7 @@ public class Slime : MonoBehaviour {
 
 	public void initSpriteAnimation(){
 		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		animation.LoadSprites (player.slimeCoreData.picDirection,5);
+		animation.LoadSprites (player.statsCoreInfo.picDirection,5);
 		animation.playAnimation ();
 
 	}
@@ -34,10 +36,26 @@ public class Slime : MonoBehaviour {
 
 	}
 
-    //TODO modify when we have more attributes
     public override string ToString()
     {
-		return mass.ToString();
+        StatsContainer core = player.statsCoreInfo;
+        string s = "";
+        s += "Slime de "+ player.GetName() + "\n";
+        s += "Vida/Masa: " + mass.ToString() + "\n";
+        s += "Rango de ataque: " + core.range + "\n";
+        s += "Rango de movimiento: " + core.move + "\n";
+        s += "Fuerza de ataque: " + core.attack + "\n";
+        s += "Coste de atacar: " + core.attackCost + "\n";
+        if(element!= StatsFactory.GetStat(ElementType.NONE))
+        {
+            s += "Recubrimiento de  \n";
+        }
+        else
+        {
+            s += "Sin recubrimiento\n";
+        }
+
+        return s;
     }
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
@@ -54,7 +72,7 @@ public class Slime : MonoBehaviour {
 
 	public void setPlayer(Player player){
 		this.player = player;
-		SetMass(player.slimeCoreData.startingHP);
+		SetMass(player.statsCoreInfo.startingHP);
 		initSpriteAnimation ();
 		gameObject.GetComponent<SpriteRenderer> ().color = player.GetColor ();
 	}
@@ -64,11 +82,11 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
-		return player.slimeCoreData.movementRange;
+		return player.statsCoreInfo.move + element.move;
 	}
 
 	public int GetAttackRange(){
-		return player.slimeCoreData.attackRange;
+		return player.statsCoreInfo.range + element.range;
 	}
 
 	public void changeMass(float q){
@@ -76,7 +94,7 @@ public class Slime : MonoBehaviour {
 	}
 
 	public float getDamage(){
-		return player.slimeCoreData.attack;
+		return player.statsCoreInfo.attack + element.attack;
 	}
 
 	public bool isAlive(){
