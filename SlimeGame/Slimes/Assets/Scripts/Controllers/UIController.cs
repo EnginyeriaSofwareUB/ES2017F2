@@ -30,20 +30,31 @@ public class UIController : MonoBehaviour {
 	float currentTime;
 	float maxTime;
 	float normalizedValue;
-	Vector3 startPos;
-	Vector3 endPos;
+	Vector3 startPosT;
+	Vector3 endPosT;
+	Vector3 startPosR;
+	Vector3 endPosR;
 	RectTransform rectTransformT;
 	RectTransform rectTransformR;
 
+	private int tempRound;
+	private Color tempColor;
+	private int tempAct;
+	private int tempMaxAct;
+
+	private int state;
+	/* state 0: do nothing
+	 * state 1: hide turn panel
+	 * state 2: show turn panel
+	 * state 3: hide both panels
+	 * state 4: show both panels
+	*/
 
 	public int xLimit;
     public int yLimit;
     public int minZoom;
     public int maxZoom;
     public int speed;
-	public bool outIn;
-	public bool fadingT;
-	public bool fadingR;
     // Use this for initialization
     void Start () {
 		speed = 30;
@@ -63,25 +74,41 @@ public class UIController : MonoBehaviour {
 		actionsLeft = GameObject.Find ("ActionsNum");
 		turnPanel = GameObject.Find ("TurnPanel");
 		roundPanel = GameObject.Find ("RoundPanel");
-		fadingT = false;
-		fadingR = false;
-		outIn = false;
 		rectTransformT = turnPanel.GetComponent<RectTransform> ();
 		rectTransformR = roundPanel.GetComponent<RectTransform> ();
+		state = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (fadingT) {
-			if (currentTime < maxTime){
+		if (state == 1 || state == 2) {
+			if (currentTime < maxTime) {
 				currentTime += Time.deltaTime;
 				normalizedValue = currentTime / maxTime;
-				rectTransformT.anchoredPosition = Vector3.Lerp (startPos, endPos, normalizedValue);
+				rectTransformT.anchoredPosition = Vector3.Lerp (startPosT, endPosT, normalizedValue);
 			} else {
-				fadingT = false;
-				if (outIn) {
-					outIn = false;
-					ShowPanel ();
+				if (state == 1) {
+					UpdatePlayer (tempColor);
+					UpdateActions (tempAct, tempMaxAct);
+					ShowTurnPanel ();
+				} else {
+					state = 0;
+				}
+			}
+		} else if (state == 3 || state == 4) {
+			if (currentTime < maxTime) {
+				currentTime += Time.deltaTime;
+				normalizedValue = currentTime / maxTime;
+				rectTransformT.anchoredPosition = Vector3.Lerp (startPosT, endPosT, normalizedValue);
+				rectTransformR.anchoredPosition = Vector3.Lerp (startPosR, endPosR, normalizedValue);
+			} else {
+				if (state == 3) {
+					UpdateRound (tempRound);
+					UpdatePlayer (tempColor);
+					UpdateActions (tempAct, tempMaxAct);
+					ShowBothPanels ();
+				} else {
+					state = 0;
 				}
 			}
 		}
@@ -93,8 +120,6 @@ public class UIController : MonoBehaviour {
 	}
 
 	public void UpdatePlayer(Color c){
-		outIn = true;
-		HidePanel ();
 		playerColor.GetComponent<RawImage>().color = c;
 	}
 		
@@ -102,20 +127,55 @@ public class UIController : MonoBehaviour {
 		actionsLeft.GetComponent<Text> ().text = a.ToString()+" / "+max.ToString();
 	}
 
-	public void HidePanel(){
-		fadingT = true;
-		currentTime = 0;
-		maxTime = 2;
-		startPos = new Vector3 (230, -80, 0);
-		endPos = new Vector3 (230, 120, 0);
+	public void NextPlayer(Color c, int a, int max){
+		tempColor = c;
+		tempAct = a;
+		tempMaxAct = max;
+		HideTurnPanel ();
 	}
 
-	public void ShowPanel(){
-		fadingT = true;
+	public void NextRound(int r, Color c, int a, int max){
+		tempRound = r;
+		tempColor = c;
+		tempAct = a;
+		tempMaxAct = max;
+		HideBothPanels ();
+	}
+
+	private void HideTurnPanel(){
+		state = 1;
 		currentTime = 0;
 		maxTime = 2;
-		startPos = new Vector3 (230, 120, 0);
-		endPos = new Vector3 (230, -80, 0);
+		startPosT = new Vector3 (230, -80, 0);
+		endPosT = new Vector3 (230, 120, 0);
+	}
+
+	private void ShowTurnPanel(){
+		state = 2;
+		currentTime = 0;
+		maxTime = 2;
+		startPosT = new Vector3 (230, 120, 0);
+		endPosT = new Vector3 (230, -80, 0);
+	}
+		
+	private void HideBothPanels(){
+		state = 3;
+		currentTime = 0;
+		maxTime = 2;
+		startPosT = new Vector3 (230, -80, 0);
+		endPosT = new Vector3 (230, 120, 0);
+		startPosR = new Vector3 (0, -40, 0);
+		endPosR = new Vector3 (0, 80, 0);
+	}
+
+	public void ShowBothPanels(){
+		state = 4;
+		currentTime = 0;
+		maxTime = 2;
+		startPosT = new Vector3 (230, 120, 0);
+		endPosT = new Vector3 (230, -80, 0);
+		startPosR = new Vector3 (0, 80, 0);
+		endPosR = new Vector3 (0, -40, 0);
 	}
 
 	//Metode que mostra la info que li passis

@@ -115,12 +115,12 @@ public class GameController : MonoBehaviour
         playerActions = 0;
 
 		uiController.UpdateRound(currentTurn+1);
-		//uiController.HidePanel ();
 		uiController.UpdatePlayer(getCurrentPlayer().GetColor());
 
 		foreach(Player p in players)
             p.updateActions();
 		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
+		uiController.ShowBothPanels ();
         //iniciem la informacio de game over
         GameOverInfo.Init();
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/music1");
@@ -267,14 +267,12 @@ public class GameController : MonoBehaviour
         currentPlayer++;
         playerActions = 0;
         //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
-		uiController.UpdatePlayer(getCurrentPlayer().GetColor());
-		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
-		if (currentPlayer >= players.Count)
-        {
-            // Tots els jugadors han fet la seva accio, passem al seguent torn.
-            NextTurn();     
-
-        }
+		if (currentPlayer >= players.Count) {
+			// Tots els jugadors han fet la seva accio, passem al seguent torn.
+			NextTurn ();
+		} else {
+			uiController.NextPlayer(getCurrentPlayer().GetColor(),playerActions,getCurrentPlayer().GetActions());
+		}
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
@@ -286,8 +284,7 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
         playerActions = 0;
         currentTurn++;
-		uiController.UpdateRound (currentTurn+1);
-		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
+		uiController.NextRound (currentTurn + 1, getCurrentPlayer ().GetColor (), playerActions, getCurrentPlayer ().GetActions ());
     }
 
     private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
