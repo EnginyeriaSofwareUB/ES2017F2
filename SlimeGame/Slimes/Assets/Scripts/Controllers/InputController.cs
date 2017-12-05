@@ -76,6 +76,7 @@ public class InputController : MonoBehaviour
 								gameController.SetSelectedSlime (null);
 							}
 						} else {
+                            //Quan selecciona una casella, sense seleccionar cap slime abans
 							s = target.ToString();
 						}
 					}

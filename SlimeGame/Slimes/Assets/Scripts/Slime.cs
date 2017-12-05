@@ -36,10 +36,26 @@ public class Slime : MonoBehaviour {
 
 	}
 
-    //TODO modify when we have more attributes
     public override string ToString()
     {
-		return mass.ToString();
+        StatsContainer core = player.statsCoreInfo;
+        string s = "";
+        s += "Slime de "+ player.GetName() + "\n";
+        s += "Vida/Masa: " + mass.ToString() + "\n";
+        s += "Rango de ataque: " + core.range + "\n";
+        s += "Rango de movimiento: " + core.move + "\n";
+        s += "Fuerza de ataque: " + core.attack + "\n";
+        s += "Coste de atacar: " + core.attackCost + "\n";
+        if(element!= StatsFactory.GetStat(ElementType.NONE))
+        {
+            s += "Recubrimiento de  \n";
+        }
+        else
+        {
+            s += "Sin recubrimiento\n";
+        }
+
+        return s;
     }
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
