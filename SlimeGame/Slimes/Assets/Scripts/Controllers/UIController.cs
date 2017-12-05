@@ -99,6 +99,7 @@ public class UIController : MonoBehaviour {
 					ShowTurnPanel ();
 				} else {
 					state = 0;
+					gameController.updateStatus(GameControllerStatus.WAITINGFORACTION);
 				}
 			}
 		} else if (state == 3 || state == 4) {
@@ -115,6 +116,7 @@ public class UIController : MonoBehaviour {
 					ShowBothPanels ();
 				} else {
 					state = 0;
+					gameController.updateStatus(GameControllerStatus.WAITINGFORACTION);
 				}
 			}
 		}
@@ -151,7 +153,7 @@ public class UIController : MonoBehaviour {
 	private void HideTurnPanel(){
 		state = 1;
 		currentTime = 0;
-		maxTime = 2;
+		maxTime = 1;
 		startPosT = new Vector3 (230, -80, 0);
 		endPosT = new Vector3 (230, 120, 0);
 	}
@@ -159,7 +161,7 @@ public class UIController : MonoBehaviour {
 	private void ShowTurnPanel(){
 		state = 2;
 		currentTime = 0;
-		maxTime = 2;
+		maxTime = 1;
 		startPosT = new Vector3 (230, 120, 0);
 		endPosT = new Vector3 (230, -80, 0);
 	}
@@ -167,7 +169,7 @@ public class UIController : MonoBehaviour {
 	private void HideBothPanels(){
 		state = 3;
 		currentTime = 0;
-		maxTime = 2;
+		maxTime = 1;
 		startPosT = new Vector3 (230, -80, 0);
 		endPosT = new Vector3 (230, 120, 0);
 		startPosR = new Vector3 (0, -40, 0);
@@ -177,7 +179,7 @@ public class UIController : MonoBehaviour {
 	public void ShowBothPanels(){
 		state = 4;
 		currentTime = 0;
-		maxTime = 2;
+		maxTime = 1;
 		startPosT = new Vector3 (230, 120, 0);
 		endPosT = new Vector3 (230, -80, 0);
 		startPosR = new Vector3 (0, 80, 0);

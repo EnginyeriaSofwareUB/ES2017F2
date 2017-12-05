@@ -206,22 +206,22 @@ public class GameController : MonoBehaviour
             {
                 SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
                 DoAction((SlimeAction)aiAction); // Hacemos la accion.
-            } else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
+            } //else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
         }
     }
 
 	public void checkLogic(){
 		if (playerActions >= players [currentPlayer].GetActions ()) {
-			NextPlayer();
-            foreach (Player pl in players) {
-                pl.updateActions();
-            }
-            if(currentPlayer == 0 && tutorial == 1)
-            {
-                MarkAndShowInfoTutorial();
-            }
+			NextPlayer ();
+			foreach (Player pl in players) {
+				pl.updateActions ();
+			}
+			if (currentPlayer == 0 && tutorial == 1) {
+				MarkAndShowInfoTutorial ();
+			}
+		} else {
+			status = GameControllerStatus.WAITINGFORACTION;
 		}
-		status = GameControllerStatus.WAITINGFORACTION;
 	}
 
 	public GameControllerStatus getStatus(){
@@ -346,6 +346,7 @@ public class GameController : MonoBehaviour
 			// Tots els jugadors han fet la seva accio, passem al seguent torn.
 			NextTurn ();
 		} else {
+			status = GameControllerStatus.PLAYINGACTION;
 			uiController.NextPlayer(getCurrentPlayer().GetColor(),playerActions,getCurrentPlayer().GetActions());
 		}
 		camController.GlobalCamera();
@@ -360,6 +361,7 @@ public class GameController : MonoBehaviour
         currentPlayer = 0;
         playerActions = 0;
         currentTurn++;
+		status = GameControllerStatus.PLAYINGACTION;
 		uiController.NextRound (currentTurn + 1, getCurrentPlayer ().GetColor (), playerActions, getCurrentPlayer ().GetActions ());
     }
 
