@@ -33,15 +33,31 @@ public class GameController : MonoBehaviour
 
     private SoundController soundController;
     private UIController uiController;
+    private CameraController camController;
+
+    private enum ModosVictoria {ASESINATO=0, CONQUISTA=1, MASA=2};
+    
+
+    private ModosVictoria condicionVictoria;
+    private float massToWin;
+    private int totalTiles;
+    private float percentageTilesToWin;
+
     // Use this for initialization
     void Start()
     {
+		StatsFactory.GetStat (ElementType.EARTH);
         textTutorialPosition = 0;
         FloatingTextController.Initialize ();
         uiController = Camera.main.GetComponent<UIController>();
+<<<<<<< HEAD
 		FloatingTextController.Initialize ();
         soundController = gameObject.GetComponent<SoundController>();
 		string stats = (Resources.Load ("slimeCoreStats") as TextAsset).text;
+=======
+        camController = Camera.main.GetComponent<CameraController>();
+		string stats = (Resources.Load ("stats") as TextAsset).text;
+>>>>>>> development
 		List<SlimeCoreData> cores = new List<SlimeCoreData> ();
 		JSONNode n = JSON.Parse (stats);
 		for (int i = 0; i < n.Count; i++) {
@@ -62,12 +78,8 @@ public class GameController : MonoBehaviour
                 tutorialTexts.Add(text["text"]);
             }
         }
-
-
-
         conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
-        //MapDrawer.InitTest ();
-		status = GameControllerStatus.WAITINGFORACTION;
+        status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
         textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
         panelTip.GetComponent<DialogInfo>().Active(false);
@@ -78,34 +90,39 @@ public class GameController : MonoBehaviour
         {
             panelTip.GetComponent<DialogInfo>().Active(true);
             ShowTutorialTip();
-            players.Add(new Player("Jugador 1", 1, cores[3]));
-            players.Add(new Player("IA", 1, cores[4]));
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetTutorialPlayerStats()));
+			players.Add(new Player("IA", 1,  StatsFactory.GetTutorialPlayerStats()));
             players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo??
             players[1].SetColor(GameSelection.player2Color);
             matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
-            instantiateSlime(cores[3], players[0], 3, -4);
-            instantiateSlime(cores[4], players[1], -4, 1);
+            instantiateSlime(players[0], 3, -4);
+            instantiateSlime(players[1], -4, 1);
             players[1].SetBrain(new TutorialIA());
             players[0].setTutorialActions();
         }
         else
         {
+<<<<<<< HEAD
             players.Add(new Player("Jugador 1", 1, cores[GameSelection.player1Core])); // Test with 2 players
 			players.Add(new Player("Jugador 2", 1, cores[GameSelection.player2Core]));//, new AIAggressive()));
+=======
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIAggressive()));
+>>>>>>> development
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
             if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
             Vector2 slime1 = matrix.GetRandomTile();
-            instantiateSlime(cores[0], players[0], (int)slime1.x, (int)slime1.y);
+            instantiateSlime(players[0], (int)slime1.x, (int)slime1.y);
             Vector2 slime2 = matrix.GetRandomTile();
-            instantiateSlime(cores[0], players[0], (int)slime2.x, (int)slime2.y);
+            instantiateSlime(players[0], (int)slime2.x, (int)slime2.y);
             Vector2 slime3 = matrix.GetRandomTile();
-            instantiateSlime(cores[1], players[1], (int)slime3.x, (int)slime3.y);
+            instantiateSlime(players[1], (int)slime3.x, (int)slime3.y);
             Vector2 slime4 = matrix.GetRandomTile();
-            instantiateSlime(cores[1], players[1], (int)slime4.x, (int)slime4.y);
+            instantiateSlime(players[1], (int)slime4.x, (int)slime4.y);
         }
 
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
@@ -122,10 +139,40 @@ public class GameController : MonoBehaviour
 		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
 		uiController.ShowBothPanels ();
         //iniciem la informacio de game over
+        totalTiles = matrix.TotalNumTiles();
+        Debug.Log("TILES TOTALS: "+ totalTiles);
+        
+        if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
+            condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
+            Debug.Log("MODO DE VICTORIA: "+condicionVictoria.ToString());
+            switch(condicionVictoria){
+                case ModosVictoria.CONQUISTA:
+                    //define percentage tiles to win
+                    percentageTilesToWin = 0.25f;
+                    Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
+                    break;
+                case ModosVictoria.MASA:
+                    //define mass to win
+                    massToWin = 0;
+                    foreach(Player player in players){
+                        if (player.GetTotalMass()>massToWin) massToWin = player.GetTotalMass();
+                    }
+                    massToWin*=2;
+                    Debug.Log("Masa total del jugador para ganar: "+massToWin);
+                    break;
+            }
+        }else{
+            condicionVictoria = ModosVictoria.ASESINATO; //por defecto
+        }
         GameOverInfo.Init();
+<<<<<<< HEAD
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/music1");
         soundController.PlayLoop(clip);
 
+=======
+		SoundController.GetInstance().PlayLoop (Resources.Load<AudioClip>("Sounds/music1"));
+        camController.InitMaxZoom();
+>>>>>>> development
     }
 
     // Update is called once per frame
@@ -134,8 +181,17 @@ public class GameController : MonoBehaviour
 		if (status == GameControllerStatus.CHECKINGLOGIC) {
 			checkLogic ();
 		}
-
-        foreach (Player player in players)
+        for (int i = players.Count-1;i>=0;i--){
+            if (players[i].GetNumSlimes() == 0)
+            {
+                //This player loses
+                GameOverInfo.SetLoser(players[i]);
+                players.RemoveAt(i);
+            }
+        }
+        
+        //Tenia problemes amb el remove de dins del foreach
+        /*foreach (Player player in players)
         {
             if (player.GetNumSlimes() == 0)
             {
@@ -143,13 +199,13 @@ public class GameController : MonoBehaviour
                 GameOverInfo.SetLoser(player);
                 players.Remove(player);
             }
-        }
+        }*/
 
-        bool ended = IsGameEnded();
+        Player winner = IsGameEndedAndWinner();
 
-        if (ended)
+        if (winner!=null)
         {
-            GameOverInfo.SetWinner(players[0]);
+            GameOverInfo.SetWinner(winner);
             SceneManager.LoadScene("GameOver");
         }
 
@@ -200,11 +256,45 @@ public class GameController : MonoBehaviour
     }
 
     /*
-	Funció que retorna True si s'ha acabat la partida o False sino.
+	Funció que retorna True si s'ha acabat la partida o False si no.
 	 */
-    private bool IsGameEnded()
+    private Player IsGameEndedAndWinner()
     {
-        return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
+        Player ret = null; //si no trobem guanyador retornem null
+        int index;
+        bool find;
+        //sempre comprovem la condicio de asesinato
+        if (players.Count == 1){
+            return players[0];
+        }
+        //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
+        switch(condicionVictoria){
+            case ModosVictoria.CONQUISTA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].NumConqueredTiles()/percentageTilesToWin>=totalTiles){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+
+            case ModosVictoria.MASA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].GetTotalMass()>=massToWin){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+        }
+        return ret; //si no troba guanyador retornem null, si hi ha guanyador retornem el guanyador
+
     }
 
     /*
@@ -267,12 +357,21 @@ public class GameController : MonoBehaviour
         currentPlayer++;
         playerActions = 0;
         //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
+<<<<<<< HEAD
 		if (currentPlayer >= players.Count) {
 			// Tots els jugadors han fet la seva accio, passem al seguent torn.
 			NextTurn ();
 		} else {
 			uiController.NextPlayer(getCurrentPlayer().GetColor(),playerActions,getCurrentPlayer().GetActions());
 		}
+=======
+        if (currentPlayer >= players.Count)
+        {
+            // Tots els jugadors han fet la seva accio, passem al seguent torn.
+            NextTurn();        
+        }
+        camController.GlobalCamera();
+>>>>>>> development
 		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
@@ -287,14 +386,14 @@ public class GameController : MonoBehaviour
 		uiController.NextRound (currentTurn + 1, getCurrentPlayer ().GetColor (), playerActions, getCurrentPlayer ().GetActions ());
     }
 
-    private Slime instantiateSlime(SlimeCoreData core, Player pl, int x0, int y0)
+	private Slime instantiateSlime(Player pl, int x0, int y0)
     {
-
+		
         GameObject slime = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
         slime.AddComponent<SpriteRenderer>();
         slime.tag = "Slime";
         slime.AddComponent<Slime>();
-		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(core.picDirection+0);
+		slime.GetComponent<SpriteRenderer>().sprite = SpritesLoader.GetInstance().GetResource(pl.statsCoreInfo.picDirection+0);
 		slime.GetComponent<SpriteRenderer>().sortingLayerName = "TileElement";
         slime.AddComponent<BoxCollider2D>();
         slime.AddComponent<SlimeMovement>();
@@ -402,7 +501,7 @@ public class GameController : MonoBehaviour
     }
 
 	private void SplitSlime(Tile targetTile){
-		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer().slimeCoreData, selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
+		Slime newSlime = instantiateSlime(selectedSlime.GetPlayer(), (int) targetTile.GetTileData().getPosition().x, (int) targetTile.GetTileData().getPosition().y);
 		/*players [currentPlayer].AddSlime (newSlime);
 		targetTile.SetSlimeOnTop (newSlime);
 		newSlime.SetActualTile (targetTile);*/
@@ -448,6 +547,12 @@ public class GameController : MonoBehaviour
 
 	private void ConquerTile(Tile tile){
 		tile.tileConquerLayer.sprite = conquerSprite;
+        //borrem la tile conquerida de qui la tenia abans
+        foreach(Player player in players){
+            if (player.HasConqueredTile(tile)) player.RemoveConqueredTile(tile);
+        }
+        //afegim la tile conquerida
+        players[currentPlayer].AddConqueredTile(tile);
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		c.a = 0.5f;
 		tile.tileConquerLayer.color = c;
@@ -579,5 +684,23 @@ public class GameController : MonoBehaviour
             }
         }
 		return fusionSlimes;
+	}
+
+	public List<Tile> GetJoinTile(Slime slime){
+		List<Vector2> directions = new List<Vector2> {
+			new Vector2 (0, -1),new Vector2 (1, -1), new Vector2 (1, 0),new Vector2 (0, 1),new Vector2 (-1,1),new Vector2 (-1, 0)
+		};
+		List<Tile> tileList = new List<Tile>();
+		foreach (Vector2 v in directions) {
+			int x = (int) (slime.actualTile.getPosition ().x + v.x);
+			int y = (int) (slime.actualTile.getPosition ().y + v.y);
+			if (MapDrawer.GetTileAt (x, y) != null &&
+			    MapDrawer.GetTileAt (x, y).GetSlimeOnTop () != null &&
+			    MapDrawer.GetTileAt (x, y).GetSlimeOnTop ().GetPlayer () == slime.GetPlayer ()) {
+				tileList.Add (MapDrawer.GetTileAt (x,y));
+			}
+				
+		}
+		return tileList;
 	}
 }
