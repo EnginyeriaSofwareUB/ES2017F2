@@ -26,10 +26,15 @@ public class UIController : MonoBehaviour {
         canvasInfo = GameObject.Find("Dialog");
         DisableCanvas();
 
+        RectTransform rt = canvasInfo.GetComponent(typeof(RectTransform)) as RectTransform;
+        rt.sizeDelta =  new Vector2(200, 150); ;
+
+        RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
+        rt2.sizeDelta = new Vector2(200, 150);
         //Si clica OK desactiva el canvas
         canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
 
-		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
+        TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
 		currentUIRenderer = new List<SpriteRenderer> ();
 
 	}
@@ -110,7 +115,4 @@ public class UIController : MonoBehaviour {
 		}
 		currentUIRenderer.Clear ();
 	}
-	
-	
-	
 }
