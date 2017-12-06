@@ -20,34 +20,181 @@ public class UIController : MonoBehaviour {
 	private Color selectedColor = new Color (1f, 0.843f, 0f);
 
 	private List<SpriteRenderer> currentUIRenderer;
+//<<<<<<< HEAD
+
+	private GameObject round;
+	private GameObject playerColor;
+	private GameObject actionsLeft;
+
+	public GameObject turnPanel;
+	public GameObject roundPanel;
+
+	float currentTime;
+	float maxTime;
+	float normalizedValue;
+	Vector3 startPosT;
+	Vector3 endPosT;
+	Vector3 startPosR;
+	Vector3 endPosR;
+	RectTransform rectTransformT;
+	RectTransform rectTransformR;
+
+	private int tempRound;
+	private Color tempColor;
+	private int tempAct;
+	private int tempMaxAct;
+
+	private int state;
+	/* state 0: do nothing
+	 * state 1: hide turn panel
+	 * state 2: show turn panel
+	 * state 3: hide both panels
+	 * state 4: show both panels
+	*/
+
+	public int xLimit;
+    public int yLimit;
+    public int minZoom;
+    public int maxZoom;
+    public int speed;
+//=======
+//>>>>>>> development
     // Use this for initialization
     void Start () {
 		gameController = Camera.main.GetComponent<GameController>();
-        canvasInfo = GameObject.Find("Dialog");
-        DisableCanvas();
+        //canvasInfo = GameObject.Find("Dialog");
+        //DisableCanvas();
+		/*
+        RectTransform rt = canvasInfo.GetComponent(typeof(RectTransform)) as RectTransform;
+        rt.sizeDelta =  new Vector2(200, 150); ;
 
+        RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
+        rt2.sizeDelta = new Vector2(200, 150);*/
         //Si clica OK desactiva el canvas
 		if (canvasInfo != null) {
 			canvasInfo.GetComponentInChildren<Button> ().onClick.AddListener (DisableCanvas);
 		}
 		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/new_border");
 		currentUIRenderer = new List<SpriteRenderer> ();
-
+		round = GameObject.Find ("RoundNum");
+		playerColor = GameObject.Find ("PlayerColor");
+		actionsLeft = GameObject.Find ("ActionsNum");
+		turnPanel = GameObject.Find ("TurnPanel");
+		roundPanel = GameObject.Find ("RoundPanel");
+		rectTransformT = turnPanel.GetComponent<RectTransform> ();
+		rectTransformR = roundPanel.GetComponent<RectTransform> ();
+		state = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (state == 1 || state == 2) {
+			if (currentTime < maxTime) {
+				currentTime += Time.deltaTime;
+				normalizedValue = currentTime / maxTime;
+				rectTransformT.anchoredPosition = Vector3.Lerp (startPosT, endPosT, normalizedValue);
+			} else {
+				if (state == 1) {
+					UpdatePlayer (tempColor);
+					UpdateActions (tempAct, tempMaxAct);
+					ShowTurnPanel ();
+				} else {
+					state = 0;
+					gameController.updateStatus(GameControllerStatus.WAITINGFORACTION);
+				}
+			}
+		} else if (state == 3 || state == 4) {
+			if (currentTime < maxTime) {
+				currentTime += Time.deltaTime;
+				normalizedValue = currentTime / maxTime;
+				rectTransformT.anchoredPosition = Vector3.Lerp (startPosT, endPosT, normalizedValue);
+				rectTransformR.anchoredPosition = Vector3.Lerp (startPosR, endPosR, normalizedValue);
+			} else {
+				if (state == 3) {
+					UpdateRound (tempRound);
+					UpdatePlayer (tempColor);
+					UpdateActions (tempAct, tempMaxAct);
+					ShowBothPanels ();
+				} else {
+					state = 0;
+					gameController.updateStatus(GameControllerStatus.WAITINGFORACTION);
+				}
+			}
+		}
 	}
 
-    //Metode que mostra la info que li passis
-    public void ShowCanvasInfo(string info)
+
+	public void UpdateRound(int r){
+		round.GetComponent<Text> ().text = r.ToString();
+	}
+
+	public void UpdatePlayer(Color c){
+		playerColor.GetComponent<RawImage>().color = c;
+	}
+		
+	public void UpdateActions(int a, int max){
+		actionsLeft.GetComponent<Text> ().text = a.ToString()+" / "+max.ToString();
+	}
+
+	public void NextPlayer(Color c, int a, int max){
+		tempColor = c;
+		tempAct = a;
+		tempMaxAct = max;
+		HideTurnPanel ();
+	}
+
+	public void NextRound(int r, Color c, int a, int max){
+		tempRound = r;
+		tempColor = c;
+		tempAct = a;
+		tempMaxAct = max;
+		HideBothPanels ();
+	}
+
+	private void HideTurnPanel(){
+		state = 1;
+		currentTime = 0;
+		maxTime = 1;
+		startPosT = new Vector3 (230, -80, 0);
+		endPosT = new Vector3 (230, 120, 0);
+	}
+
+	private void ShowTurnPanel(){
+		state = 2;
+		currentTime = 0;
+		maxTime = 1;
+		startPosT = new Vector3 (230, 120, 0);
+		endPosT = new Vector3 (230, -80, 0);
+	}
+		
+	private void HideBothPanels(){
+		state = 3;
+		currentTime = 0;
+		maxTime = 1;
+		startPosT = new Vector3 (230, -80, 0);
+		endPosT = new Vector3 (230, 120, 0);
+		startPosR = new Vector3 (0, -40, 0);
+		endPosR = new Vector3 (0, 80, 0);
+	}
+
+	public void ShowBothPanels(){
+		state = 4;
+		currentTime = 0;
+		maxTime = 1;
+		startPosT = new Vector3 (230, 120, 0);
+		endPosT = new Vector3 (230, -80, 0);
+		startPosR = new Vector3 (0, 80, 0);
+		endPosR = new Vector3 (0, -40, 0);
+	}
+
+	//Metode que mostra la info que li passis
+    /*	public void ShowCanvasInfo(string info)
     {
         canvasInfo.SetActive(true);
         Text t = canvasInfo.GetComponentInChildren<Text>();
         t.text = info;
     }
-
+	*/
     //Desactiva el canvas
     public void DisableCanvas()
     {
@@ -113,7 +260,4 @@ public class UIController : MonoBehaviour {
 		}
 		currentUIRenderer.Clear ();
 	}
-	
-	
-	
 }

@@ -32,12 +32,9 @@ public class Tile : MonoBehaviour {
 		return data.getPosition();
 	}
 
-    //TODO modify when we have more attributes
     public override string ToString()
     {
 		return data.ToString();
-        //TODO Em peta perque data me diu que es NULL
-        //return data.ToString();
     }
 
 	public TileData GetTileData(){

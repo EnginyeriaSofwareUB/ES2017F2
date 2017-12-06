@@ -11,8 +11,15 @@ public class TileData:MapDrawer.MapCoordinates{
 		slimeOnTop=null;
 	}
 
+    //Se tiene que modificar si se añaden tipos de tiles
 	override public string ToString(){
-		return ((int)type).ToString()+" ("+hexPosition.x+","+hexPosition.y+")";
+        if (type.ToString().Equals(TileType.Sand.ToString()))
+            return "Casilla de tierra";
+        else if (type.ToString().Equals(TileType.Water.ToString()))
+            return "Casilla de agua";
+        else if (type.ToString().Equals(TileType.Null.ToString()))
+            return "Casilla de normal";
+        return "Hay un nuevo tipo de casilla, modifica TileData";
 	}
 	public Vector2 getPosition(){
 		return hexPosition;
