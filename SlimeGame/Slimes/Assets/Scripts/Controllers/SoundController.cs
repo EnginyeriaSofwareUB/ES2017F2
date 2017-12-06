@@ -5,6 +5,8 @@ using UnityEngine;
 public class SoundController : MonoBehaviour{
 	public AudioSource efxSource;
 	public AudioSource musicSource;
+	public float effects;
+	public float music;
 	//public static SoundController instance = null;
     //string jsonData;
 

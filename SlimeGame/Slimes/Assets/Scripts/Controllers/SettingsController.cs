@@ -8,59 +8,48 @@ public class SettingsController : MonoBehaviour {
 	public float effects, music;
 	private bool firstTime;
 	private int previousScene;
+	private string jsonData;
+	private bool modifyingBar;
 	// Use this for initialization
 	void Start () {
 		
-		firstTime = true;
-		//GameObject.Find ("Effects").GetComponent<Toggle> ().onValueChanged.RemoveAllListeners ();
-		//GameObject.Find ("Music").GetComponent<Toggle> ().onValueChanged.RemoveAllListeners ();
-		string jsonData = PlayerPrefs.GetString ("SettingsVolume");
-		if (jsonData != null && !jsonData.Equals("")) {
-			loadSettings (jsonData);
+		jsonData = PlayerPrefs.GetString ("SettingsVolume");
+		PlayerPrefs.SetString ("SettingsVolume", jsonData);
+		loadSet ();
+		onValueChange (true);
+	}
+
+	public void onValueChange(bool modifyBar){
+		if (modifyBar) {
+			modifyingBar = true;
+			GameObject.Find ("Music").GetComponent<Slider> ().value = music;
+			GameObject.Find ("Effects").GetComponent<Slider> ().value = effects;
+			modifyingBar = false;
 		} else {
-			effects = 1;
-			music = 1;
-			saveSettings ();
-		}
-
-		GameObject.Find ("Effects").GetComponent<Slider> ().value = effects;
-		GameObject.Find ("Music").GetComponent<Slider> ().value = music;
-		firstTime = false;
-
-	}
-
-	public void onValueChange(){
-		if (!firstTime) {
-			GameObject[] list = GameObject.FindGameObjectsWithTag ("Setting");
-			foreach (GameObject go in list) {
-				if (go.name.Equals ("Effects")) {
-					effects = go.GetComponent<Slider> ().value;
-				} else if (go.name.Equals ("Music")) {
-					music = go.GetComponent<Slider> ().value;
-				}
+			if (!modifyingBar) {
+				effects = GameObject.Find ("Effects").GetComponent<Slider> ().value;
+				music = GameObject.Find ("Music").GetComponent<Slider> ().value;
+				saveSet ();
 			}
-			saveSettings ();
 		}
 	}
-		
-	private void saveSettings(){
-		string jsonData = JsonUtility.ToJson (this);
-		//Debug.Log ("Saving "+jsonData);
+
+	private void loadSet(){
+		if (jsonData != null && !jsonData.Equals ("")) {
+			Vector2 data = JsonUtility.FromJson<Vector2> (jsonData);
+			music = data.x;
+			effects = data.y;
+		} else {
+			music = 1.0f;
+			effects = 1.0f;
+			saveSet ();
+		}
+	}
+
+	private void saveSet(){
+		Vector2 data = new Vector2 (music, effects);
+		jsonData = JsonUtility.ToJson (data);
 		PlayerPrefs.SetString ("SettingsVolume", jsonData);
 		PlayerPrefs.Save ();
 	}
-
-	private void loadSettings(string jsonData){
-		SaveSettings loadedData = JsonUtility.FromJson<SaveSettings> (jsonData);
-		effects = loadedData.effects;
-		music = loadedData.music;
-		//Debug.Log ("Loading: "+jsonData);
-	}
-		
-}
-	
-[SerializeField]
-public class SaveSettings{
-	public float effects = 1;
-	public float music = 1;
 }
