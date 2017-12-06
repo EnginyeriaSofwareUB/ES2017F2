@@ -61,11 +61,11 @@ public class GameController : MonoBehaviour
 			a.Show();
 		});
 		*/
-
+        /*
 		ChainTextDialog ctd = new ChainTextDialog ();
 		ctd.SetButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
 		ctd.SetBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
-
+        */
 		TileFactory.tileMaterial = tileMaterial;
 		InGameMarker igm = new InGameMarker ();
 		igm.SetSprite (SpritesLoader.GetInstance().GetResource("Test/testTileSlim"));
@@ -101,13 +101,13 @@ public class GameController : MonoBehaviour
         status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
         textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
-        panelTip.GetComponent<DialogInfo>().Active(false);
+        //panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
 
         if (tutorial == 1)
         {
-            panelTip.GetComponent<DialogInfo>().Active(true);
+            //panelTip.GetComponent<DialogInfo>().Active(true);
             ShowTutorialTip();
 			players.Add(new Player("Jugador 1", 1, StatsFactory.GetTutorialPlayerStats()));
 			players.Add(new Player("IA", 1,  StatsFactory.GetTutorialPlayerStats()));
@@ -237,7 +237,7 @@ public class GameController : MonoBehaviour
 				pl.updateActions ();
 			}
 			if (currentPlayer == 0 && tutorial == 1) {
-				MarkAndShowInfoTutorial ();
+				Debug.Log("Tutorial?");
 			}
 		} else {
 			status = GameControllerStatus.WAITINGFORACTION;
@@ -320,38 +320,6 @@ public class GameController : MonoBehaviour
         return true;
     }
 
-    public void PrepareAction(ActionType action)
-    {
-        /*
-        if (selectedSlime.tag.Equals("Slime"))
-        {
-            Slime slime = selectedSlime.GetComponent<Slime>();
-            switch (action)
-            {
-                case ActionType.Move:
-					break;
-                case ActionType.Attack:
-                    break;
-                case ActionType.Divide:
-                    MapDrawer.ShowDivisionRange(slime, matrix);
-                    break;
-                case ActionType.Fusion:
-                    MapDrawer.ShowFusionRange(slime, matrix);
-                    break;
-                default:
-                    UseActions(1);
-                    break;
-            }
-        }
-         */
-    }
-
-    public void PrepareAction(int action)
-    {
-        PrepareAction((ActionType)action);
-    }
-
-
     /*
 	Funció que avança al seguent jugador.
     TODO no se usa
@@ -411,10 +379,9 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                UnmarkTiles();
                 if(playerActions < pl.GetActions() -1)
                 {
-                    MarkAndShowInfoTutorial();
+                    Debug.Log("Tutorial?");
                 }
             }
         }
@@ -431,6 +398,7 @@ public class GameController : MonoBehaviour
 			SplitSlime (action.GetTile());
 			break;
 		case ActionType.EAT:
+			GrowSlime (action.GetSlime());
 			break;
 		case ActionType.MOVE:
 			MoveSlime (action.GetTile());
@@ -525,25 +493,13 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
+	private void GrowSlime(Slime slime){
+		selectedSlime.SetMass(selectedSlime.GetMass()*1.5f);
+		playerActions++;
+		status = GameControllerStatus.CHECKINGLOGIC;
+	}
+
     //nomes cridar quan sigui torn les player 0 en el tutorial
-    private void MarkAndShowInfoTutorial()
-    {
-        Player pl = players[0];
-        ShowTutorialTip();
-        if (pl.RightSlime(pl.GetSlimes()[0]))
-        {
-            MarkTile(pl.GetSlimes()[0].actualTile);
-        }
-        else
-        {
-            MarkTile(pl.GetSlimes()[1].actualTile);
-        }
-        if (pl.nextAction().GetAction() == ActionType.MOVE || pl.nextAction().GetAction() == ActionType.ATTACK
-            || pl.nextAction().GetAction() == ActionType.SPLIT)
-        {
-            MarkTile((Tile)pl.nextAction().GetData());
-        }
-    }
 
     private void ShowTutorialTip()
     {
@@ -553,17 +509,7 @@ public class GameController : MonoBehaviour
             textTutorialPosition++;
         }
     }
-
-    private void UnmarkTiles()
-    {
-        //Aqui es desmarcaran totes les casselles marcades
-    }
-    private void MarkTile(Tile tile)
-    {
-        //Aqui es marxara la tile que entra per parametre
-        //Debug.Log(tile);
-    }
-
+    
 	public void RemoveSlime(Slime slimeToRemove){
 		foreach (Player player in players){
 			if (player.IsSlimeOwner(slimeToRemove)) player.RemoveSlime(slimeToRemove);
