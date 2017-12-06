@@ -150,16 +150,16 @@ public class GameController : MonoBehaviour
 		uiController.ShowBothPanels ();
         //iniciem la informacio de game over
         totalTiles = matrix.TotalNumTiles();
-        Debug.Log("TILES TOTALS: "+ totalTiles);
+        //Debug.Log("TILES TOTALS: "+ totalTiles);
         
         if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
             condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
-            Debug.Log("MODO DE VICTORIA: "+condicionVictoria.ToString());
+            //Debug.Log("MODO DE VICTORIA: "+condicionVictoria.ToString());
             switch(condicionVictoria){
                 case ModosVictoria.CONQUISTA:
                     //define percentage tiles to win
                     percentageTilesToWin = 0.25f;
-                    Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
+                    //Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
                     break;
                 case ModosVictoria.MASA:
                     //define mass to win
@@ -168,7 +168,7 @@ public class GameController : MonoBehaviour
                         if (player.GetTotalMass()>massToWin) massToWin = player.GetTotalMass();
                     }
                     massToWin*=2;
-                    Debug.Log("Masa total del jugador para ganar: "+massToWin);
+                    //Debug.Log("Masa total del jugador para ganar: "+massToWin);
                     break;
             }
         }else{
@@ -338,7 +338,7 @@ public class GameController : MonoBehaviour
 			uiController.NextPlayer(getCurrentPlayer().GetColor(),playerActions,getCurrentPlayer().GetActions());
 		}
 		camController.GlobalCamera();
-		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
+		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
     /*
