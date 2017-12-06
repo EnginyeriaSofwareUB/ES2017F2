@@ -4,15 +4,15 @@ using System;
 
 public class TipDialog
 {
-	private GameObject canvas;
+	protected GameObject canvas;
 
-	private GameObject panel;
-	private GameObject text;
-	private GameObject button;
+	protected GameObject panel;
+	protected GameObject text;
+	protected GameObject button;
 
 	public delegate void OnClickOkDialog();
 
-	OnClickOkDialog f;
+	protected OnClickOkDialog f;
 
 	public TipDialog (){
 		
@@ -38,12 +38,12 @@ public class TipDialog
 		button.AddComponent<Button> ();
 		button.GetComponent<Button> ().onClick.AddListener (
 			() => {
+				Hide();
 				f();
-				hide();
 			});
 		button.layer = 5;
 		button.transform.SetParent (panel.transform);
-		resetButtonValues ();
+		ResetButtonValues ();
 
 
 
@@ -53,7 +53,7 @@ public class TipDialog
 		text.AddComponent<Text> ();
 		text.layer = 5;
 		text.transform.SetParent (panel.transform);
-		resetTextValues ();
+		ResetTextValues ();
 
 		placePanel ();
 		placeText ();
@@ -85,44 +85,44 @@ public class TipDialog
 		//t.localPosition = new Vector3 (0f,0f,0f);
 	}
 
-	public void setBackgroundImage(Sprite t){
+	public void SetBackgroundImage(Sprite t){
 		panel.GetComponent<Image>().sprite = t;
 	}
 
-	public void setButtonImage(Sprite t){
+	public void SetButtonImage(Sprite t){
 		button.GetComponent<Image>().sprite = t;
 	}
 
-	public void setInfoTextFont(Font f){
+	public void SetInfoTextFont(Font f){
 		text.GetComponent<Text> ().font = f;
 	}
 
-	public void setInfoTextText(string s){
+	public void SetInfoTextText(string s){
 		text.GetComponent<Text> ().text = s;
 	}
 
-	public void resetTextValues(){
-		setInfoTextFont(Resources.GetBuiltinResource<Font>("Arial.ttf"));
-		setInfoTextText ("Default text");
+	public void ResetTextValues(){
+		SetInfoTextFont(Resources.GetBuiltinResource<Font>("Arial.ttf"));
+		SetInfoTextText ("Default text");
 		text.GetComponent<Text> ().raycastTarget = false;
 
 	}
 
-	public void resetButtonValues(){
+	public void ResetButtonValues(){
 		
 	}
 
-	public void setOnClickFunction(OnClickOkDialog f){
+	public void SetOnClickFunction(OnClickOkDialog f){
 		this.f = f;
 	}
 
-	public void hide(){
+	public void Hide(){
 		panel.SetActive (false);
 		text.SetActive (false);
 		button.SetActive (false);
 	}
 
-	public void show(){
+	public void Show(){
 		panel.SetActive (true);
 		text.SetActive (true);
 		button.SetActive (true);

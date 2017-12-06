@@ -10,6 +10,8 @@ public class TileFactory{
 	public static float tileHeight=0.33f;
 	public static float tileWidth=0.5f;
 
+	public static Material tileMaterial;
+
 	private static bool inited=false;
 
 	public static Tile instantiateTile(int x,int y,int offsetx,int offsety,TileData tile){
@@ -26,6 +28,9 @@ public class TileFactory{
 		//newTile.GetComponent<SpriteRenderer> ().sprite = (Sprite) sprites[tile.getTileType()];
 		newTile.GetComponent<SpriteRenderer> ().sprite = sprite;
 		newTile.GetComponent<SpriteRenderer> ().sortingLayerName = "TileContent";
+		if (tileMaterial != null) {
+			newTile.GetComponent<SpriteRenderer> ().material = tileMaterial;
+		}
 		//newTile.GetComponent<SpriteRenderer> ().material = GameObject.Find ("Main Camera").GetComponent<GameController> ().tileMaterial;
 		newTile.AddComponent<PolygonCollider2D>();      //Adding Collider
 		newTile.GetComponent<Tile>().SetTileData(tile);

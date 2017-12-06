@@ -45,9 +45,29 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-		TipDialog t = new TipDialog();
-		t.setButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
-		t.setBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
+		/*
+		TipDialog a = new TipDialog ();
+		a.SetButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
+		a.SetBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
+		a.SetInfoTextText ("Has aceptado");
+		a.Hide ();
+		TwoOptionsDialog t = new TwoOptionsDialog();
+		t.SetButtonsImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
+		t.SetBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
+		t.SetAceptButtonColor (new Color(0f,0f,1f));
+		t.SetDeclineButtonColor (new Color(1f,0f,0f));
+		t.SetOnClickAceptFunction(()=>{
+			a.Show();
+		});
+		*/
+
+		ChainTextDialog ctd = new ChainTextDialog ();
+		ctd.SetButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
+		ctd.SetBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
+
+		TileFactory.tileMaterial = tileMaterial;
+		InGameMarker igm = new InGameMarker ();
+		igm.SetSprite (SpritesLoader.GetInstance().GetResource("Test/testTileSlim"));
 
 		StatsFactory.GetStat (ElementType.EARTH);
         textTutorialPosition = 0;
