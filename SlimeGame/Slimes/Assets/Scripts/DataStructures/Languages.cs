@@ -5,7 +5,7 @@ using UnityEngine;
 public static class Languages {
 
 	private enum Lang {SPANISH,CATALAN,ENGLISH};
-	private static Lang language = Lang.ENGLISH;
+	private static Lang language = Lang.ENGLISH; //per defecte IDIOMA->ENGLISH
 
 	private static Dictionary<string,string> spanish = new Dictionary<string,string>(){
 		{"Play","Jugar"},
@@ -35,7 +35,7 @@ public static class Languages {
 		{"Tutorial","Tutorial"},
 		{"Settings","Configuracio"},
 		{"Back","Endarrere"},
-		{"Effects","Efectos"},
+		{"Effects","Efectes"},
 		{"Music","Musica"},
 		{"Player","Jugador"},
 		{"Round","Ronda"},
@@ -85,9 +85,22 @@ public static class Languages {
 			language = Lang.ENGLISH;
 		}
 	}
+
+	public static string GetLanguage(){
+		switch (language){
+			case Lang.SPANISH:
+				return "Spanish";
+			case Lang.CATALAN:
+				return "Catalan";
+			case Lang.ENGLISH:
+				return "English";
+			default:
+				return "English";
+		}
+	}
+
 	public static string GetString(string word,string actual){
 		string ret;
-		Debug.Log(language);
 		switch(language){
 			case Lang.SPANISH:
 				ret = GetStringSpanish(word,actual);
