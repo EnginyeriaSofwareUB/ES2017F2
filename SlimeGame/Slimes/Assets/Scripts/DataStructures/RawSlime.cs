@@ -30,6 +30,18 @@ public class RawSlime{
         ID++;
     }
 
+	public int GetMovementRange(){
+		return player.statsCoreInfo.move + element.move;
+	}
+
+    public int GetAttackRange(){
+		return player.statsCoreInfo.range + element.range;
+	}
+
+    public TileData GetActualTile(){
+		return actualTile;
+	}
+
     public float getDamage(){
 		return player.statsCoreInfo.attack + element.attack;
 	}

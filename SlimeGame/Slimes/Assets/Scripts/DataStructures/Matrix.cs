@@ -444,4 +444,13 @@ tile.SetTileType(nearestCenter.getTileType());
 
 		return new Matrix(mapCopy);
 	}
+
+	public bool EqualsTo(Matrix matrix){
+		foreach(int x in map.Keys){
+			foreach(int y in map[x].Keys){
+				if(map[x][y].getTileType() != matrix.getTile(x, y).getTileType()) return false;
+			}
+		}
+		return true;
+	}
 }

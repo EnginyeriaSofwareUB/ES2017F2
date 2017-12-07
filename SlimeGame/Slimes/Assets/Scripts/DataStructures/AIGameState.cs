@@ -1,4 +1,4 @@
-
+using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -118,6 +118,11 @@ public class AIGameState {
         return null;
     }
 
+    public RawPlayer GetCurrentPlayer()
+    {
+        return players[currentPlayer % players.Count];
+    }
+
     // Deep copy of AIGameState
     private AIGameState GetCopy(){
         Matrix rawMatrix = matrix.GetRawCopy();
@@ -154,5 +159,115 @@ public class AIGameState {
             toReturn += pl.ToString() + "\n";
         }
         return toReturn;
+    }
+
+    public List<TileData> GetPossibleMovements(RawSlime slime){
+		List<TileData> moves = new List<TileData> ();
+        Dictionary<TileData, List<TileData>> possible = matrix.possibleCoordinatesAndPath((int)slime.GetActualTile().getPosition().x, (int)slime.GetActualTile().getPosition().y, slime.GetAttackRange());
+		foreach(TileData move in possible.Keys){
+            moves.Add(move);
+        }
+        return moves;
+	}
+
+	public List<RawSlime> GetSlimesInAttackRange(RawSlime slime){
+		List<RawSlime> canAttack = new List<RawSlime> ();
+		Vector2 myPos = slime.GetActualTile().getPosition();
+		foreach(RawPlayer p in players){
+			if (p != slime.GetPlayer()){
+				foreach(RawSlime s in p.GetSlimes()){
+					Vector2 slPos = s.GetActualTile().getPosition();		
+					if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
+						canAttack.Add(s);
+					}
+				}
+			}
+		}
+		return canAttack;
+	}
+
+	public List<TileData> GetSplitRangeTiles(RawSlime slime){
+		List<TileData> splitTiles = new List<TileData> ();
+		foreach (TileData td in matrix.getNeighbours (slime.GetTileData(), true)) {
+			if(td.GetRawSlimeOnTop() == null)
+				splitTiles.Add (td);
+		}
+		return splitTiles;
+	}
+
+	public List<RawSlime> GetFusionTargets(RawSlime slime){
+		List<RawSlime> fusionSlimes = new List<RawSlime> ();
+		foreach (TileData tile in matrix.getNeighbours(slime.GetTileData(), true))
+        {
+            RawSlime overSlime = tile.GetRawSlimeOnTop();
+            if (overSlime != null && overSlime.GetPlayer() == slime.GetPlayer())
+            {
+                fusionSlimes.Add(overSlime);
+            }
+        }
+		return fusionSlimes;
+	}
+
+
+    
+
+    public List<AIRawSlimeAction> GetAttackActions(RawSlime slime){
+        // Devolvemos las acciones que puede hacer para atacar a otro jugador con ESA slime
+        List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        foreach(RawSlime toAttack in GetSlimesInAttackRange(slime)){
+            actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.ATTACK, toAttack.GetId()));
+        }
+        return actions;
+    }
+
+    public List<AIRawSlimeAction> GetAttackActions(){
+        // Devolvemos las acciones que puede hacer para atacar a otro jugador con cualquier slime que tenga
+        List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        foreach(RawSlime slime in GetCurrentPlayer().GetSlimes()){
+            foreach(RawSlime toAttack in GetSlimesInAttackRange(slime)){
+                actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.ATTACK, toAttack.GetId()));
+            }
+        }
+        return actions;
+    }
+
+    public List<AIRawSlimeAction> GetMoveActions(RawSlime slime){
+        // Devolvemos las acciones de movimiento que puede hacer esa slime
+        List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        foreach(TileData tile in GetPossibleMovements(slime)){
+            actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.MOVE, tile.getPosition()));
+        }
+        return actions;
+    }
+
+    public List<AIRawSlimeAction> GetConquerActions(RawSlime slime){
+        // Devolvemos la accion de conquerir el terreno sobre el que esta esa slime
+        List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.CONQUER, slime.GetActualTile().getPosition()));
+        return actions;
+    }
+
+    public List<AIRawSlimeAction> GetSplitActions(RawSlime slime){
+        // Devolvemos las acciones de dividirse que puede hacer con esa slime
+        List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        foreach(TileData tile in GetSplitRangeTiles(slime)){
+            actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.SPLIT, tile.getPosition()));
+        }
+        return actions;
+    }
+
+    public List<AIRawSlimeAction> GetFusionActions(RawSlime slime){
+        // Devolvemos las acciones de fusionarse que puede hacer con esa slime
+        List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        foreach(RawSlime sl in GetFusionTargets(slime)){
+            actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.FUSION, sl.GetId()));
+        }
+        return actions;
+    }
+
+    private List<AIRawSlimeAction> GetGrowActions(RawSlime slime){
+        // TODO sin implementar
+        List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        return actions;
     }
 }

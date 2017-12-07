@@ -58,6 +58,10 @@ public class Slime : MonoBehaviour {
 
         return s;
     }
+
+	public int GetId(){
+		return this.id;
+	}
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
 		actualTile=newTile;
@@ -93,6 +97,10 @@ public class Slime : MonoBehaviour {
 	public void changeMass(float q){
 		SetMass (mass + q);
 	}
+
+    public bool CheckId(int id){
+        return this.id == id;
+    }
 
 	public float getDamage(){
 		return player.statsCoreInfo.attack + element.attack;

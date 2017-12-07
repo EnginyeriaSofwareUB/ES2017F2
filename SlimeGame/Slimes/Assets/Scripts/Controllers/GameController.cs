@@ -92,8 +92,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIAggressive()));
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), new AIConquer())); // Test with 2 players
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIConquer()));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -200,6 +200,7 @@ public class GameController : MonoBehaviour
             // AISlimeAction contiene la slime que hace la accion y la acción que hace.
             if (aiAction != null)
             {
+                //Debug.Log("Acción: " + aiAction.GetAction() + ", ActionSlime:" + aiAction.GetMainSlime());
                 SetSelectedSlime(aiAction.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
                 DoAction((SlimeAction)aiAction); // Hacemos la accion.
             } else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
@@ -345,7 +346,7 @@ public class GameController : MonoBehaviour
 			uiController.NextPlayer(getCurrentPlayer().GetColor(),playerActions,getCurrentPlayer().GetActions());
 		}
 		camController.GlobalCamera();
-		Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
+		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
     /*
@@ -457,12 +458,17 @@ public class GameController : MonoBehaviour
     private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
+        if(tileTo.GetSlimeOnTop() != null) Debug.Log("WARNING: trying to move to tile with a slime");
+        if(tileTo.getTileType() == TileType.Null) Debug.Log("WARNING: trying to move to BLOCK");
+        if(Matrix.GetDistance(selectedSlime.GetActualTile().getPosition(), tileTo.getPosition()) > selectedSlime.GetMovementRange())
+            Debug.Log("WARNING: trying to move to tile too far");
 		//Debug.Log("Moving to " + tileTo.getPosition().x + " - " + tileTo.getPosition().y);
 		//Debug.Log("userHitOnTile");
 		//TODO: Refactor this to only search one path
 		Dictionary<TileData,List<TileData>> moves = matrix.possibleCoordinatesAndPath(
 			(int)selectedSlime.actualTile.getPosition().x, (int)selectedSlime.actualTile.getPosition().y, selectedSlime.GetMovementRange());
-
+        
+        if(moves[tileTo] == null) Debug.Log("WARNING!!!\n" + moves.Keys);
 		List<TileData> path = moves[tileTo];
 		path [path.Count-1].SetSlimeOnTop (selectedSlime);
 		selectedSlime.SetActualTile (tile);
@@ -701,7 +707,21 @@ public class GameController : MonoBehaviour
                 sl.SetTile(matrixTile);
 			}
 		}
+
+        if(matrix.EqualsTo(rawMatrix)){
+            Debug.Log("MATRIX COPIED CORRECTLY");
+        }
         
         return new AIGameState(rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions);
     }
+
+    public Slime FindSlimeById(int id){
+        foreach(Player pl in players){
+            foreach(Slime sl in pl.GetSlimes()){
+                if(sl.CheckId(id)) return sl;
+            }
+        }
+        return null;
+    }
+
 }
