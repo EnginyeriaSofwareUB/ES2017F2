@@ -163,7 +163,10 @@ public class AIGameState {
 
     public List<TileData> GetPossibleMovements(RawSlime slime){
 		List<TileData> moves = new List<TileData> ();
-        Dictionary<TileData, List<TileData>> possible = matrix.possibleCoordinatesAndPath((int)slime.GetActualTile().getPosition().x, (int)slime.GetActualTile().getPosition().y, slime.GetAttackRange());
+        if(matrix == null) Debug.Log("MATRIX NULL");
+        if(slime == null) Debug.Log("SLIME NULL");
+        if(slime.GetPlayer().statsCoreInfo == null) Debug.Log("NULL");
+        Dictionary<TileData, List<TileData>> possible = matrix.possibleCoordinatesAndPath((int)slime.GetActualTile().getPosition().x, (int)slime.GetActualTile().getPosition().y, slime.GetMovementRange());
 		foreach(TileData move in possible.Keys){
             moves.Add(move);
         }

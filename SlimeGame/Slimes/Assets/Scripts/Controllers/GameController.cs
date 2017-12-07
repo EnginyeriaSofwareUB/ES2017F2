@@ -217,6 +217,7 @@ public class GameController : MonoBehaviour
             //Debug.Log(GetGameState().ToString());
 
             //Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
+            status = GameControllerStatus.PLAYINGACTION;
             AISlimeAction aiAction = players[currentPlayer].GetAction(this);
             // AISlimeAction contiene la slime que hace la accion y la acción que hace.
             if (aiAction != null)
@@ -413,7 +414,10 @@ public class GameController : MonoBehaviour
     private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
-        if(tileTo.GetSlimeOnTop() != null) Debug.Log("WARNING: trying to move to tile with a slime");
+        if(tileTo.GetSlimeOnTop() != null) {
+            Debug.Log("WARNING: trying to move to tile with a slime");
+            Debug.Log("ID:" + tileTo.GetSlimeOnTop().GetId());
+        }
         if(tileTo.getTileType() == TileType.Null) Debug.Log("WARNING: trying to move to BLOCK");
         if(Matrix.GetDistance(selectedSlime.GetActualTile().getPosition(), tileTo.getPosition()) > selectedSlime.GetMovementRange())
             Debug.Log("WARNING: trying to move to tile too far");
@@ -639,12 +643,13 @@ public class GameController : MonoBehaviour
                 TileData slimeTile = sl.GetTileData();
 				TileData matrixTile = rawMatrix.getTile((int)slimeTile.getPosition().x, (int)slimeTile.getPosition().y);
                 sl.SetTile(matrixTile);
+                //Debug.Log("SLIME " + sl.GetId() + " ON (" + matrixTile.getPosition().x + " " + matrixTile.getPosition().y + ")");
 			}
 		}
 
-        if(matrix.EqualsTo(rawMatrix)){
+        /*if(matrix.EqualsTo(rawMatrix)){
             Debug.Log("MATRIX COPIED CORRECTLY");
-        }
+        }*/
         
         return new AIGameState(rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions);
     }

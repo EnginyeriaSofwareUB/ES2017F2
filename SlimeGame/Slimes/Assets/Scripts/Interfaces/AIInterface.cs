@@ -27,11 +27,11 @@ public abstract class AIInterface{
          List<RawSlime> slimes = gameState.GetCurrentPlayer().GetSlimes();
 
          foreach(RawSlime slime in slimes){
-             //legalActions.AddRange(gameState.GetAttackActions(slime));
+             legalActions.AddRange(gameState.GetAttackActions(slime));
              legalActions.AddRange(gameState.GetMoveActions(slime));
-             //legalActions.AddRange(gameState.GetConquerActions(slime));
-             //legalActions.AddRange(gameState.GetSplitActions(slime));
-             //legalActions.AddRange(gameState.GetFusionActions(slime));
+             legalActions.AddRange(gameState.GetConquerActions(slime));
+             legalActions.AddRange(gameState.GetSplitActions(slime));
+             legalActions.AddRange(gameState.GetFusionActions(slime));
              //legalActions.AddRange(gameState.GetGrowActions(slime));
          }
 

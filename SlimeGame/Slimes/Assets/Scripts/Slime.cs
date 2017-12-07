@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
-    private static int ID = 0;
 	private int id;
 	private Player player;
 	public Tile actualTile;
@@ -18,8 +17,6 @@ public class Slime : MonoBehaviour {
 	public GameObject face;
 	// Use this for initialization
 	void Start () {
-		id = ID;
-		ID++;
 		elementType = ElementType.NONE;
 		ChangeElement(elementType);
 	}
@@ -62,6 +59,10 @@ public class Slime : MonoBehaviour {
         return s;
     }
 
+	public void SetId(int id){
+		this.id = id;
+	}
+
 	public int GetId(){
 		return this.id;
 	}
@@ -90,10 +91,12 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
+		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.move + element.move;
 	}
 
 	public int GetAttackRange(){
+		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.range + element.range;
 	}
 
