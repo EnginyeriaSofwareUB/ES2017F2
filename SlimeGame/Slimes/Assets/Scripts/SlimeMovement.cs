@@ -13,6 +13,7 @@ public class SlimeMovement : MonoBehaviour {
 	private float startTime;
 
 	private GameController gameController;
+	public GameObject parent;
 
 	void Start(){
 		/*Exemple de recorregut:
@@ -32,10 +33,12 @@ public class SlimeMovement : MonoBehaviour {
 
 	void Update(){
 		//si tenim recorregut a fer:
-		gameObject.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-transform.position.y*4+2);
+		gameObject.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*4+2);
+		gameObject.GetComponent<Slime>().face.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*4+2)+1;
+
 		if (bufferPositions != null && bufferPositions.Count>0) {
 			float i = (Time.time - startTime) / secondsXmovement;
-			transform.position = Vector2.Lerp (startPos, endPos, i);
+			parent.transform.position = Vector2.Lerp (startPos, endPos, i);
 
 			if (i >= 1) {
 				startTime = Time.time;
@@ -59,7 +62,7 @@ public class SlimeMovement : MonoBehaviour {
 	public void SetBufferAndPlay(List<TileData> buffer){
 		if (buffer != null && buffer.Count > 0) {
 			bufferPositions = buffer;
-			startPos = transform.position;
+			startPos = parent.transform.position;
 			startTime = Time.time;
 			indexBuffer = 0;
 			endPos = bufferPositions [indexBuffer].GetRealWorldPosition();

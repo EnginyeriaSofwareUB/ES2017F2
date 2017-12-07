@@ -8,28 +8,31 @@ public class Slime : MonoBehaviour {
 	private Player player;
 	public Tile actualTile;
 	private float mass;
-	private SpriteAnimation animation;
+	private SpriteAnimation canimation;
 	private float maxMass = 300f;
 	private float minMass = 20f;
 	private float maxScale = 0.6f;
 	private float minScale = 0.2f;
+	private ElementType elementType;
 	private StatsContainer element;
+	public GameObject face;
 	// Use this for initialization
 	void Start () {
 		id = ID;
 		ID++;
-		element = StatsFactory.GetStat (ElementType.NONE);
+		elementType = ElementType.NONE;
+		ChangeElement(elementType);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(animation != null) animation.update ();
+		if(canimation != null) canimation.update ();
 	}
 
 	public void initSpriteAnimation(){
-		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		animation.LoadSprites (player.statsCoreInfo.picDirection,5);
-		animation.playAnimation ();
+		//canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
+		//canimation.LoadSprites (player.statsCoreInfo.picDirection,5);
+		//canimation.playAnimation ();
 
 	}
 
@@ -130,6 +133,16 @@ public class Slime : MonoBehaviour {
 			scale = (maxScale-minScale)/(maxMass-minMass)*mass+minScale-(minMass*(maxScale-minScale))/(maxMass-minMass);
 		}
 		this.gameObject.transform.localScale = new Vector3(scale, scale, 0.5f);
+	}
+
+	public void ChangeElement(ElementType newElement){
+		if (elementType == ElementType.NONE) {
+			elementType = newElement;
+			element = StatsFactory.GetStat (elementType);
+			canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer> ());
+			canimation.LoadSprites (element.picDirection, element.picCount);
+			canimation.playAnimation ();
+		}
 	}
 
 	public RawSlime GetRawCopy(){
