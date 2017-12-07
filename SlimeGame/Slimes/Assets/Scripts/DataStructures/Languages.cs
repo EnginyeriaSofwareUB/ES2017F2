@@ -4,7 +4,8 @@ using UnityEngine;
 
 public static class Languages {
 
-	private static string language;
+	private enum Lang {SPANISH,CATALAN,ENGLISH};
+	private static Lang language = Lang.SPANISH;
 
 	private static Dictionary<string,string> spanish = new Dictionary<string,string>(){
 		{"Play","Jugar"},
@@ -22,7 +23,7 @@ public static class Languages {
 		{"Exit","Salir"},
 		{"Resume","Continuar"},
 		{"Continue","Continuar"},
-		{"Game over","Final del juego"}
+		{"Game over","FINAL DEL JUEGO"}
 	};
 
 	private static Dictionary<string,string> catalan = new Dictionary<string,string>(){
@@ -41,7 +42,7 @@ public static class Languages {
 		{"Exit","Sortir"},
 		{"Resume","Continuar"},
 		{"Continue","Continuar"},
-		{"Game over","Final del joc"}
+		{"Game over","FINAL DEL JOC"}
 	};
 
 	private static Dictionary<string,string> english = new Dictionary<string,string>(){
@@ -60,21 +61,35 @@ public static class Languages {
 		{"Exit","Exit"},
 		{"Resume","Resume"},
 		{"Continue","Continue"},
-		{"Game over","Game over"}
+		{"Game over","GAME OVER"}
 	};
 
 	public static void DefineLanguage(string l){
-		language = l;
+		if (l.Equals("Spanish") || l.Equals("spanish")){
+			language = Lang.SPANISH;
+		}else if (l.Equals("Catalan") || l.Equals("catalan")){
+			language = Lang.CATALAN;
+		} else{
+			language = Lang.ENGLISH;
+		}
 	}
 	public static string GetString(string word){
-		if (language.Equals("Spanish") || language.Equals("spanish")){
-			return GetStringSpanish(word);
-		} else if (language.Equals("Catalan") || language.Equals("catalan")){
-			return GetStringCatalan(word);
-		}else {
-			//english predeterminat
-			return GetStringEnglish(word);
+		string ret;
+		switch(language){
+			case Lang.SPANISH:
+				ret = GetStringSpanish(word);
+				break;
+			case Lang.CATALAN:
+				ret = GetStringCatalan(word);
+				break;
+			case Lang.ENGLISH:
+				ret = GetStringEnglish(word);
+				break;
+			default:
+				ret = word;
+				break;
 		}
+		return ret;
 	}
 
 	private static string GetStringSpanish(string word){
