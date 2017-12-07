@@ -7,6 +7,10 @@ public class LanguageController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		this.GetComponent<Text>().text = Languages.GetString(this.name);
+		Text[] txs = FindObjectsOfType<Text>(); //agafem tots els que tenen text
+		foreach (Text t in txs){
+			//li posem de text el que tenen assignat segons l'idioma seleccionats
+			t.text = Languages.GetString(t.name,t.text);
+		}
 	}
 }

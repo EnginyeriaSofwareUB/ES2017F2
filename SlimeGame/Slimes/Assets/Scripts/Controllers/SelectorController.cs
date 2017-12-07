@@ -71,6 +71,10 @@ public class SelectorController : MonoBehaviour {
 		GameSelection.player1Core = slimeSelector1;
 		GameSelection.player2Core = slimeSelector2;
 		GameSelection.modoVictoria = modoVictoria;
+
+		GameObject s = GameObject.Find("ModeSelection");
+		s.GetComponent<Slider>().value = 0;
+		s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Death","Death");
 	}
 	
 	// Update is called once per frame
@@ -194,13 +198,13 @@ public class SelectorController : MonoBehaviour {
 		GameSelection.modoVictoria = modoVictoria;
 		switch(modoVictoria){
 			case 0:
-				s.transform.Find("TextMode").GetComponent<Text>().text = "Asesinato";
+				s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Death","Death");
 				break;
 			case 1:
-				s.transform.Find("TextMode").GetComponent<Text>().text = "Conquista";
+				s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Conquest","Conquest");
 				break;
 			case 2:
-				s.transform.Find("TextMode").GetComponent<Text>().text = "Masa";
+				s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Mass","Mass");
 				break;
 		}
 	}

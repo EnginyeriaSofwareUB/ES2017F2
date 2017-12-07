@@ -5,7 +5,7 @@ using UnityEngine;
 public static class Languages {
 
 	private enum Lang {SPANISH,CATALAN,ENGLISH};
-	private static Lang language = Lang.SPANISH;
+	private static Lang language = Lang.ENGLISH;
 
 	private static Dictionary<string,string> spanish = new Dictionary<string,string>(){
 		{"Play","Jugar"},
@@ -16,14 +16,18 @@ public static class Languages {
 		{"Music","Musica"},
 		{"Player","Jugador"},
 		{"Round","Ronda"},
-		{"Actions","Acciones"},
+		{"Actions","Acciones:"},
 		{"Text","Texto"},
 		{"Tip","Consejo"},
 		{"Pause","Pausa"},
 		{"Exit","Salir"},
 		{"Resume","Continuar"},
 		{"Continue","Continuar"},
-		{"Game over","FINAL DEL JUEGO"}
+		{"Game over","FINAL DEL JUEGO"},
+		{"Map","Mapa"},
+		{"Death","Muerte"},
+		{"Mass","Masa"},
+		{"Conquest","Conquista"}
 	};
 
 	private static Dictionary<string,string> catalan = new Dictionary<string,string>(){
@@ -35,14 +39,18 @@ public static class Languages {
 		{"Music","Musica"},
 		{"Player","Jugador"},
 		{"Round","Ronda"},
-		{"Actions","Accions"},
+		{"Actions","Accions:"},
 		{"Text","Text"},
 		{"Tip","Consell"},
 		{"Pause","Pausa"},
 		{"Exit","Sortir"},
 		{"Resume","Continuar"},
 		{"Continue","Continuar"},
-		{"Game over","FINAL DEL JOC"}
+		{"Game over","FINAL DEL JOC"},
+		{"Map","Mapa"},
+		{"Death","Mort"},
+		{"Mass","Massa"},
+		{"Conquest","Conquesta"}
 	};
 
 	private static Dictionary<string,string> english = new Dictionary<string,string>(){
@@ -54,14 +62,18 @@ public static class Languages {
 		{"Music","Music"},
 		{"Player","Player"},
 		{"Round","Round"},
-		{"Actions","Actions"},
+		{"Actions","Actions:"},
 		{"Text","Text"},
 		{"Tip","Tip"},
 		{"Pause","Pause"},
 		{"Exit","Exit"},
 		{"Resume","Resume"},
 		{"Continue","Continue"},
-		{"Game over","GAME OVER"}
+		{"Game over","GAME OVER"},
+		{"Map","Map"},
+		{"Death","Death"},
+		{"Mass","Mass"},
+		{"Conquest","Conquest"}
 	};
 
 	public static void DefineLanguage(string l){
@@ -73,37 +85,38 @@ public static class Languages {
 			language = Lang.ENGLISH;
 		}
 	}
-	public static string GetString(string word){
+	public static string GetString(string word,string actual){
 		string ret;
+		Debug.Log(language);
 		switch(language){
 			case Lang.SPANISH:
-				ret = GetStringSpanish(word);
+				ret = GetStringSpanish(word,actual);
 				break;
 			case Lang.CATALAN:
-				ret = GetStringCatalan(word);
+				ret = GetStringCatalan(word,actual);
 				break;
 			case Lang.ENGLISH:
-				ret = GetStringEnglish(word);
+				ret = GetStringEnglish(word,actual);
 				break;
 			default:
-				ret = word;
+				ret = actual;
 				break;
 		}
 		return ret;
 	}
 
-	private static string GetStringSpanish(string word){
+	private static string GetStringSpanish(string word,string actual){
 		if (spanish.ContainsKey(word)) return spanish[word];
-		else return word;
+		else return actual;
 	}
 
-	private static string GetStringCatalan(string word){
+	private static string GetStringCatalan(string word,string actual){
 		if (catalan.ContainsKey(word)) return catalan[word];
-		else return word;
+		else return actual;
 	}
 
-	private static string GetStringEnglish(string word){
+	private static string GetStringEnglish(string word,string actual){
 		if (english.ContainsKey(word)) return english[word];
-		else return word;
+		else return actual;
 	}
 }
