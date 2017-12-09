@@ -7,8 +7,6 @@ using SimpleJSON;
 
 public class GameController : MonoBehaviour
 {
-
-    private const int MAX_TURNS = 20;
     
     private Slime selectedSlime;
     public Matrix matrix;
@@ -18,18 +16,15 @@ public class GameController : MonoBehaviour
     private int currentPlayer;
     private int playerActions;
 	public Material fire;
+	public Material tileMaterial;
 
 	private Sprite conquerSprite;
 
 	private GameControllerStatus status;
 
-	public GameObject healthBar;
-
     public static int tutorial;
     private List<string> tutorialTexts;
     private int textTutorialPosition;
-    
-	public Material tileMaterial;
 
     private SoundController soundController;
     private UIController uiController;
@@ -125,7 +120,7 @@ public class GameController : MonoBehaviour
         else
         {
 			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIAggressive()));
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIConquer()));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -221,12 +216,16 @@ public class GameController : MonoBehaviour
         if (status == GameControllerStatus.WAITINGFORACTION &&
                 players[currentPlayer].isPlayerAI())
         {
+            //Debug.Log(GetGameState().ToString());
+
             //Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
+            status = GameControllerStatus.PLAYINGACTION;
             AISlimeAction aiAction = players[currentPlayer].GetAction(this);
             // AISlimeAction contiene la slime que hace la accion y la acción que hace.
             if (aiAction != null)
             {
-                SetSelectedSlime(aiAction.GetSlime()); // Simulamos la seleccion de la slime que hace la accion.
+                //Debug.Log("Acción: " + aiAction.GetAction() + ", ActionSlime:" + aiAction.GetMainSlime());
+                SetSelectedSlime(aiAction.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
                 DoAction((SlimeAction)aiAction); // Hacemos la accion.
             } //else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
         }
@@ -417,18 +416,26 @@ public class GameController : MonoBehaviour
     private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
+        if(tileTo.GetSlimeOnTop() != null) {
+            Debug.Log("WARNING: trying to move to tile with a slime");
+            Debug.Log("ID:" + tileTo.GetSlimeOnTop().GetId());
+        }
+        if(tileTo.getTileType() == TileType.Null) Debug.Log("WARNING: trying to move to BLOCK");
+        if(Matrix.GetDistance(selectedSlime.GetActualTile().getPosition(), tileTo.getPosition()) > selectedSlime.GetMovementRange())
+            Debug.Log("WARNING: trying to move to tile too far");
 		//Debug.Log("Moving to " + tileTo.getPosition().x + " - " + tileTo.getPosition().y);
 		//Debug.Log("userHitOnTile");
 		//TODO: Refactor this to only search one path
 		Dictionary<TileData,List<TileData>> moves = matrix.possibleCoordinatesAndPath(
 			(int)selectedSlime.actualTile.getPosition().x, (int)selectedSlime.actualTile.getPosition().y, selectedSlime.GetMovementRange());
-
+        
+        if(moves[tileTo] == null) Debug.Log("WARNING!!!\n" + moves.Keys);
 		List<TileData> path = moves[tileTo];
 		path [path.Count-1].SetSlimeOnTop (selectedSlime);
 		selectedSlime.SetActualTile (tile);
 		selectedSlime.gameObject.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
 
-		selectedSlime.gameObject.GetComponent<Slime>().rangeUpdated = false;
+		//selectedSlime.gameObject.GetComponent<Slime>().rangeUpdated = false;
 		status = GameControllerStatus.PLAYINGACTION;
 		playerActions++;
     }
@@ -469,7 +476,7 @@ public class GameController : MonoBehaviour
     private void FusionSlime(Slime fusionTarget)
 	{
 		RemoveSlime(selectedSlime);
-        players[currentPlayer].updateActions();
+        //players[currentPlayer].updateActions();
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
 		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
 
@@ -615,4 +622,47 @@ public class GameController : MonoBehaviour
 		}
 		return tileList;
 	}
+
+    public AIGameState GetGameState(){
+        Matrix rawMatrix = matrix.GetRawCopy();
+
+        List<RawPlayer> rawPlayers = new List<RawPlayer>();
+        foreach(Player pl in players){
+            RawPlayer rawPl = pl.GetRawCopy();
+            rawPlayers.Add(rawPl);
+            // Sync dels conqueredtiles
+            foreach(Tile tile in pl.GetConqueredTiles()){
+                TileData tiledata = tile.GetTileData();
+				TileData matrixTile = rawMatrix.getTile((int)tiledata.getPosition().x, (int)tiledata.getPosition().y);
+                rawPl.Conquer(matrixTile);
+            }
+        }
+
+		// Recorrem la llista de RawSlimes actualitzant les tiledata de matrix.
+		foreach(RawPlayer pl in rawPlayers){
+			foreach(RawSlime sl in pl.GetSlimes()){
+                // Substituim la RawTileData provisional que te RawSlime per la de la matriu (perque quedin enllaçades)
+                TileData slimeTile = sl.GetTileData();
+				TileData matrixTile = rawMatrix.getTile((int)slimeTile.getPosition().x, (int)slimeTile.getPosition().y);
+                sl.SetTile(matrixTile);
+                //Debug.Log("SLIME " + sl.GetId() + " ON (" + matrixTile.getPosition().x + " " + matrixTile.getPosition().y + ")");
+			}
+		}
+
+        /*if(matrix.EqualsTo(rawMatrix)){
+            Debug.Log("MATRIX COPIED CORRECTLY");
+        }*/
+        
+        return new AIGameState(rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions);
+    }
+
+    public Slime FindSlimeById(int id){
+        foreach(Player pl in players){
+            foreach(Slime sl in pl.GetSlimes()){
+                if(sl.CheckId(id)) return sl;
+            }
+        }
+        return null;
+    }
+
 }

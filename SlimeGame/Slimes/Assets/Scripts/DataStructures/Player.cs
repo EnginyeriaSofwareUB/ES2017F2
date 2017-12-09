@@ -175,4 +175,20 @@ public class Player {
 	public int NumConqueredTiles(){
 		return conqueredTiles.Count;
 	}
+
+	public List<Tile> GetConqueredTiles(){
+		return conqueredTiles;
+	}
+
+	public RawPlayer GetRawCopy(){
+		RawPlayer rawPlayer = new RawPlayer(statsCoreInfo, actionsPerSlime);
+		List<RawSlime> rawSlimes = new List<RawSlime>();
+		foreach(Slime sl in slimes){
+			RawSlime rawSl = sl.GetRawCopy();
+			rawSl.SetPlayer(rawPlayer);
+			rawSlimes.Add(rawSl);
+		}
+		rawPlayer.SetSlimes(rawSlimes);
+		return rawPlayer;
+	}
 }
