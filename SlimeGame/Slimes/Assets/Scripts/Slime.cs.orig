@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
+    private static int ID = 0;
 	private int id;
 	private Player player;
 	public Tile actualTile;
@@ -17,8 +18,15 @@ public class Slime : MonoBehaviour {
 	public GameObject face;
 	// Use this for initialization
 	void Start () {
+<<<<<<< HEAD
+		id = ID;
+		ID++;
+		element = StatsFactory.GetStat (ElementType.NONE);
+=======
+		rangeUpdated = false;
 		elementType = ElementType.NONE;
 		ChangeElement(elementType);
+>>>>>>> d76d9c3fc04d138004657d80d8e048f191d62f49
 	}
 	
 	// Update is called once per frame
@@ -59,10 +67,6 @@ public class Slime : MonoBehaviour {
         return s;
     }
 
-	public void SetId(int id){
-		this.id = id;
-	}
-
 	public int GetId(){
 		return this.id;
 	}
@@ -91,12 +95,10 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
-		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.move + element.move;
 	}
 
 	public int GetAttackRange(){
-		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.range + element.range;
 	}
 
@@ -138,6 +140,12 @@ public class Slime : MonoBehaviour {
 		this.gameObject.transform.localScale = new Vector3(scale, scale, 0.5f);
 	}
 
+<<<<<<< HEAD
+	public RawSlime GetRawCopy(){
+		return new RawSlime(id, maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
+	}
+
+=======
 	public void ChangeElement(ElementType newElement){
 		if (elementType == ElementType.NONE) {
 			elementType = newElement;
@@ -147,9 +155,5 @@ public class Slime : MonoBehaviour {
 			canimation.playAnimation ();
 		}
 	}
-
-	public RawSlime GetRawCopy(){
-		return new RawSlime(id, maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
-	}
-
+>>>>>>> d76d9c3fc04d138004657d80d8e048f191d62f49
 }
