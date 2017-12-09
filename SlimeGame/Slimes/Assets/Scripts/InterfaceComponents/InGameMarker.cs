@@ -13,7 +13,8 @@ public class InGameMarker
 
 		marker = new GameObject ("Marker");
 		marker.AddComponent<SpriteRenderer> ();
-		marker.GetComponent<SpriteRenderer>().sortingLayerName = "UILayer";
+		marker.GetComponent<SpriteRenderer>().sortingLayerName = "Marker";
+		marker.AddComponent<GameObjectAnimationController> ();
 		
 	}
 
