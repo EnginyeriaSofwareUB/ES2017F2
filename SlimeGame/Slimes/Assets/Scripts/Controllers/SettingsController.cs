@@ -17,6 +17,7 @@ public class SettingsController : MonoBehaviour {
 		PlayerPrefs.SetString ("SettingsVolume", jsonData);
 		loadSet ();
 		onValueChange (true);
+		//GameObject.Find(Languages.GetLanguage()).GetComponent<Button>().Select();
 	}
 
 	public void onValueChange(bool modifyBar){
@@ -51,5 +52,14 @@ public class SettingsController : MonoBehaviour {
 		jsonData = JsonUtility.ToJson (data);
 		PlayerPrefs.SetString ("SettingsVolume", jsonData);
 		PlayerPrefs.Save ();
+	}
+
+	public void DefineLanguage(string language){
+		Languages.DefineLanguage(language);
+		Text[] txs = FindObjectsOfType<Text>(); //agafem tots els que tenen text
+		foreach (Text t in txs){
+			//li posem de text el que tenen assignat segons l'idioma seleccionats
+			t.text = Languages.GetString(t.name,t.text);
+		}
 	}
 }
