@@ -124,10 +124,16 @@ public class GameController : MonoBehaviour
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
             if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
-			SlimeFactory.instantiateSlime(players[0], matrix.GetRandomTile());
-			SlimeFactory.instantiateSlime(players[0], matrix.GetRandomTile());
-			SlimeFactory.instantiateSlime(players[1], matrix.GetRandomTile());
-			SlimeFactory.instantiateSlime(players[1], matrix.GetRandomTile());
+            int numSlimesPerPlayer = 2;
+            List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
+            int i = 0;
+            foreach(Player player in players){
+                List<Vector2> positionsSlimes = positions[i];
+                foreach(Vector2 positionSlime in positionsSlimes){
+                    SlimeFactory.instantiateSlime(player,positionSlime);
+                }
+                i++;
+            }
         }
 
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
