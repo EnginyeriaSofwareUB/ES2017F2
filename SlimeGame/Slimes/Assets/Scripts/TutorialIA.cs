@@ -22,8 +22,7 @@ public class TutorialIA : AIInterface {
         actions.Add(new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-1, -1))); 
     }
 
-    public override AISlimeAction GetAction(GameController gameController)
-    {
+    public override void ThinkAction(GameController gameController){
         position++;
         //Set selected slime (cutre)
         Slime actionSlime = null;
@@ -40,8 +39,13 @@ public class TutorialIA : AIInterface {
         }
         if (position >= actions.Count)
         {
-            return new AISlimeAction(actionSlime, ActionType.CONQUER, gameController.GetSelectedSlime().actualTile);
+            thoughtAction = new AISlimeAction(actionSlime, ActionType.CONQUER, gameController.GetSelectedSlime().actualTile);
         }
-        return new AISlimeAction(actionSlime, actions[position]);
+        thoughtAction = new AISlimeAction(actionSlime, actions[position]);
+    }
+
+
+    protected override double GetStateEvaluation(AIGameState state){
+        return 0;
     }
 }

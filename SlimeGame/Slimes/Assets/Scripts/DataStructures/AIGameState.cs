@@ -18,6 +18,34 @@ public class AIGameState {
         this.playerActions = playerActions;
     }
 
+    /*
+    Función que devuelve todas las posibles acciones en forma de lista de AISlimeAction (slime, accion)
+     */
+    public List<AIRawSlimeAction> GetLegalActions(){
+        /* Cada slime pot:
+            - Atacar un rival: que hi hagi una slime enemiga al rang d'atac.
+            - Conquerir: CAP? (o que la casella no estigui conquerida?)
+            - Dividirse: que tingui massa > LIMIT i tingui casella lliure al lateral
+            - Fusionarse: si te alguna slime al costat
+            - Menjar: cap condicio
+            - Moure's: que tingui alguna casella lliure on moure's
+         */
+
+         List<AIRawSlimeAction> legalActions = new List<AIRawSlimeAction>();
+         List<RawSlime> slimes = GetCurrentPlayer().GetSlimes();
+
+         foreach(RawSlime slime in slimes){
+             legalActions.AddRange(GetAttackActions(slime));
+             legalActions.AddRange(GetMoveActions(slime));
+             legalActions.AddRange(GetConquerActions(slime));
+             legalActions.AddRange(GetSplitActions(slime));
+             legalActions.AddRange(GetFusionActions(slime));
+             //legalActions.AddRange(GetGrowActions(slime));
+         }
+
+         return legalActions;
+    }
+
     public AIGameState GetSuccessor(AIRawSlimeAction action){
         AIGameState succ = GetCopy();
         int actionSlimeId = action.GetMainSlimeId();
@@ -121,6 +149,10 @@ public class AIGameState {
     public RawPlayer GetCurrentPlayer()
     {
         return players[currentPlayer % players.Count];
+    }
+
+    public int GetCurrentTurn(){
+        return currentTurn;
     }
 
     // Deep copy of AIGameState
@@ -272,5 +304,12 @@ public class AIGameState {
         // TODO sin implementar
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
         return actions;
+    }
+
+    public RawPlayer GetPlayerById(int id){
+        foreach(RawPlayer pl in players){
+            if(pl.GetId() == id) return pl;
+        }
+        return null;
     }
 }

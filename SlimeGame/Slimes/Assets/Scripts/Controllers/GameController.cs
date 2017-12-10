@@ -117,8 +117,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIConquer()));
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), new AIConquer())); // Test with 2 players
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats)));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -211,21 +211,19 @@ public class GameController : MonoBehaviour
 
         //S'ha de posar despres de la comprovacio de ended
         // Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
-        if (status == GameControllerStatus.WAITINGFORACTION &&
-                players[currentPlayer].isPlayerAI())
+        if (players[currentPlayer].isPlayerAI())
         {
-            //Debug.Log(GetGameState().ToString());
-
-            //Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
-            status = GameControllerStatus.PLAYINGACTION;
-            AISlimeAction aiAction = players[currentPlayer].GetAction(this);
-            // AISlimeAction contiene la slime que hace la accion y la acción que hace.
-            if (aiAction != null)
-            {
-                //Debug.Log("Acción: " + aiAction.GetAction() + ", ActionSlime:" + aiAction.GetMainSlime());
-                SetSelectedSlime(aiAction.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
-                DoAction((SlimeAction)aiAction); // Hacemos la accion.
-            } //else NextPlayer(); // Si no podemos hacer ninguna accion, pasamos al siguiente jugador.
+            if(status == GameControllerStatus.WAITINGFORACTION){
+                status = GameControllerStatus.AILOGIC;
+                players[currentPlayer].ThinkAction(this);
+            }else if(status == GameControllerStatus.AILOGIC){
+                AISlimeAction action = players[currentPlayer].GetAction();
+                if(action != null){
+                    status = GameControllerStatus.PLAYINGACTION;
+                    SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
+                    DoAction((SlimeAction)action); // Hacemos la accion.
+                }else NextPlayer();
+            }
         }
     }
 

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class RawSlime{
     private static int ID = 0;
     private int id;
@@ -91,6 +93,7 @@ public class RawSlime{
     public RawSlime Split(TileData toSplit){
         mass = (mass/2.0f);
         RawSlime newSlime =  new RawSlime(MAX_MASS, MIN_MASS, mass, element, toSplit);
+        newSlime.SetPlayer(player);
         player.AddSlime(newSlime);
         return newSlime;
     }
