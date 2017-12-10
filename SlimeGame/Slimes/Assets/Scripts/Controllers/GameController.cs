@@ -56,11 +56,13 @@ public class GameController : MonoBehaviour
 			a.Show();
 		});
 		*/
-        
+
+        /*
 		ChainTextDialog ctd = new ChainTextDialog ();
 		ctd.SetButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
 		ctd.SetBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
-        
+        */
+
 		TileFactory.tileMaterial = tileMaterial;
 		InGameMarker igm = new InGameMarker ();
 		igm.SetSprite (SpritesLoader.GetInstance().GetResource("Test/testTileSlim"));
