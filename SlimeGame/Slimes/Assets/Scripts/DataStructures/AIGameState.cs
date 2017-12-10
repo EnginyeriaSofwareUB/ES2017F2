@@ -18,6 +18,19 @@ public class AIGameState {
         this.playerActions = playerActions;
     }
 
+    public RawPlayer GetCurrentPlayer()
+    {
+        return players[currentPlayer % players.Count];
+    }
+
+    public RawPlayer GetNextPlayer(){
+        return players[(currentPlayer+1) % players.Count];
+    }
+
+    public int GetRemainingActions(){
+        return GetCurrentPlayer().GetActions() - playerActions;
+    }
+
     /*
     Función que devuelve todas las posibles acciones en forma de lista de AISlimeAction (slime, accion)
      */
@@ -144,11 +157,6 @@ public class AIGameState {
             }
         }
         return null;
-    }
-
-    public RawPlayer GetCurrentPlayer()
-    {
-        return players[currentPlayer % players.Count];
     }
 
     public int GetCurrentTurn(){

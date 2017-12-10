@@ -25,7 +25,6 @@ public class TutorialIA : AIInterface {
 
     protected override void ThinkAction(){
         position++;
-        //Set selected slime (cutre)
         Slime actionSlime = null;
         if (position == 3)
             actionSlime = gameController.GetCurrentPlayer().GetSlimes()[1];

@@ -88,14 +88,27 @@ public class Player {
 	
 	}
 
-	public void ThinkAction(){
-		if(brain != null && brain.IsDone){
+	public bool ThinkAction(){
+		if(!IsThinking()){
 			brain.Start();
+			return true;
 		}
+		return false;
+	}
+
+	public bool IsThinking(){
+		if(brain != null && brain.IsDone){
+			return false;
+		}
+		return true;
+	}
+
+	public void StopThinking(){
+		brain.Abort();
 	}
 
 	public AISlimeAction GetThoughtAction(){
-		if (brain != null) {
+		if (!IsThinking()) {
 			return brain.PopAction ();
 		}
 		return null;

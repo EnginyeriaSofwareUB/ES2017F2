@@ -118,7 +118,7 @@ public class GameController : MonoBehaviour
         else
         {
 			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), new AIConquer(this))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats)));
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIConquer(this)));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -221,13 +221,16 @@ public class GameController : MonoBehaviour
         {
             if(status == GameControllerStatus.WAITINGFORACTION){
                 status = GameControllerStatus.AILOGIC;
-                players[currentPlayer].ThinkAction();
-            }else if(status == GameControllerStatus.AILOGIC){
+                GetCurrentPlayer().ThinkAction();
+            }else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking()){
+                status = GameControllerStatus.PLAYINGACTION;
                 AISlimeAction action = players[currentPlayer].GetThoughtAction();
                 if(action != null){
-                    status = GameControllerStatus.PLAYINGACTION;
                     SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
                     DoAction((SlimeAction)action); // Hacemos la accion.
+                }else {
+                    Debug.Log("IA returned NULL action");
+                    NextPlayer(); // No pot fer cap accio
                 }
             }
         }
@@ -665,6 +668,13 @@ public class GameController : MonoBehaviour
             }
         }
         return null;
+    }
+    
+    void OnDestroy(){
+        foreach(Player pl in players){
+            if(pl.IsThinking()) pl.StopThinking();
+        }
+
     }
 
 }
