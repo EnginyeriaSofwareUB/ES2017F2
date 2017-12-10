@@ -9,26 +9,37 @@ using SimpleJSON;
 public class SelectorController : MonoBehaviour {
     private string sprite;
 	private List<string> corePaths;
-	private List<string> coresInfo;
+	//private List<string> coresInfo;
 	private List<MapTypeSelection> mapTypes;
 	private List<Color> colors;
-	private int slimeSelector1;
-	private int slimeSelector2;
-	private int colorSelector1;
-	private int colorSelector2;
+	private List<int> colorSelector;
+	private List<int> coreSelector;
+	private int currentColorSelector;
 	private int mapSelector;
 	private int modoVictoria;
+
+	private int currentPlayer;
+	private int maxPlayers;
+
+	private GameObject player3;
+	private GameObject player4;
 
 	public Matrix map;
 
 	// Use this for initialization
 	void Start () {
+		maxPlayers = 2;
+		currentPlayer = 1;
 		modoVictoria = 0;
-		slimeSelector1 = 0;
-		slimeSelector2 = 1;
+		coreSelector = new List<int>();
+		coreSelector.Add(0);
+		coreSelector.Add(0);
+		coreSelector.Add(1);
 		mapSelector = 0;
-		colorSelector1 = 0;
-		colorSelector2 = 1;
+		colorSelector = new List<int>();
+		colorSelector.Add(0);
+		colorSelector.Add(0);
+		colorSelector.Add(1);
 		mapTypes = new List<MapTypeSelection> ();
 		/*foreach(MapTypes type in Enum.GetValues(typeof(MapTypes))){
 			mapTypes.Add(new MapTypeSelection(type));
@@ -36,16 +47,23 @@ public class SelectorController : MonoBehaviour {
 		foreach(SeededMap seed in GetAllInterestingSeededMaps()){
 			mapTypes.Add(new MapTypeSelection(seed));
 		}
+		player3 = GameObject.Find ("Panel3");
+		player4 = GameObject.Find("Panel4");
+		player3.SetActive (false);
+		player4.SetActive (false);
+
 		mapTypes.Add(new MapTypeSelection());
 		corePaths = new List<string> ();
 		corePaths.Add ("Sprites/Wrath");
 		corePaths.Add ("Sprites/Sloth");
 		corePaths.Add ("Sprites/Gluttony");
         sprite = "Sprites/slime_sprite";
+		GameObject.Find ("CurrentSprite").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
 		GameObject.Find ("Sprite1").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
 		GameObject.Find ("Sprite2").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-        GameObject.Find("Core1").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[slimeSelector1]);
-        GameObject.Find("Core2").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[slimeSelector2]);
+        GameObject.Find("CurrentCore").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
+		GameObject.Find("Core1").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
+        GameObject.Find("Core2").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[2]]);
         colors = new List<Color> ();
 		colors.Add (new Color (1, 0, 0));
 		colors.Add (new Color (0, 0, 1));
@@ -54,22 +72,21 @@ public class SelectorController : MonoBehaviour {
 		colors.Add (new Color (0, 1, 1));
 		colors.Add (new Color (1, 0, 1));
 		colors.Add (new Color (1, 1, 1));
-		coresInfo = new List<string> ();
-		coresInfo.Add ("Info de SlimeCore0");
-		coresInfo.Add ("Info de SlimeCore1");
-		coresInfo.Add ("Info de SlimeCore2");
-		GameObject.Find ("Color1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameObject.Find ("Sprite1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameObject.Find ("Color2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameObject.Find ("Sprite2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameObject.Find ("Text1").GetComponent<Text> ().text = coresInfo [slimeSelector1];
-		GameObject.Find ("Text2").GetComponent<Text> ().text = coresInfo [slimeSelector2];
+		//coresInfo = new List<string> ();
+		//coresInfo.Add ("Info de SlimeCore0");
+		//coresInfo.Add ("Info de SlimeCore1");
+		//coresInfo.Add ("Info de SlimeCore2");
+		GameObject.Find ("CurrentSprite").GetComponent<Image> ().color = colors[colorSelector[1]];
+		GameObject.Find ("Sprite1").GetComponent<Image> ().color = colors[colorSelector[1]];
+		GameObject.Find ("Sprite2").GetComponent<Image> ().color = colors[colorSelector[2]];
+
+		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector[1]];
 		loadMap ();
 
-		GameSelection.player1Color = colors [colorSelector1];
-		GameSelection.player2Color = colors [colorSelector2];
-		GameSelection.player1Core = slimeSelector1;
-		GameSelection.player2Core = slimeSelector2;
+		GameSelection.player1Color = colors [colorSelector[1]];
+		GameSelection.player2Color = colors [colorSelector[2]];
+		GameSelection.player1Core = coreSelector[1];
+		GameSelection.player2Core = coreSelector[2];
 		GameSelection.modoVictoria = modoVictoria;
 	}
 	
@@ -78,68 +95,113 @@ public class SelectorController : MonoBehaviour {
 		
 	}
 
-	public void changeCore1(int cursor){
-		slimeSelector1 += cursor;
-		if (slimeSelector1 > corePaths.Count - 1) {
-			slimeSelector1 = 0;
-		} else if (slimeSelector1 < 0) {
-			slimeSelector1 = corePaths.Count - 1;
-		}
-		GameObject.Find ("Core1").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [slimeSelector1]);
-		GameObject.Find ("Text1").GetComponent<Text> ().text = coresInfo [slimeSelector1];
-		GameSelection.player1Core = slimeSelector1;
-	}
-
-	public void changeCore2(int cursor){
-		slimeSelector2 += cursor;
-		if (slimeSelector2 > corePaths.Count - 1) {
-			slimeSelector2 = 0;
-		} else if (slimeSelector2 < 0){
-			slimeSelector2 = corePaths.Count - 1;
-		}
-		GameObject.Find ("Core2").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [slimeSelector2]);
-		GameObject.Find ("Text2").GetComponent<Text> ().text = coresInfo [slimeSelector2];
-		GameSelection.player2Core = slimeSelector2;
-	}
-
-	public void changeColor1(int cursor){
-		colorSelector1 += cursor;
-		if (colorSelector1 > colors.Count - 1) {
-			colorSelector1 = 0;
-		} else if (colorSelector1 < 0) {
-			colorSelector1 = colors.Count - 1;
-		}	
-		if (colorSelector1 == colorSelector2) {
-			colorSelector1 += cursor;
-			if (colorSelector1 > colors.Count - 1) {
-				colorSelector1 = 0;
-			} else if (colorSelector1 < 0) {
-				colorSelector1 = colors.Count - 1;
+	public void newPlayer(){
+		if (maxPlayers < 4) {
+			maxPlayers++;
+			if (maxPlayers == 3) {
+				player3.SetActive (true);
+				GameObject.Find ("Sprite3").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+				if (coreSelector.Count < 4) {
+					coreSelector.Add (2);
+					colorSelector.Add (2);
+				}
+				GameObject.Find("Core3").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[3]]);
+				GameObject.Find ("Sprite3").GetComponent<Image> ().color = colors[colorSelector[3]];
+				//Asegurarse de que el color elegido no lo tienen otros jugadores!
+			} else if (maxPlayers == 4) {
+				player4.SetActive (true);
+				GameObject.Find ("Sprite4").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+				if (coreSelector.Count < 5) {
+					coreSelector.Add (0);
+					colorSelector.Add (3);
+				}
+				GameObject.Find("Core4").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[4]]);
+				GameObject.Find ("Sprite4").GetComponent<Image> ().color = colors[colorSelector[4]];
 			}
 		}
-		GameObject.Find ("Color1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameObject.Find ("Sprite1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameSelection.player1Color = colors [colorSelector1];
-	}	
+	}
 
-	public void changeColor2(int cursor){
-		colorSelector2 += cursor;
-		if (colorSelector2 > colors.Count - 1) {
-			colorSelector2 = 0;
-		} else if (colorSelector2 < 0) {
-			colorSelector2 = colors.Count - 1;
+	public void deletePlayer(){
+		if (maxPlayers > 2) {
+			if (currentPlayer == maxPlayers)
+				changeCurrentPlayer(1);
+			if (maxPlayers == 4)
+				player4.SetActive (false);
+			else if (maxPlayers == 3)
+				player3.SetActive (false);
+			maxPlayers--;
+		}
+	}
+
+
+	private void changeInfo(){
+		StatsContainer stats;
+		if (coreSelector [currentPlayer] == 0) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.WRATH);
+		} else if (coreSelector [currentPlayer] == 1) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.SLOTH);
+		} else if (coreSelector [currentPlayer] == 2) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
+		} else {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
+		}
+		int dmg = stats.attack;
+		int hp = stats.startingHP;
+		int rng = stats.range;
+		int move = stats.move;
+		GameObject.Find ("CoreInfo").GetComponent<Text> ().text = "  " + hp + "     " + dmg + "\n   " + rng + "      " + move;
+	}
+	public void changeCurrentPlayer(int cursor){
+		currentPlayer = cursor;
+		GameObject.Find ("CurrentCore").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance ().GetResource (corePaths [coreSelector [cursor]]);
+		GameObject.Find ("CurrentSprite").GetComponent<Image> ().color = GameObject.Find ("Sprite"+cursor).GetComponent<Image> ().color;
+		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector [currentPlayer]];
+		changeInfo();
+		GameObject.Find ("PlayerText").GetComponent<Text> ().text = "PLAYER " + cursor;
+	}
+
+	public void changeCore(int cursor){
+		coreSelector[currentPlayer] += cursor;
+		if (coreSelector[currentPlayer] > corePaths.Count - 1) {
+			coreSelector[currentPlayer] = 0;
+		} else if (coreSelector[currentPlayer] < 0) {
+			coreSelector[currentPlayer] = corePaths.Count - 1;
+		}
+		GameObject.Find ("CurrentCore").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
+		changeInfo ();
+		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector[currentPlayer]];
+		GameObject.Find("Core"+currentPlayer).GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
+
+		if (currentPlayer == 1) {
+			GameSelection.player1Core = coreSelector[currentPlayer];
+		} else if (currentPlayer == 2) {
+			GameSelection.player2Core = coreSelector[currentPlayer];
+		} 
+	}
+
+	public void changeColor(int cursor){
+		colorSelector[currentPlayer] += cursor;
+		if (colorSelector[currentPlayer] > colors.Count - 1) {
+			colorSelector[currentPlayer] = 0;
+		} else if (colorSelector[currentPlayer] < 0) {
+			colorSelector[currentPlayer] = colors.Count - 1;
 		}	
-		if (colorSelector1 == colorSelector2) {
-			colorSelector2 += cursor;
-			if (colorSelector2 > colors.Count - 1) {
-				colorSelector2 = 0;
-			} else if (colorSelector2 < 0) {
-				colorSelector2 = colors.Count - 1;
+		if (colorSelector[1] == colorSelector[2]) {//Casos con 3 y 4 jugadores
+			colorSelector[currentPlayer] += cursor;
+			if (colorSelector[currentPlayer] > colors.Count - 1) {
+				colorSelector[currentPlayer] = 0;
+			} else if (colorSelector[currentPlayer] < 0) {
+				colorSelector[currentPlayer] = colors.Count - 1;
 			}
 		}
-		GameObject.Find ("Color2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameObject.Find ("Sprite2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameSelection.player2Color = colors [colorSelector2];
+		GameObject.Find ("CurrentSprite").GetComponent<Image> ().color = colors[colorSelector[currentPlayer]];
+		GameObject.Find ("Sprite"+currentPlayer).GetComponent<Image> ().color = colors[colorSelector[currentPlayer]];
+
+		if (currentPlayer == 1) {
+			GameSelection.player1Color = colors[colorSelector[currentPlayer]];
+		} else if (currentPlayer == 2) {
+			GameSelection.player2Color = colors[colorSelector[currentPlayer]];
+		} 
 	}	
 
 	public void changeMap(int cursor){
