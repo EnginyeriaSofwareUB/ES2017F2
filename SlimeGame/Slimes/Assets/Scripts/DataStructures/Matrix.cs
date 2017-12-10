@@ -55,9 +55,67 @@ public class Matrix {
 		dict[TileType.Sand]=0.7f;
 		
 	    CreateTiles(maxim, totalNumTiles,probabilityNull, seed);
-		DistributeTiles(seed);
+		//DistributeTiles(seed);
 	}
 	
+	public List<List<Vector2>> GetPositions(int numPlayers, int numInitSlimes){
+		List<List<Vector2>> playersTiles = new List<List<Vector2>>();
+		List<TileData> firstOnes = GetNorthPositions(numInitSlimes);
+		for(int i=0; i<6;i++){
+			playersTiles.Add(new List<Vector2>());
+		}	
+		
+		foreach(TileData tile in firstOnes){
+			int x =(int)tile.getPosition().x;
+			int y =(int)tile.getPosition().y;
+			int z =-x-y;
+			Vector2 SO = new Vector2(x,y);//SO
+			Vector2 NO = new Vector2(-y,-z);//NO
+			Vector2 N = new Vector2(z,x);//N
+			Vector2 NE = new Vector2(-x,-y);//NE
+			Vector2 SE = new Vector2(y,z);//SE
+			Vector2 S = new Vector2(-z,-x);//S
+			if(numPlayers>0){
+				playersTiles[0].Add(SE);
+			} 
+			if(numPlayers==2){
+				 playersTiles[1].Add(NO);
+			}
+			if(numPlayers==3){
+				playersTiles[1].Add(N);
+				playersTiles[2].Add(SO);
+			} 
+			if(numPlayers>=4){
+				playersTiles[1].Add(NO);
+				playersTiles[2].Add(SO);
+				playersTiles[3].Add(NE);
+			} 
+			if(numPlayers>=5) playersTiles[4].Add(N);
+			if(numPlayers>5) playersTiles[5].Add(S);
+		}
+		
+		return playersTiles;
+	}
+	public List<TileData> GetNorthPositions(int numPos){
+		List<TileData> list = new List<TileData>();
+		List<int> keysx = new List<int>(map.Keys);
+		keysx.Sort(new Comparison<int>(
+                            (i1, i2) => i2.CompareTo(i1)
+                    ));
+		while(numPos>0){
+			int total = keysx[0];
+			int j = 0;
+			while(numPos>0 && total-j>0){/*map.ContainsKey(total-j) */
+				if(map[total-j].ContainsKey(j)){
+					list.Add(map[total-j][j]);
+					numPos--;
+				}
+				j++;
+			}
+			keysx.Remove(total);
+		}
+		return list;
+	}
 	public List<TileData> GetTotalTiles(){
 		List<TileData> i = new List<TileData>();
 		foreach(int x in map.Keys){
