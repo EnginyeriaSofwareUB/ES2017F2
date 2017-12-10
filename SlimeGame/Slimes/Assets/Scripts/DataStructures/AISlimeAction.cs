@@ -13,7 +13,7 @@ public class AISlimeAction : SlimeAction{
         this.actionSlime = actionSlime;
 	}
 
-    public Slime GetSlime(){
+    public Slime GetMainSlime(){
         return this.actionSlime;
     }
 }

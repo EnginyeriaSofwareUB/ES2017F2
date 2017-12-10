@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour {
-	
+
+	public ElementType elementType;
 	private TileData data;
 	private SpriteAnimation backAnimation;
 	private SpriteAnimation frontAnimation;
@@ -64,6 +65,7 @@ public class Tile : MonoBehaviour {
 	}
 
 	public void startElementLayer(Vector3 pos, Vector3 size){
+		
 		GameObject gotileElementLayer = new GameObject ("TileElementLayer");
 		gotileElementLayer.GetComponent<Transform> ().SetParent (this.transform);
 		tileElementLayerBack = gotileElementLayer.AddComponent<SpriteRenderer> ();
@@ -81,74 +83,76 @@ public class Tile : MonoBehaviour {
 		tileElementLayerFront.sortingLayerName = "TileElement";
 		tileElementLayerFront.color = new Color (1f, 1f, 1f, 1f);
 		tileElementLayerFront.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4+3);
-
-
 		switch(Random.Range(1,5)){
 			//Fire case
-		case 1:
-			tileElementLayerBack.gameObject.transform.position = pos + new Vector3 (0.0f, +0.5f);
-			tileElementLayerFront.gameObject.transform.position = pos + new Vector3 (0.0f, -0.25f);
-			//Animations
-			frontAnimation = new SpriteAnimation (tileElementLayerFront);
-			frontAnimation.LoadSprites ("Tiles/Fire/front", 6);
-			frontAnimation.RandomStart ();
-			frontAnimation.playAnimation ();
-			backAnimation = new SpriteAnimation (tileElementLayerBack);
-			backAnimation.LoadSprites ("Tiles/Fire/back",6);
-			backAnimation.RandomStart ();
-			backAnimation.playAnimation ();
-			//Shader
-			int baseOffset = Random.Range(0,20);
-			if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
-				Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
-				tileElementLayerFront.material = mat;
-				tileElementLayerFront.material.SetFloat ("_RandomStart",Mathf.PI+baseOffset);
-			}
+			case 1:
+				elementType = ElementType.FIRE;
+				tileElementLayerBack.gameObject.transform.position = pos + new Vector3 (0.0f, +0.5f);
+				tileElementLayerFront.gameObject.transform.position = pos + new Vector3 (0.0f, -0.25f);
+				//Animations
+				frontAnimation = new SpriteAnimation (tileElementLayerFront);
+				frontAnimation.LoadSprites ("Tiles/Fire/front", 6);
+				frontAnimation.RandomStart ();
+				frontAnimation.playAnimation ();
+				backAnimation = new SpriteAnimation (tileElementLayerBack);
+				backAnimation.LoadSprites ("Tiles/Fire/back",6);
+				backAnimation.RandomStart ();
+				backAnimation.playAnimation ();
+				//Shader
+				int baseOffset = Random.Range(0,20);
+				if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
+					Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+					tileElementLayerFront.material = mat;
+					tileElementLayerFront.material.SetFloat ("_RandomStart",Mathf.PI+baseOffset);
+				}
 
-			if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
-				Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
-				tileElementLayerBack.material = mat;
-				tileElementLayerBack.material.SetFloat ("_RandomStart",2*Mathf.PI+baseOffset);
-			}
-			break;
-			//Water case
+				if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
+					Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+					tileElementLayerBack.material = mat;
+					tileElementLayerBack.material.SetFloat ("_RandomStart",2*Mathf.PI+baseOffset);
+				}
+				break;
+				//Water case
 			case 2:
-			tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.0f,+0.2f);
-			//Animations
-			frontAnimation = new SpriteAnimation (tileElementLayerFront);
-			frontAnimation.LoadSprites("Tiles/Water/tile_water_", 36);
-			frontAnimation.RandomStart ();
-			frontAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
-			frontAnimation.playAnimation ();
-			break;
-			//Earth case
+				elementType = ElementType.WATER;
+				tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.0f,+0.2f);
+				//Animations
+				frontAnimation = new SpriteAnimation (tileElementLayerFront);
+				frontAnimation.LoadSprites("Tiles/Water/tile_water_", 36);
+				frontAnimation.RandomStart ();
+				frontAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
+				frontAnimation.playAnimation ();
+				break;
+				//Earth case
 			case 3:
-			tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.75f,-0.25f);
-			tileElementLayerBack.gameObject.transform.position = pos+new Vector3(-0.5f,+0.55f);
-			tileElementLayerFront.gameObject.transform.localScale = new Vector2(0.6f,0.6f);
-			tileElementLayerBack.gameObject.transform.localScale = new Vector2(0.85f,0.85f);
+				elementType = ElementType.EARTH;
+				tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.75f,-0.25f);
+				tileElementLayerBack.gameObject.transform.position = pos+new Vector3(-0.5f,+0.55f);
+				tileElementLayerFront.gameObject.transform.localScale = new Vector2(0.6f,1f);
+				tileElementLayerBack.gameObject.transform.localScale = new Vector2(0.85f,1.2f);
 
-			//Animations
-			frontAnimation = new SpriteAnimation (tileElementLayerFront);
-			frontAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
-			frontAnimation.RandomStart ();
-			frontAnimation.mode = SpriteAnimationMode.LOOP;
-			frontAnimation.playAnimation ();
+				//Animations
+				frontAnimation = new SpriteAnimation (tileElementLayerFront);
+				frontAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+				frontAnimation.RandomStart ();
+				frontAnimation.mode = SpriteAnimationMode.LOOP;
+				frontAnimation.playAnimation ();
 
-			backAnimation = new SpriteAnimation (tileElementLayerBack);
-			backAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
-			backAnimation.RandomStart ();
-			backAnimation.mode = SpriteAnimationMode.LOOP;
-			backAnimation.playAnimation ();
-			break;
-		default:
-			
-			break;
+				backAnimation = new SpriteAnimation (tileElementLayerBack);
+				backAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+				backAnimation.RandomStart ();
+				backAnimation.mode = SpriteAnimationMode.LOOP;
+				backAnimation.playAnimation ();
+				break;
+
+			default:
+				elementType = ElementType.NONE;
+				break;
 		}
 
 	}
 
-	public void StopAnimations(){
+	private void StopAnimations(){
 		if (backAnimation != null) {
 			backAnimation.StopAnimation ();
 			backAnimation = null;
@@ -157,6 +161,13 @@ public class Tile : MonoBehaviour {
 			frontAnimation.StopAnimation ();
 			frontAnimation = null;
 		}
+	}
+
+	public void RemoveElement(){
+		StopAnimations ();
+		tileElementLayerBack.sprite = null;
+		tileElementLayerFront.sprite = null;
+		elementType = ElementType.NONE;
 	}
 
 	public void SetSlimeOnTop(Slime obj){

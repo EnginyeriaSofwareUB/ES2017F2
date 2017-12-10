@@ -48,10 +48,10 @@ public class ProjectileTrajectory : MonoBehaviour {
         if (toAttack!=null){
             FloatingTextController.CreateFloatingText ((-damage).ToString(),toAttack.transform);
             toAttack.changeMass (-damage);
-            Debug.Log(toAttack.GetMass());
-            Debug.Log(!toAttack.isAlive ());
+            //Debug.Log(toAttack.GetMass());
+            //Debug.Log(!toAttack.isAlive ());
             if (!toAttack.isAlive ()) {
-                toAttack.GetTileData ().SetSlimeOnTop (null);
+                toAttack.GetTileData ().SetSlimeOnTop ((Slime)null);
                 toAttack.GetPlayer ().GetSlimes ().Remove (toAttack);
                 Destroy(toAttack.gameObject);
                 GameObject.Find ("Main Camera").GetComponent<GameController> ().RemoveSlime(toAttack);

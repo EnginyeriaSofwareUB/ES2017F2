@@ -3,32 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
+	private int id;
 	private Player player;
 	public Tile actualTile;
-	public Dictionary<TileData,List<TileData>> possibleMovements;
-	public bool rangeUpdated;
 	private float mass;
-	private SpriteAnimation animation;
+	private SpriteAnimation canimation;
 	private float maxMass = 300f;
 	private float minMass = 20f;
 	private float maxScale = 0.6f;
 	private float minScale = 0.2f;
+	private ElementType elementType;
 	private StatsContainer element;
+	public GameObject face;
 	// Use this for initialization
 	void Start () {
-		rangeUpdated = false;
-		element = StatsFactory.GetStat (ElementType.NONE);
+		elementType = ElementType.NONE;
+		ChangeElement(elementType);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(animation != null) animation.update ();
+		if(canimation != null) canimation.update ();
 	}
 
 	public void initSpriteAnimation(){
-		animation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
-		animation.LoadSprites (player.statsCoreInfo.picDirection,5);
-		animation.playAnimation ();
+		//canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer>());
+		//canimation.LoadSprites (player.statsCoreInfo.picDirection,5);
+		//canimation.playAnimation ();
 
 	}
 
@@ -57,6 +58,14 @@ public class Slime : MonoBehaviour {
 
         return s;
     }
+
+	public void SetId(int id){
+		this.id = id;
+	}
+
+	public int GetId(){
+		return this.id;
+	}
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
 		actualTile=newTile;
@@ -82,16 +91,22 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
+		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.move + element.move;
 	}
 
 	public int GetAttackRange(){
+		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.range + element.range;
 	}
 
 	public void changeMass(float q){
 		SetMass (mass + q);
 	}
+
+    public bool CheckId(int id){
+        return this.id == id;
+    }
 
 	public float getDamage(){
 		return player.statsCoreInfo.attack + element.attack;
@@ -122,4 +137,19 @@ public class Slime : MonoBehaviour {
 		}
 		this.gameObject.transform.localScale = new Vector3(scale, scale, 0.5f);
 	}
+
+	public void ChangeElement(ElementType newElement){
+		if (elementType == ElementType.NONE) {
+			elementType = newElement;
+			element = StatsFactory.GetStat (elementType);
+			canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer> ());
+			canimation.LoadSprites (element.picDirection, element.picCount);
+			canimation.playAnimation ();
+		}
+	}
+
+	public RawSlime GetRawCopy(){
+		return new RawSlime(id, maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
+	}
+
 }

@@ -15,8 +15,8 @@ public class UIController : MonoBehaviour {
 	private Color attackColor = new Color (1f,0f,0f);
 	private Color splitColor = new Color (1f,0xdd,0f);
 	private Color joinColor = new Color (0.54f,1f,0f);
-	private Color conquerColor = new Color (0xce,0x0c,0xc1);
-	private Color specialColor = new Color (1f,0x6a,0f);
+	//private Color conquerColor = new Color (0xce,0x0c,0xc1);
+	//private Color specialColor = new Color (1f,0x6a,0f);
 	private Color selectedColor = new Color (1f, 0.843f, 0f);
 
 	private List<SpriteRenderer> currentUIRenderer;
@@ -71,9 +71,10 @@ public class UIController : MonoBehaviour {
         RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
         rt2.sizeDelta = new Vector2(200, 150);*/
         //Si clica OK desactiva el canvas
-        //canvasInfo.GetComponentInChildren<Button>().onClick.AddListener(DisableCanvas);
-
-        TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/tile_border");
+		if (canvasInfo != null) {
+			canvasInfo.GetComponentInChildren<Button> ().onClick.AddListener (DisableCanvas);
+		}
+		TileSprite = SpritesLoader.GetInstance().GetResource("Tiles/new_border");
 		currentUIRenderer = new List<SpriteRenderer> ();
 		round = GameObject.Find ("RoundNum");
 		playerColor = GameObject.Find ("PlayerColor");
@@ -193,12 +194,14 @@ public class UIController : MonoBehaviour {
         Text t = canvasInfo.GetComponentInChildren<Text>();
         t.text = info;
     }
-
+	*/
     //Desactiva el canvas
     public void DisableCanvas()
     {
-        canvasInfo.SetActive(false);
-    }*/
+		if (canvasInfo != null) {
+			canvasInfo.SetActive (false);
+		}
+    }
 
 	public List<Tile> showSplitRange(Slime slime){
 		List<Tile> splitTiles = gameController.GetSplitRangeTiles(slime);

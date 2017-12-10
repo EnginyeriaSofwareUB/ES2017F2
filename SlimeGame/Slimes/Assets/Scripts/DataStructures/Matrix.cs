@@ -6,7 +6,11 @@ using System;
 public class Matrix {
 	
 	private Dictionary<int, Dictionary<int,TileData>> map;
-	private int shifted;
+
+	public Matrix(Dictionary<int, Dictionary<int,TileData>> map){
+		this.map = map;
+	}
+
 	public Matrix(List<List<TileType>> matrix){
 		//input 		
 		map = new Dictionary<int, Dictionary<int,TileData>> ();
@@ -15,7 +19,7 @@ public class Matrix {
 		int middleCell = (int)(matrix [middleRow].Count / 2); 
 		int firstY = middleRow-middleCell-(int)((matrix.Count)/4);
 		if((matrix.Count)%4 ==1)firstY += 1;
-		shifted = 0;
+		int shifted = 0;
 		if (matrix[0].Count<matrix[1].Count){
 			shifted = 1;
 		}
@@ -175,16 +179,16 @@ public class Matrix {
 		}
 		return tile;
 	}
-	/*
-	override public string ToString(){        
+	
+	public override string ToString(){        
 		int count = 0;
 		Debug.Log("Matrix: ");
 		String final = "";
 		foreach(int y in map.Keys){
 			String s = "";
-			if(count%2!=shifted) s+="     ";
+			//if(count%2!=shifted) s+="     ";
 			foreach(int x in map[y].Keys){
-				s+="("+x+","+y+","+map[y][x].type+")";
+				s+="("+x+","+y+","+map[y][x].getTileType()+")";
 			}            
 			//Debug.Log(s);
 			final+=s+"\n";
@@ -192,7 +196,7 @@ public class Matrix {
 		}
 		return final;
 	}
-	 */
+	 
 	public static Vector3 axial_to_cube(Vector2 vec){
 		int xC = (int)vec.x;
 		int zC = (int)vec.y;
@@ -483,5 +487,28 @@ tile.SetTileType(nearestCenter.getTileType());
 
 	public int TotalNumTiles(){
 		return GetTotalTiles().Count;
+	}
+
+	
+	public Matrix GetRawCopy(){
+		Dictionary<int, Dictionary<int,TileData>> mapCopy = new Dictionary<int, Dictionary<int,TileData>> ();
+
+		foreach(int x in map.Keys){
+			mapCopy[x] = new Dictionary<int,TileData>();
+			foreach(int y in map[x].Keys){
+				mapCopy[x][y] = map[x][y].GetRawCopy();
+			}
+		}
+
+		return new Matrix(mapCopy);
+	}
+
+	public bool EqualsTo(Matrix matrix){
+		foreach(int x in map.Keys){
+			foreach(int y in map[x].Keys){
+				if(map[x][y].getTileType() != matrix.getTile(x, y).getTileType()) return false;
+			}
+		}
+		return true;
 	}
 }
