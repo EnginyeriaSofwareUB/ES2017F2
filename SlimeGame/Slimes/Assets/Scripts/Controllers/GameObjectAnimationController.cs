@@ -115,17 +115,11 @@ public class GameObjectAnimationController: MonoBehaviour
 	}
 
 	private void scaleTest(){
-		scaleList.Add (new Vector3 (1f, 1f, 1f));
-		scaleList.Add (new Vector3(3f, 1f, 1f));
-		scaleList.Add (new Vector3(3f, 3f, 1f));
-		scaleList.Add (new Vector3(1f, 1f, 1f));
-		scaleDurations.Add (5f);
-		scaleDurations.Add (1f);
-		scaleDurations.Add (5f);
-		scaleOffsets.Add (1f);
-		scaleOffsets.Add (3f);
-		scaleOffsets.Add (5f);
-		scaleOffsets.Add (0f);
+		AddScaleTransition (new Vector3 (1f, 1f, 1f), 5f, 1f);
+		AddScaleTransition (new Vector3 (3f, 1f, 1f), 1f, 3f);
+		AddScaleTransition (new Vector3 (3f, 3f, 1f), 5f, 5f);
+		//El último valor de duracion no se utiliza
+		AddScaleTransition (new Vector3 (1f, 1f, 1f), 0f, 0f);
 		scaleStatus = Status.PLAYING;
 		currentScale = 0;
 		scaleMode = Mode.BOUNCE;
@@ -142,18 +136,10 @@ public class GameObjectAnimationController: MonoBehaviour
 
 
 	private void test(){
-
-		transformList.Add (new Vector3 (0f, 0f, 0f));
-		transformList.Add (new Vector3(3f, 0f, 0f));
-		transformList.Add (new Vector3(5f, 3f, 1f));
-		transformList.Add (new Vector3(-2f, 3f, 1f));
-		transformDurations.Add (5f);
-		transformDurations.Add (1f);
-		transformDurations.Add (5f);
-		transformOffsets.Add (1f);
-		transformOffsets.Add (3f);
-		transformOffsets.Add (5f);
-		transformOffsets.Add (0f);
+		AddTransformTransition (new Vector3 (0f, 0f, 0f), 5f, 1f);
+		AddTransformTransition (new Vector3 (3f, 0f, 0f), 1f, 3f);
+		AddTransformTransition (new Vector3 (5f, 3f, 1f), 5f, 5f);
+		AddTransformTransition (new Vector3 (-2f, 3f, 1f), 0f, 0f);
 		transformStatus = Status.PLAYING;
 		currentTransform = 0;
 		transformMode = Mode.BOUNCE;
@@ -395,4 +381,47 @@ public class GameObjectAnimationController: MonoBehaviour
 		PLAYING,
 		ENDED
 	}
+
+	public void AddTransformTransition(Vector3 point,float duration,float offset){
+		transformList.Add (point);
+		transformDurations.Add (duration);
+		transformOffsets.Add (offset);
+	}
+
+	public void AddRotateTransition(Vector3 point,float duration,float offset){
+		rotateList.Add (point);
+		rotateDurations.Add (duration);
+		rotateOffsets.Add (offset);
+	}
+
+	public void AddScaleTransition(Vector3 point,float duration,float offset){
+		scaleList.Add (point);
+		scaleDurations.Add (duration);
+		scaleOffsets.Add (offset);
+	}
+
+	public void StartAnimation(){
+		if (transformList.Count > 0) {
+			transformStatus = Status.PLAYING;
+		}
+		if (rotateList.Count > 0) {
+			transformStatus = Status.PLAYING;
+		}
+		if (scaleList.Count > 0) {
+			transformStatus = Status.PLAYING;
+		}
+	}
+
+	public void SetTransformMode(Mode mode){
+		transformMode = mode;
+	}
+
+	public void SetRotationMode(Mode mode){
+		rotateMode = mode;
+	}
+
+	public void SetScaleMode(Mode mode){
+		scaleMode = mode;
+	}
+
 }
