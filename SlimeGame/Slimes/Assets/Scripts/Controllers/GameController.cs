@@ -112,12 +112,12 @@ public class GameController : MonoBehaviour
             MapDrawer.instantiateMap(matrix.getIterable());
             SlimeFactory.instantiateSlime(players[0], 3, -4);
 			SlimeFactory.instantiateSlime(players[1], -4, 1);
-            players[1].SetBrain(new TutorialIA());
+            players[1].SetBrain(new TutorialIA(this));
             players[0].setTutorialActions();
         }
         else
         {
-			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), new AIConquer())); // Test with 2 players
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), new AIConquer(this))); // Test with 2 players
 			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats)));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
@@ -221,14 +221,14 @@ public class GameController : MonoBehaviour
         {
             if(status == GameControllerStatus.WAITINGFORACTION){
                 status = GameControllerStatus.AILOGIC;
-                players[currentPlayer].ThinkAction(this);
+                players[currentPlayer].ThinkAction();
             }else if(status == GameControllerStatus.AILOGIC){
-                AISlimeAction action = players[currentPlayer].GetAction();
+                AISlimeAction action = players[currentPlayer].GetThoughtAction();
                 if(action != null){
                     status = GameControllerStatus.PLAYINGACTION;
                     SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
                     DoAction((SlimeAction)action); // Hacemos la accion.
-                }else NextPlayer();
+                }
             }
         }
     }

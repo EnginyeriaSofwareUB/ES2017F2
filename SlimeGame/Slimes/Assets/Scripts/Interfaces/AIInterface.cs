@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AIInterface{
+public abstract class AIInterface : ThreadedJob{
+    protected GameController gameController;
     protected AISlimeAction thoughtAction;
     private int maxDepth = 3;
     private int minDepth = 1;
@@ -11,14 +12,25 @@ public abstract class AIInterface{
     protected int playerId = 0;
     private int turn = 0;
 
-    abstract public void ThinkAction(GameController gameController);
+    abstract protected void ThinkAction();
     //abstract public AISlimeAction GetAction(GameController gameController);
     abstract protected double GetStateEvaluation(AIGameState state);
 
 
+    public AIInterface(GameController gameController){
+        this.gameController = gameController;
+    }
+
+    protected override void ThreadFunction()
+     {
+         Debug.Log("thinking");
+         ThinkAction();
+         Debug.Log("finished");
+     }
+
+
     public AISlimeAction PopAction(){
         if(thoughtAction != null){
-            Debug.Log(thoughtAction.ToString());
             AISlimeAction toReturn = thoughtAction;
             thoughtAction = null;
             return toReturn;

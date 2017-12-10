@@ -88,13 +88,13 @@ public class Player {
 	
 	}
 
-	public void ThinkAction(GameController g){
-		if(brain != null){
-			brain.ThinkAction(g);
+	public void ThinkAction(){
+		if(brain != null && brain.IsDone){
+			brain.Start();
 		}
 	}
 
-	public AISlimeAction GetAction(){
+	public AISlimeAction GetThoughtAction(){
 		if (brain != null) {
 			return brain.PopAction ();
 		}

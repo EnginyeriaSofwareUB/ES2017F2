@@ -7,8 +7,9 @@ public class TutorialIA : AIInterface {
     private List<SlimeAction> actions;
     private int position;
 
-    public TutorialIA()
+    public TutorialIA(GameController gameController) : base(gameController)
     {
+        
         position = -1;
         actions = new List<SlimeAction>();
 
@@ -22,7 +23,7 @@ public class TutorialIA : AIInterface {
         actions.Add(new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-1, -1))); 
     }
 
-    public override void ThinkAction(GameController gameController){
+    protected override void ThinkAction(){
         position++;
         //Set selected slime (cutre)
         Slime actionSlime = null;

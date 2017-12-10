@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class AIConquer : AIInterface{
 
-    public override void ThinkAction(GameController gameController){
+    public AIConquer(GameController gameController) : base(gameController){}
+
+    protected override void ThinkAction(){
         // Retornamos una accion aleatoria.
         AIGameState gameState = gameController.GetGameState();
         
