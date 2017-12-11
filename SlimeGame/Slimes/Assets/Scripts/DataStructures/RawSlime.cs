@@ -19,6 +19,10 @@ public class RawSlime{
         actualTile.SetSlimeOnTop(this);
         this.id = id;
         if(id > ID) ID = id+1; // ID sempre es el maxim de tots els id de RawSlime
+
+        if (stats == null) {
+			element = StatsFactory.GetStat (ElementType.NONE);
+        }
     }
 
     public RawSlime(float maxmass, float minmas, float mass, StatsContainer stats, TileData tile){
@@ -30,6 +34,10 @@ public class RawSlime{
         actualTile.SetSlimeOnTop(this);
         this.id = ID;
         ID++;
+
+        if (stats == null) {
+			element = StatsFactory.GetStat (ElementType.NONE);
+        }
     }
 
 	public int GetMovementRange(){
