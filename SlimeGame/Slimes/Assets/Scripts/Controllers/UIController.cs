@@ -20,7 +20,6 @@ public class UIController : MonoBehaviour {
 	private Color selectedColor = new Color (1f, 0.843f, 0f);
 
 	private List<SpriteRenderer> currentUIRenderer;
-//<<<<<<< HEAD
 
 	private GameObject round;
 	private GameObject playerColor;
@@ -57,8 +56,7 @@ public class UIController : MonoBehaviour {
     public int minZoom;
     public int maxZoom;
     public int speed;
-//=======
-//>>>>>>> development
+
     // Use this for initialization
     void Start () {
 		gameController = Camera.main.GetComponent<GameController>();
@@ -203,36 +201,33 @@ public class UIController : MonoBehaviour {
 		}
     }
 
-	public List<Tile> showSplitRange(Slime slime){
-		List<Tile> splitTiles = gameController.GetSplitRangeTiles(slime);
-		foreach (Tile t in splitTiles) {
+	public void markTiles(List<Tile> tiles,ActionType at){
+		foreach (Tile t in tiles) {
 			t.tileUILayer.sprite = TileSprite;
-			t.tileUILayer.color = splitColor;
+			switch (at) {
+			case ActionType.ATTACK:
+				t.tileUILayer.color = attackColor;
+				break;
+			case ActionType.CONQUER:
+				t.tileUILayer.color = tempColor;
+				break;
+			case ActionType.EAT:
+				t.tileUILayer.color = tempColor;
+				break;
+			case ActionType.FUSION:
+				t.tileUILayer.color = joinColor;
+				break;
+			case ActionType.MOVE:
+				t.tileUILayer.color = moveColor;
+				break;
+			case ActionType.SPLIT:
+				t.tileUILayer.color = splitColor;
+				break;
+			default:
+				break;
+			}
 			currentUIRenderer.Add(t.tileUILayer);
 		}
-		return splitTiles;
-	}
-
-	public List<Tile> showMoveRange(Slime slime){
-		List<Tile> moveTiles = gameController.GetPossibleMovements(slime);
-		foreach (Tile t in moveTiles) {
-			t.tileUILayer.sprite = TileSprite;
-			t.tileUILayer.color = moveColor;
-			currentUIRenderer.Add (t.tileUILayer);
-		}
-		return moveTiles;
-	}
-
-	public List<Tile> showAttackRange(Slime slime){
-		List<Slime> slimesInRange = gameController.GetSlimesInAttackRange(slime);
-		List<Tile> attackTiles = new List<Tile>();
-		foreach(Slime s in slimesInRange){
-			s.GetActualTile ().tileUILayer.sprite = TileSprite;
-			s.GetActualTile ().tileUILayer.color = attackColor;
-			currentUIRenderer.Add (s.GetActualTile ().tileUILayer);
-			attackTiles.Add (s.GetActualTile ());
-		}
-		return attackTiles;
 	}
 
 	public List<Tile> showSelectedSlime(Slime slime){
@@ -242,16 +237,6 @@ public class UIController : MonoBehaviour {
 		slime.GetActualTile().tileUILayer.color = selectedColor;
 		currentUIRenderer.Add(slime.GetActualTile().tileUILayer);
 		return selectedSlimeTile;
-	}
-
-	public List<Tile> showJoinRange(Slime slime){
-		List<Tile> joinTiles = gameController.GetJoinTile (slime);
-		foreach(Tile t in joinTiles){
-			t.tileUILayer.sprite = TileSprite;
-			t.tileUILayer.color = joinColor;
-			currentUIRenderer.Add(t.tileUILayer);
-		}
-		return joinTiles;
 	}
 
 	public void hideCurrentUITiles(){

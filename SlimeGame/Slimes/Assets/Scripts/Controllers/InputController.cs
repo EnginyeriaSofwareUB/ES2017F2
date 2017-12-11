@@ -5,17 +5,31 @@ using UnityEngine;
 public class InputController : MonoBehaviour
 {
 
-    GameController gameController;
-    UIController uiController;
-    CameraController cameraController;
+    protected GameController gameController;
+	protected UIController uiController;
+	protected CameraController cameraController;
 
-	List<Tile> attackTiles;
-	List<Tile> moveTiles;
-	List<Tile> splitTiles;
-	List<Tile> joinTiles;
+	protected List<Tile> attackTiles;
+	protected List<Tile> moveTiles;
+	protected List<Tile> splitTiles;
+	protected List<Tile> joinTiles;
+
+	protected bool ConquerEnabled;
+	protected bool MoveEnabled;
+	protected bool EatEnabled;
+	protected bool AttackEnabled;
+	protected bool SplitEnabled;
+	protected bool JoinEnabled;
 
     void Start()
     {
+		ConquerEnabled = true;
+		MoveEnabled = true;
+		EatEnabled = true;
+		AttackEnabled = true;
+		SplitEnabled = true;
+		JoinEnabled = true;
+
         gameController = Camera.main.GetComponent<GameController>();
         uiController = Camera.main.GetComponent<UIController>();
 		cameraController = Camera.main.GetComponent<CameraController>();
@@ -39,8 +53,14 @@ public class InputController : MonoBehaviour
 					if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> ().GetPlayer () == gameController.GetCurrentPlayer () && 
 						gameController.GetSelectedSlime() != col.gameObject.GetComponent<Slime>()) {
 						uiController.hideCurrentUITiles ();
-						splitTiles = uiController.showSplitRange (col.gameObject.GetComponent<Slime> ());
-						joinTiles = uiController.showJoinRange (col.gameObject.GetComponent<Slime> ());
+						if (SplitEnabled) {
+							splitTiles = gameController.GetSplitRangeTiles (col.gameObject.GetComponent<Slime> ());
+							uiController.markTiles (splitTiles,ActionType.SPLIT);
+						}
+						if (JoinEnabled) {
+							joinTiles = gameController.GetJoinTile (col.gameObject.GetComponent<Slime> ());
+							uiController.markTiles (joinTiles,ActionType.FUSION);
+						}
 						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
 						s = col.gameObject.GetComponent<Slime>().ToString();
 						break;
@@ -48,8 +68,9 @@ public class InputController : MonoBehaviour
 						//s = col.gameObject.GetComponent<Slime>().ToString();
 */ 
 					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
-						gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
-						//uiController.DisableCanvas ();
+						if(ConquerEnabled){
+							gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
+						}//uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 						break;
@@ -110,8 +131,14 @@ public class InputController : MonoBehaviour
 						gameController.SetSelectedSlime (null);
 					}else{
 						uiController.hideCurrentUITiles ();
-						moveTiles = uiController.showMoveRange (gameController.GetSelectedSlime());
-						attackTiles = uiController.showAttackRange (gameController.GetSelectedSlime());
+						if (MoveEnabled) {
+							moveTiles = gameController.GetPossibleMovements (gameController.GetSelectedSlime ());
+							uiController.markTiles (moveTiles, ActionType.MOVE);
+						}
+						if (AttackEnabled) {
+							attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime());
+							uiController.markTiles (attackTiles,ActionType.ATTACK);
+						}
 						List<Tile> tiles = new List<Tile>();
 						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
 						tiles.AddRange(moveTiles);
