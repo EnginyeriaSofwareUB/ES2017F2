@@ -10,7 +10,7 @@ public class TutorialInputController: InputController
 		MoveEnabled = true;
 
 		gameController = Camera.main.GetComponent<TutorialGameController>();
-		uiController = Camera.main.GetComponent<UIController>();
+		uiController = Camera.main.GetComponent<TutorialUIController>();
 		cameraController = Camera.main.GetComponent<CameraController>();
 
 		moveTiles = new List<Tile> ();

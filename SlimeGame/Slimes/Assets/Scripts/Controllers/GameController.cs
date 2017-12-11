@@ -93,11 +93,11 @@ public class GameController : MonoBehaviour
         playerActions = 0;
 
 		uiController.UpdateRound(currentTurn+1);
-		uiController.UpdatePlayer(getCurrentPlayer().GetColor());
+		uiController.UpdatePlayer(GetCurrentPlayer().GetColor());
 
 		foreach(Player p in players)
             p.updateActions();
-		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
+		uiController.UpdateActions(playerActions,GetCurrentPlayer().GetActions());
 		uiController.ShowBothPanels ();
         //iniciem la informacio de game over
         totalTiles = matrix.TotalNumTiles();
@@ -159,9 +159,6 @@ public class GameController : MonoBehaviour
         if (status == GameControllerStatus.WAITINGFORACTION &&
                 players[currentPlayer].isPlayerAI())
         {
-            //Debug.Log(GetGameState().ToString());
-
-            //Debug.Log("USED: " + playerActions + "TOTAL:" + getCurrentPlayer().GetActions());
             status = GameControllerStatus.PLAYINGACTION;
             AISlimeAction aiAction = players[currentPlayer].GetAction(this);
             // AISlimeAction contiene la slime que hace la accion y la acción que hace.
@@ -192,14 +189,6 @@ public class GameController : MonoBehaviour
 	public void updateStatus(GameControllerStatus s){
 		status = s;
 	}
-
-    /*
-    Retorna el jugador que li toca fer una acció.
-     */
-    private Player getCurrentPlayer()
-    {
-        return players[currentPlayer % players.Count];
-    }
 
     /*
 	Funció que retorna True si s'ha acabat la partida o False si no.
@@ -249,11 +238,11 @@ public class GameController : MonoBehaviour
      */
     private bool UseActions(int numberOfActions)
     {
-        if (playerActions + numberOfActions > getCurrentPlayer().GetActions()) return false; // Accions insuficients
+        if (playerActions + numberOfActions > GetCurrentPlayer().GetActions()) return false; // Accions insuficients
 
         playerActions += numberOfActions;
 
-        if (playerActions >= getCurrentPlayer().GetActions())
+		if (playerActions >= GetCurrentPlayer().GetActions())
         {
             NextPlayer();
         }
@@ -276,7 +265,7 @@ public class GameController : MonoBehaviour
 			NextTurn ();
 		} else {
 			status = GameControllerStatus.PLAYINGACTION;
-			uiController.NextPlayer(getCurrentPlayer().GetColor(),playerActions,getCurrentPlayer().GetActions());
+			uiController.NextPlayer(GetCurrentPlayer().GetColor(),playerActions,GetCurrentPlayer().GetActions());
 		}
 		camController.GlobalCamera();
 		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
@@ -291,7 +280,7 @@ public class GameController : MonoBehaviour
         playerActions = 0;
         currentTurn++;
 		status = GameControllerStatus.PLAYINGACTION;
-		uiController.NextRound (currentTurn + 1, getCurrentPlayer ().GetColor (), playerActions, getCurrentPlayer ().GetActions ());
+		uiController.NextRound (currentTurn + 1, GetCurrentPlayer ().GetColor (), playerActions, GetCurrentPlayer ().GetActions ());
     }
 
     public Slime GetSelectedSlime()
@@ -335,7 +324,7 @@ public class GameController : MonoBehaviour
 			break;
 		}
 		SetSelectedSlime(null);
-		uiController.UpdateActions(playerActions,getCurrentPlayer().GetActions());
+		uiController.UpdateActions(playerActions,GetCurrentPlayer().GetActions());
 	}
 
     private void MoveSlime(Tile tile)
@@ -348,9 +337,7 @@ public class GameController : MonoBehaviour
         if(tileTo.getTileType() == TileType.Null) Debug.Log("WARNING: trying to move to BLOCK");
         if(Matrix.GetDistance(selectedSlime.GetActualTile().getPosition(), tileTo.getPosition()) > selectedSlime.GetMovementRange())
             Debug.Log("WARNING: trying to move to tile too far");
-		//Debug.Log("Moving to " + tileTo.getPosition().x + " - " + tileTo.getPosition().y);
-		//Debug.Log("userHitOnTile");
-		//TODO: Refactor this to only search one path
+
 		Dictionary<TileData,List<TileData>> moves = matrix.possibleCoordinatesAndPath(
 			(int)selectedSlime.actualTile.getPosition().x, (int)selectedSlime.actualTile.getPosition().y, selectedSlime.GetMovementRange());
         
@@ -360,16 +347,12 @@ public class GameController : MonoBehaviour
 		selectedSlime.SetActualTile (tile);
 		selectedSlime.gameObject.GetComponent<SlimeMovement>().SetBufferAndPlay(path);
 
-		//selectedSlime.gameObject.GetComponent<Slime>().rangeUpdated = false;
 		status = GameControllerStatus.PLAYINGACTION;
 		playerActions++;
     }
 
 	private void SplitSlime(Tile targetTile){
 		Slime newSlime = SlimeFactory.instantiateSlime(selectedSlime.GetPlayer(),new Vector2(targetTile.GetTileData().getPosition().x, targetTile.GetTileData().getPosition().y));
-		/*players [currentPlayer].AddSlime (newSlime);
-		targetTile.SetSlimeOnTop (newSlime);
-		newSlime.SetActualTile (targetTile);*/
 
 		newSlime.SetMass (selectedSlime.GetMass()/2.0f);
 		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
@@ -379,12 +362,10 @@ public class GameController : MonoBehaviour
 
 	private void AttackSlime(Slime targetSlime){
 		playerActions++;
-		//status = GameControllerStatus.CHECKINGLOGIC;
         RangedAttack(targetSlime);
 	}
 
-	private void RangedAttack(Slime toAttack)
-    {
+	private void RangedAttack(Slime toAttack){
         GameObject projectile = new GameObject("projectile");
 		Sprite sprite = SpritesLoader.GetInstance().GetResource("Projectiles/water_projectile");
         projectile.AddComponent<ProjectileTrajectory>();
@@ -398,8 +379,7 @@ public class GameController : MonoBehaviour
         soundController.PlaySingle(clip);
     }
 
-    private void FusionSlime(Slime fusionTarget)
-	{
+	private void FusionSlime(Slime fusionTarget){
 		RemoveSlime(selectedSlime);
         //players[currentPlayer].updateActions();
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);

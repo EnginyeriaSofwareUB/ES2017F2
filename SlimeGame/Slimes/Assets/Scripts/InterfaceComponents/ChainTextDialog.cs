@@ -31,5 +31,11 @@ public class ChainTextDialog : TipDialog
 	public void SetOnClickFunction(OnClickOkDialog f){
 		this.g = f;
 	}
+
+	public void SetTextList(List<string> texts){
+		this.texts = texts;
+		currentTextIndex = 0;
+		this.SetInfoTextText (this.texts [currentTextIndex]);
+	}
 }
 

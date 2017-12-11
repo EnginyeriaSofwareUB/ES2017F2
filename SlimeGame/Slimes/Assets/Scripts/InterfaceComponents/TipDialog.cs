@@ -63,7 +63,7 @@ public class TipDialog
 
 	private void placePanel(){
 		RectTransform t = (RectTransform) panel.transform;
-		t.sizeDelta = new Vector2 (200f, 120f);
+		t.sizeDelta = new Vector2 (500f, 350f);
 		t.localPosition = new Vector3 (0f,0f,0f);
 	}
 

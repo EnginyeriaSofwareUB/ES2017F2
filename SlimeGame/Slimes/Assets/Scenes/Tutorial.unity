@@ -891,7 +891,6 @@ GameObject:
   - component: {fileID: 608162602}
   - component: {fileID: 608162601}
   - component: {fileID: 608162600}
-  - component: {fileID: 608162605}
   - component: {fileID: 608162608}
   - component: {fileID: 608162609}
   - component: {fileID: 608162610}
@@ -899,6 +898,7 @@ GameObject:
   - component: {fileID: 608162612}
   - component: {fileID: 608162607}
   - component: {fileID: 608162606}
+  - component: {fileID: 608162605}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -984,7 +984,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 608162599}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7274611f9cbf044ebd64990380617a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 96ccb8ed086ba6b409b3eb07d6adf1d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   turnPanel: {fileID: 1082338929}

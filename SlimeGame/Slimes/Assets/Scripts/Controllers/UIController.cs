@@ -6,44 +6,44 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour {
 
-    GameObject canvasInfo;
-	GameController gameController;
+    protected GameObject canvasInfo;
+	protected GameController gameController;
 
-	private Sprite TileSprite;
+	protected Sprite TileSprite;
 
-	private Color moveColor = new Color (0f,0xa5,1f);
-	private Color attackColor = new Color (1f,0f,0f);
-	private Color splitColor = new Color (1f,0xdd,0f);
-	private Color joinColor = new Color (0.54f,1f,0f);
+	protected Color moveColor = new Color (0f,0xa5,1f);
+	protected Color attackColor = new Color (1f,0f,0f);
+	protected Color splitColor = new Color (1f,0xdd,0f);
+	protected Color joinColor = new Color (0.54f,1f,0f);
 	//private Color conquerColor = new Color (0xce,0x0c,0xc1);
 	//private Color specialColor = new Color (1f,0x6a,0f);
-	private Color selectedColor = new Color (1f, 0.843f, 0f);
+	protected Color selectedColor = new Color (1f, 0.843f, 0f);
 
-	private List<SpriteRenderer> currentUIRenderer;
+	protected List<SpriteRenderer> currentUIRenderer;
 
-	private GameObject round;
-	private GameObject playerColor;
-	private GameObject actionsLeft;
+	protected GameObject round;
+	protected GameObject playerColor;
+	protected GameObject actionsLeft;
 
 	public GameObject turnPanel;
 	public GameObject roundPanel;
 
-	float currentTime;
-	float maxTime;
-	float normalizedValue;
-	Vector3 startPosT;
-	Vector3 endPosT;
-	Vector3 startPosR;
-	Vector3 endPosR;
-	RectTransform rectTransformT;
-	RectTransform rectTransformR;
+	protected float currentTime;
+	protected float maxTime;
+	protected float normalizedValue;
+	protected Vector3 startPosT;
+	protected Vector3 endPosT;
+	protected Vector3 startPosR;
+	protected Vector3 endPosR;
+	protected RectTransform rectTransformT;
+	protected RectTransform rectTransformR;
 
-	private int tempRound;
-	private Color tempColor;
-	private int tempAct;
-	private int tempMaxAct;
+	protected int tempRound;
+	protected Color tempColor;
+	protected int tempAct;
+	protected int tempMaxAct;
 
-	private int state;
+	protected int state;
 	/* state 0: do nothing
 	 * state 1: hide turn panel
 	 * state 2: show turn panel
@@ -149,7 +149,7 @@ public class UIController : MonoBehaviour {
 		HideBothPanels ();
 	}
 
-	private void HideTurnPanel(){
+	protected void HideTurnPanel(){
 		state = 1;
 		currentTime = 0;
 		maxTime = 1;
@@ -157,7 +157,7 @@ public class UIController : MonoBehaviour {
 		endPosT = new Vector3 (230, 120, 0);
 	}
 
-	private void ShowTurnPanel(){
+	protected void ShowTurnPanel(){
 		state = 2;
 		currentTime = 0;
 		maxTime = 1;
@@ -165,7 +165,7 @@ public class UIController : MonoBehaviour {
 		endPosT = new Vector3 (230, -80, 0);
 	}
 		
-	private void HideBothPanels(){
+	protected void HideBothPanels(){
 		state = 3;
 		currentTime = 0;
 		maxTime = 1;
