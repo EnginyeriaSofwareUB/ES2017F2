@@ -99,7 +99,7 @@ public abstract class AIInterface : ThreadedJob{
         List<AIRawSlimeAction> legalActions = state.GetLegalActions();
         if(depth >= this.depth || legalActions.Count <= 0) return new KeyValuePair<AIRawSlimeAction, double>(null, GetStateEvaluation(state));
         
-        Debug.Log("MINING: " + legalActions.Count + "actions (DEPTH=" + depth + ")");
+        //Debug.Log("MINING: " + legalActions.Count + "actions (DEPTH=" + depth + ")");
         AIRawSlimeAction bestAction = null;
         double bestValue = double.MaxValue;
 

@@ -28,6 +28,7 @@
          IsDone = false;
          m_Thread = new System.Threading.Thread(Run);
          m_Thread.Start();
+         //Run(); // Decomment and comment upper to run in same thread.
      }
      public virtual void Abort()
      {

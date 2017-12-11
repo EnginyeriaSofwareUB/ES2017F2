@@ -37,6 +37,9 @@ public class RawSlime{
 	}
 
     public int GetAttackRange(){
+        if(player == null) Debug.Log("PLAYER NULL");
+        else if(player.statsCoreInfo == null) Debug.Log("PLAYER NULL");
+        else if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.range + element.range;
 	}
 

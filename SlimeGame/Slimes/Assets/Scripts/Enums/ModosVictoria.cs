@@ -1,0 +1,1 @@
+public enum ModosVictoria {ASESINATO=0, CONQUISTA=1, MASA=2};

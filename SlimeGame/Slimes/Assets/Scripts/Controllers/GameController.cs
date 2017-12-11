@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour
 
 	private Sprite conquerSprite;
 
-	private GameControllerStatus status;
+	private GameControllerStatus status = GameControllerStatus.CHECKINGLOGIC;
 
     public static int tutorial;
     private List<string> tutorialTexts;
@@ -29,8 +29,6 @@ public class GameController : MonoBehaviour
     private SoundController soundController;
     private UIController uiController;
     private CameraController camController;
-
-    private enum ModosVictoria {ASESINATO=0, CONQUISTA=1, MASA=2};
     
 
     private ModosVictoria condicionVictoria;
@@ -93,12 +91,17 @@ public class GameController : MonoBehaviour
             }
         }
         conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
-        status = GameControllerStatus.WAITINGFORACTION;
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
         textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
         //panelTip.GetComponent<DialogInfo>().Active(false);
         textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
+
+        if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
+            condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
+        }else{
+            condicionVictoria = ModosVictoria.ASESINATO; //por defecto
+        }
 
         if (tutorial == 1)
         {
@@ -117,8 +120,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), new AIConquer(this))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIConquer(this)));
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), AIManager.GetAIByVictoryCondition(this, condicionVictoria))); // Test with 2 players
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIRandom(this)));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -153,32 +156,31 @@ public class GameController : MonoBehaviour
         totalTiles = matrix.TotalNumTiles();
         //Debug.Log("TILES TOTALS: "+ totalTiles);
         
-        if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
-            condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
-            //Debug.Log("MODO DE VICTORIA: "+condicionVictoria.ToString());
-            switch(condicionVictoria){
-                case ModosVictoria.CONQUISTA:
-                    //define percentage tiles to win
-                    percentageTilesToWin = 0.25f;
-                    //Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
-                    break;
-                case ModosVictoria.MASA:
-                    //define mass to win
-                    massToWin = 0;
-                    foreach(Player player in players){
-                        if (player.GetTotalMass()>massToWin) massToWin = player.GetTotalMass();
-                    }
-                    massToWin*=2;
-                    //Debug.Log("Masa total del jugador para ganar: "+massToWin);
-                    break;
-            }
-        }else{
-            condicionVictoria = ModosVictoria.ASESINATO; //por defecto
+        // La condicio de victoria s'assigna mes amunt, aqui nomes s'actualitzen els requisits.
+        switch(condicionVictoria){
+            case ModosVictoria.CONQUISTA:
+                //define percentage tiles to win
+                percentageTilesToWin = 0.25f;
+                //Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
+                break;
+            case ModosVictoria.MASA:
+                //define mass to win
+                massToWin = 0;
+                foreach(Player player in players){
+                    if (player.GetTotalMass()>massToWin) massToWin = player.GetTotalMass();
+                }
+                massToWin*=2;
+                //Debug.Log("Masa total del jugador para ganar: "+massToWin);
+                break;
         }
+
         GameOverInfo.Init();
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/music1");
         soundController.PlayLoop(clip);
 		camController.InitMaxZoom();
+
+
+        status = GameControllerStatus.CHECKINGLOGIC;
     }
 
     // Update is called once per frame
