@@ -49,7 +49,7 @@ public class InputController : MonoBehaviour
 */ 
 					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
 						gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
-						uiController.DisableCanvas ();
+						//uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 						break;
@@ -63,15 +63,15 @@ public class InputController : MonoBehaviour
 						bool isAttackTile = attackTiles.Contains (target);
 						if ((isMoveTile || isAttackTile) && gameController.GetSelectedSlime () != null) {
 							if (isMoveTile) {
-								Debug.Log (Time.time + "Move");
+								//Debug.Log (Time.time + "Move");
 								gameController.DoAction(new SlimeAction(ActionType.MOVE,target));
-								uiController.DisableCanvas ();
+								//uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							} else if (isAttackTile) {
-								Debug.Log (Time.time + "Attack");
+								//Debug.Log (Time.time + "Attack");
 								gameController.DoAction(new SlimeAction(ActionType.ATTACK,target.GetSlimeOnTop ()));
-								uiController.DisableCanvas ();
+								//uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							}
@@ -81,9 +81,9 @@ public class InputController : MonoBehaviour
 						}
 					}
 				}
-				if (!s.Equals (" ")) {
+				/*if (!s.Equals (" ")) {
 					uiController.ShowCanvasInfo (s);
-				}
+				}*/
 			} else if (Input.GetMouseButtonUp (0) && gameController.GetSelectedSlime()!=null) {
 				if (gameController.GetSelectedSlime () != null) {
 					Collider2D[] colliders = Physics2D.OverlapPointAll (Camera.main.ScreenToWorldPoint (Input.mousePosition));
@@ -97,15 +97,15 @@ public class InputController : MonoBehaviour
 						}
 					}
 					if (s != null && s!=gameController.GetSelectedSlime() && joinTiles.Contains(s.actualTile)) {
-						Debug.Log (Time.time+"Join");
+						//Debug.Log (Time.time+"Join");
 						gameController.DoAction(new SlimeAction(ActionType.FUSION,s));
-						uiController.DisableCanvas ();
+						//uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 					}else if(t!=null && splitTiles.Contains(t)){
-						Debug.Log (Time.time+"Split");
+						//Debug.Log (Time.time+"Split");
 						gameController.DoAction(new SlimeAction(ActionType.SPLIT,t));
-						uiController.DisableCanvas ();
+						//uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 					}else{
@@ -121,7 +121,7 @@ public class InputController : MonoBehaviour
 				}
 			} else if (Input.GetMouseButtonDown (1)) {
 				gameController.SetSelectedSlime (null);
-				uiController.DisableCanvas ();
+//				uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
 				cameraController.GlobalCamera();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {

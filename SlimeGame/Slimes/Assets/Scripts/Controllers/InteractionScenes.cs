@@ -14,7 +14,13 @@ public class InteractionScenes : MonoBehaviour {
 	public void loadBackScene(){
 		//onclick del back de scene de settings
 		string sceneName = PlayerPrefs.GetString ("PreviousScene");
-		PlayerPrefs.SetString ("PreviousScene", SceneManager.GetActiveScene ().name);
-		SceneManager.LoadScene (sceneName);
+		Debug.Log(sceneName);
+		if (sceneName != null && !sceneName.Equals("") && !sceneName.Equals("Settings")){
+			PlayerPrefs.SetString ("PreviousScene", SceneManager.GetActiveScene ().name);
+			SceneManager.LoadScene (sceneName);
+		} else {
+			PlayerPrefs.SetString ("PreviousScene", SceneManager.GetActiveScene ().name);
+			SceneManager.LoadScene ("MainMenu");
+		}
 	}
 }

@@ -45,7 +45,7 @@ public class CameraController : MonoBehaviour {
 		}
 		else if(newZoom>0){
 			Camera cam = this.GetComponent<Camera> ();
-			if(Mathf.Abs(newZoom-cam.orthographicSize)<=0.1){
+			if(Mathf.Abs(newZoom-cam.orthographicSize)<=0.2){
 				newZoom=-1;
 				beforeZoom=-1;
 			}else{
@@ -87,10 +87,10 @@ public class CameraController : MonoBehaviour {
 		return (this.beforeMovePosition.Value-this.center.Value).normalized*speed;
 	}
 	float GetHorizontalExtent(Camera cam){
-		return 0.9f* cam.orthographicSize * cam.aspect;
+		return 0.7f* cam.orthographicSize * cam.aspect;
 	}
 	float GetVerticalExtent(Camera cam){
-		return 0.9f* cam.orthographicSize;
+		return 0.7f* cam.orthographicSize;
 	}
 	public static void InitMapSize(Vector2 mapSize){
 		xLimit = (int) mapSize.x;
