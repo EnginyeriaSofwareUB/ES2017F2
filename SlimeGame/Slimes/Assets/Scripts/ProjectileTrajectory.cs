@@ -20,7 +20,7 @@ public class ProjectileTrajectory : MonoBehaviour {
 	public void SetTrajectorySlimes(Slime shooter, Slime toAttack){
         this.toAttack = toAttack;
         damage = shooter.getDamage();
-        Vector2 startPosition = shooter.GetComponent<Slime>().GetActualTile().GetTileData().GetRealWorldPosition();
+        Vector2 startPosition = shooter.GetActualTile().GetTileData().GetRealWorldPosition();
         transform.position = startPosition;
         this.endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
         direction = (this.endPos - startPosition).normalized;
@@ -45,15 +45,20 @@ public class ProjectileTrajectory : MonoBehaviour {
     
     void OnDestroy(){
         //Es crida quan es produeix l'event que Destroy del gameobject
-        FloatingTextController.CreateFloatingText ((-damage).ToString(),toAttack.transform);
-		toAttack.changeMass (-damage);
-        Debug.Log(toAttack.GetMass());
-        Debug.Log(!toAttack.isAlive ());
-		if (!toAttack.isAlive ()) {
-			toAttack.GetTileData ().SetSlimeOnTop (null);
-			toAttack.GetPlayer ().GetSlimes ().Remove (toAttack);
-            Destroy(toAttack.gameObject);
-            GameObject.Find ("Main Camera").GetComponent<GameController> ().RemoveSlime(toAttack);
-		}
+        if (toAttack!=null){
+            FloatingTextController.CreateFloatingText ((-damage).ToString(),toAttack.transform);
+            toAttack.changeMass (-damage);
+            //Debug.Log(toAttack.GetMass());
+            //Debug.Log(!toAttack.isAlive ());
+            if (!toAttack.isAlive ()) {
+                toAttack.GetTileData ().SetSlimeOnTop ((Slime)null);
+                toAttack.GetPlayer ().GetSlimes ().Remove (toAttack);
+                Destroy(toAttack.gameObject);
+                GameObject.Find ("Main Camera").GetComponent<GameController> ().RemoveSlime(toAttack);
+
+            }
+            GameObject.Find ("Main Camera").GetComponent<GameController> ().OnProjectileAnimationEnded();
+        }
+
     }
 }

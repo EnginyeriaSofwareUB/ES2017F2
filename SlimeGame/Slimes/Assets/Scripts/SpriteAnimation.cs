@@ -5,12 +5,13 @@ public class SpriteAnimation
 {
 
 	private List<Sprite> sprites;
-	private SpriteAnimationMode mode;
+	public SpriteAnimationMode mode;
 	private SpriteAnimationStatus status;
 	private int cursor;
 	private int currentImg;
 	private SpriteRenderer spriteRenderer;
-
+    private int subbounceCounter = 0;
+    private int subbounceLimit = 28;
 	//Images to increment
 	private float dtPerImg;
 
@@ -85,7 +86,48 @@ public class SpriteAnimation
 					spriteRenderer.sprite = sprites [currentImg];
 				}
 				break;
-			case SpriteAnimationMode.ONESHOT:
+            case SpriteAnimationMode.SUBBOUNCE:
+                if (timeCounter > dtPerImg)
+                {
+                    timeCounter -= dtPerImg;
+                    currentImg += cursor;
+                    if (subbounceCounter >= 3)
+                    {
+                        if (currentImg >= sprites.Count)
+                        {
+                            cursor = -1;
+                            currentImg = sprites.Count - 2;
+                        }
+                        if (currentImg < 0)
+                        {
+                            cursor = 1;
+                            currentImg = 1;
+                            subbounceCounter = 0;
+                        }
+                    } else {
+                        if (currentImg >= sprites.Count)
+                        {
+                            cursor = -1;
+                            currentImg = sprites.Count - 2;
+                        }
+                        if (currentImg == subbounceLimit-1)
+                        {
+                            cursor = 1;
+                            currentImg = subbounceLimit + 1;
+                            subbounceCounter += 1;
+                        }
+                        if (currentImg < 0)
+                        {
+                            cursor = 1;
+                            currentImg = 0;
+                            subbounceCounter = 0;
+                        }
+                    }
+                    
+                    spriteRenderer.sprite = sprites[currentImg];
+                }
+                break;
+            case SpriteAnimationMode.ONESHOT:
 				break;
 			case SpriteAnimationMode.REVERSE:
 				break;
@@ -97,5 +139,18 @@ public class SpriteAnimation
 	public void notifyParent(){
 	} 
 
+
+	public void StopAnimation(){
+		status = SpriteAnimationStatus.ENDED;
+	}
+
+	public void PauseAnimation(){
+		status = SpriteAnimationStatus.PAUSED;
+	}
+
+	public void RandomStart(){
+		currentImg = Random.Range (0, sprites.Count);
+		subbounceCounter = Random.Range (0,3);
+	}
 }
 

@@ -1,0 +1,38 @@
+{
+	"0":{
+		"text":	"Bienvenido a Slimes, este juego tiene el objectivo de eliminar al oponente realizando acciones con tus slimes para destruir a los slimes enemigos."
+	},
+	"1":{
+		"text":"Para empezar selecciona el slime marcado usando el botón izquierdo con el raton y separarte a la casilla marcada, para separarte arrastra al slime a la casilla marcada (usando el botón izquierdo del raton). Separandote es possible ganar acciones extras en el siguiente turno."
+	},
+	"2":{
+		"text":"El oponente ha conquistado una casilla lo que le da algunas ventajas en esa casilla, ahora vamos a mover al slime marcado a la casilla marcada. Primero seleccionamos el slime marcado con el boton izquierdo del raton y luego la casilla marcada con el mismo boton."
+	},
+	"3":{
+		"text":"Como tenemos dos slimes, podemos realizar otra acción en este turno. Vamos a mover el slime marcado a la casilla marcada como hemos hecho antes."
+	},
+	"4":{
+		"text":"Ahora vamos a continuar moviendo el slime marcado a la casilla marcada para acercarnos al enemigo y eventualmente atacarlo."
+	},
+	"5":{
+		"text":"Antes de atacar, vamos a comernos la casilla marcada para ganar algunas ventajas de este tipo de casilla (TODO falta explicar como). Cada tipo de casilla da una ventaja diferente al comer esa casilla."
+	},
+	"6":{
+		"text":"El siguiente paso sera unir nuestros slimes para augmentar nuestra defensa para ello, primero movemos el slime marcado a la casilla marcada que es adyaciente a nuestro otro slime."
+	},
+	"7":{
+		"text":"Cuando un slime esta adyaciente a otro, podemos unirlos seleccionando al slime marcado y arrastrandolo en el segundo slime con el botón izquierdo del ratón. Si tenemos menos slimes, tendremos menos acciones, pero estos slimes tendran más vida."
+	},
+	"8":{
+		"text":"Finalmente vamos a atacar al enemigo, seleccionamos el slime aliado marcado y hacemos click con el botón izquierdo del ratón en el slime enemigo. Vemos que el enemigo muere."
+	},
+	"9":{
+		"text":"También se puede conquistar casillas, vamos a conquistar la casilla marcada. Como ya hay un slime tuyo en la casilla, haciendo doble click izquierdo en el slime conquistaremos la casilla."
+	},
+	"10":{
+		"text":"Ahora vamos a eliminar al slime restante del oponente, para hacerlo lo atacamos con el slime marcado. Recuerda, primero seleccionamos el slime aliado y click izquierdo al slime enemigo."
+	},
+	"11":{
+		"text":"Aquest es el text 10"
+	}
+}

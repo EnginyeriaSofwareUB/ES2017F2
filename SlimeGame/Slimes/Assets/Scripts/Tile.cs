@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour {
-	
+
+	public ElementType elementType;
 	private TileData data;
-	private SpriteAnimation animation;
+	private SpriteAnimation backAnimation;
+	private SpriteAnimation frontAnimation;
+	public SpriteRenderer tileConquerLayer;
 	public SpriteRenderer tileUILayer;
-	public SpriteRenderer tileElementLayer;
+	public SpriteRenderer tileElementLayerBack;
+	public SpriteRenderer tileElementLayerFront;
 
 	// Use this for initialization
 	void Start () {
@@ -16,19 +20,36 @@ public class Tile : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		animation.update ();
+		if (backAnimation != null) {
+			backAnimation.update ();
+		}
+		if (frontAnimation != null) {
+			frontAnimation.update ();
+		}
 	}
 
 	public Vector2 getPosition(){
 		return data.getPosition();
 	}
 
-    //TODO modify when we have more attributes
     public override string ToString()
     {
-		return data.ToString();
-        //TODO Em peta perque data me diu que es NULL
-        //return data.ToString();
+        if (elementType.Equals(ElementType.NONE))
+        {
+            return "Casilla normal";
+        } else if (elementType.Equals(ElementType.EARTH))
+        {
+            return "Casilla de tierra";
+        }
+        else if (elementType.Equals(ElementType.WATER))
+        {
+            return "Casilla de agua";
+        }
+        else if (elementType.Equals(ElementType.FIRE))
+        {
+            return "Casilla de fuego";
+        }
+        return "Casilla de elemento desconocido";
     }
 
 	public TileData GetTileData(){
@@ -48,21 +69,123 @@ public class Tile : MonoBehaviour {
 		tileUILayer.color = new Color (1f, 1f, 1f, 0.5f);
 	}
 
-	public void startElementLayer(Vector3 pos, Vector3 size){
-		GameObject gotileElementLayer = new GameObject ("TileElementLayer");
-		gotileElementLayer.GetComponent<Transform> ().SetParent (this.transform);
-		tileElementLayer = gotileElementLayer.AddComponent<SpriteRenderer> ();
-		tileElementLayer.gameObject.transform.position = pos;
-		tileElementLayer.gameObject.transform.localScale = new Vector2(1f,1f);
-		tileElementLayer.sortingLayerName = "TileElement";
-		tileElementLayer.color = new Color (1f, 1f, 1f, 0.5f);
-		//tileElementLayer.material = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
-		animation = new SpriteAnimation (tileElementLayer);
-		animation.LoadSprites ("Tiles/Fire/full",6);
-		animation.playAnimation ();
+	public void startConquerLayer(Vector3 pos, Vector3 size){
+		GameObject gotileUILayer = new GameObject ("TileConquerLayer");
+		gotileUILayer.GetComponent<Transform> ().SetParent (this.transform);
+		tileConquerLayer = gotileUILayer.AddComponent<SpriteRenderer> ();
+		tileConquerLayer.gameObject.transform.position = pos;
+		tileConquerLayer.gameObject.transform.localScale = new Vector2(1f,1f);;
+		tileConquerLayer.sortingLayerName = "TileConquest";
+		tileConquerLayer.color = new Color (1f, 1f, 1f, 1f);
 	}
 
-	public void SetSlimeOnTop(GameObject obj){
+	public void startElementLayer(Vector3 pos, Vector3 size){
+		
+		GameObject gotileElementLayer = new GameObject ("TileElementLayer");
+		gotileElementLayer.GetComponent<Transform> ().SetParent (this.transform);
+		tileElementLayerBack = gotileElementLayer.AddComponent<SpriteRenderer> ();
+		tileElementLayerBack.gameObject.transform.position = pos;
+		tileElementLayerBack.gameObject.transform.localScale = new Vector2(1f,1f);
+		tileElementLayerBack.sortingLayerName = "TileElement";
+		tileElementLayerBack.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4);
+		tileElementLayerBack.color = new Color (1f, 1f, 1f, 1f);
+
+		GameObject gotileElementLayer2 = new GameObject ("TileElementLayer2");
+		gotileElementLayer2.GetComponent<Transform> ().SetParent (this.transform);
+		tileElementLayerFront = gotileElementLayer2.AddComponent<SpriteRenderer> ();
+		tileElementLayerFront.gameObject.transform.position = pos;
+		tileElementLayerFront.gameObject.transform.localScale = new Vector2(1f,1f);
+		tileElementLayerFront.sortingLayerName = "TileElement";
+		tileElementLayerFront.color = new Color (1f, 1f, 1f, 1f);
+		tileElementLayerFront.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4+3);
+		switch(Random.Range(1,5)){
+			//Fire case
+			case 1:
+				elementType = ElementType.FIRE;
+				tileElementLayerBack.gameObject.transform.position = pos + new Vector3 (0.0f, +0.5f);
+				tileElementLayerFront.gameObject.transform.position = pos + new Vector3 (0.0f, -0.25f);
+				//Animations
+				frontAnimation = new SpriteAnimation (tileElementLayerFront);
+				frontAnimation.LoadSprites ("Tiles/Fire/front", 6);
+				frontAnimation.RandomStart ();
+				frontAnimation.playAnimation ();
+				backAnimation = new SpriteAnimation (tileElementLayerBack);
+				backAnimation.LoadSprites ("Tiles/Fire/back",6);
+				backAnimation.RandomStart ();
+				backAnimation.playAnimation ();
+				//Shader
+				int baseOffset = Random.Range(0,20);
+				if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
+					Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+					tileElementLayerFront.material = mat;
+					tileElementLayerFront.material.SetFloat ("_RandomStart",Mathf.PI+baseOffset);
+				}
+
+				if (GameObject.Find ("Main Camera").GetComponent<GameController> () != null) {
+					Material mat = GameObject.Find ("Main Camera").GetComponent<GameController> ().fire;
+					tileElementLayerBack.material = mat;
+					tileElementLayerBack.material.SetFloat ("_RandomStart",2*Mathf.PI+baseOffset);
+				}
+				break;
+				//Water case
+			case 2:
+				elementType = ElementType.WATER;
+				tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.0f,+0.2f);
+				//Animations
+				frontAnimation = new SpriteAnimation (tileElementLayerFront);
+				frontAnimation.LoadSprites("Tiles/Water/tile_water_", 36);
+				frontAnimation.RandomStart ();
+				frontAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
+				frontAnimation.playAnimation ();
+				break;
+				//Earth case
+			case 3:
+				elementType = ElementType.EARTH;
+				tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.75f,-0.25f);
+				tileElementLayerBack.gameObject.transform.position = pos+new Vector3(-0.5f,+0.55f);
+				tileElementLayerFront.gameObject.transform.localScale = new Vector2(0.6f,1f);
+				tileElementLayerBack.gameObject.transform.localScale = new Vector2(0.85f,1.2f);
+
+				//Animations
+				frontAnimation = new SpriteAnimation (tileElementLayerFront);
+				frontAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+				frontAnimation.RandomStart ();
+				frontAnimation.mode = SpriteAnimationMode.LOOP;
+				frontAnimation.playAnimation ();
+
+				backAnimation = new SpriteAnimation (tileElementLayerBack);
+				backAnimation.LoadSprites("Tiles/Earth/tile_earth_", 16);
+				backAnimation.RandomStart ();
+				backAnimation.mode = SpriteAnimationMode.LOOP;
+				backAnimation.playAnimation ();
+				break;
+
+			default:
+				elementType = ElementType.NONE;
+				break;
+		}
+
+	}
+
+	private void StopAnimations(){
+		if (backAnimation != null) {
+			backAnimation.StopAnimation ();
+			backAnimation = null;
+		}
+		if (frontAnimation != null) {
+			frontAnimation.StopAnimation ();
+			frontAnimation = null;
+		}
+	}
+
+	public void RemoveElement(){
+		StopAnimations ();
+		tileElementLayerBack.sprite = null;
+		tileElementLayerFront.sprite = null;
+		elementType = ElementType.NONE;
+	}
+
+	public void SetSlimeOnTop(Slime obj){
 		data.SetSlimeOnTop (obj);
 	}
 

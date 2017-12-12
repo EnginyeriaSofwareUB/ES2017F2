@@ -2,8 +2,11 @@ using UnityEngine;
 public class TileData:MapDrawer.MapCoordinates{
 	private TileType type;
     private Vector2 hexPosition;
-	public GameObject slimeOnTop;
+	public Slime slimeOnTop;
+	public RawSlime rawSlimeOnTop;
 	private Tile tile;
+	private RawPlayer conquerer;
+
     //Tile tile;
 	public TileData(TileType typeEnum, Vector2 position){
 		hexPosition = position;
@@ -11,14 +14,11 @@ public class TileData:MapDrawer.MapCoordinates{
 		slimeOnTop=null;
 	}
 
-	override public string ToString(){
-		return ((int)type).ToString()+" ("+hexPosition.x+","+hexPosition.y+")";
-	}
 	public Vector2 getPosition(){
 		return hexPosition;
 	}
 	public bool isBlocking(){
-		return slimeOnTop!=null; //or someone on it
+		return slimeOnTop!=null || rawSlimeOnTop!=null; //or someone on it
 	}
 
 	public TileType getTileType(){
@@ -27,12 +27,19 @@ public class TileData:MapDrawer.MapCoordinates{
 	public void SetTileType(TileType type){
 		this.type= type;
 	}
-	public void SetSlimeOnTop(GameObject slimeTop){
+	public void SetSlimeOnTop(Slime slimeTop){
 		this.slimeOnTop=slimeTop;
 	}
+	public void SetSlimeOnTop(RawSlime slimeTop){
+		this.rawSlimeOnTop=slimeTop;
+	}
 	public Slime GetSlimeOnTop(){
-		if(slimeOnTop != null) return slimeOnTop.GetComponent<Slime>();
-		return null;
+		return slimeOnTop;
+	}
+	public RawSlime GetRawSlimeOnTop(){
+		if(rawSlimeOnTop == null && slimeOnTop == null) return null;
+		else if(rawSlimeOnTop == null) return slimeOnTop.GetRawCopy();
+		return rawSlimeOnTop;
 	}
 	public Vector2 GetRealWorldPosition(){
 		return tile.gameObject.transform.position;
@@ -44,5 +51,18 @@ public class TileData:MapDrawer.MapCoordinates{
 
 	public Tile getTile(){
 		return tile;
+	}
+
+	public void Conquer(RawPlayer pl){
+		this.conquerer = pl;
+	}
+
+	public bool IsConquered(){
+		return this.conquerer  != null;
+	}
+
+	public TileData GetRawCopy(){
+		TileData copy = new TileData(type, new Vector2(hexPosition.x, hexPosition.y));
+		return copy;
 	}
 }

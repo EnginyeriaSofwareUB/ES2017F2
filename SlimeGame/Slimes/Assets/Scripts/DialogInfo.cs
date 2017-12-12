@@ -8,12 +8,15 @@ public class DialogInfo : MonoBehaviour {
 	public bool active;
 
 	public void showhidePanel(){
-		Active (!active);
-	}
+		gameObject.SetActive (!gameObject.activeSelf);
+		if (GameObject.Find ("Main Camera").GetComponent<GameController> ().GetSelectedSlime()!=null) {
+			GameObject.Find ("Main Camera").GetComponent<GameController> ().DoAction (new SlimeAction (
+				ActionType.EAT,
+				GameObject.Find ("Main Camera").GetComponent<GameController> ().GetSelectedSlime()));
+			Camera.main.GetComponent<UIController>().hideCurrentUITiles();
+			GameObject.Find ("Main Camera").GetComponent<GameController> ().SetSelectedSlime (null);
+		}
 
-	public void Active(bool b){
-		gameObject.SetActive (b);
-		active = b;
 	}
-
+		
 }
