@@ -80,10 +80,12 @@ public class SelectorController : MonoBehaviour {
 		sprite1.color = currentSprite.color;
 		sprite2.color = colors.Dequeue();
 
-		GameSelection.player1Color = sprite1.color;
-		GameSelection.player2Color = sprite2.color;
-		GameSelection.player1Core = coreSelector[1];
-		GameSelection.player2Core = coreSelector[2];
+		GameSelection.playerColors.Add(sprite1.color);
+		GameSelection.playerColors.Add(sprite2.color);
+		GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+		GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
+		GameSelection.playerIAs.Add (false);
+		GameSelection.playerIAs.Add (true);
 		GameSelection.modoVictoria = modoVictoria;
 
 		GameObject s = GameObject.Find("ModeSelection");
@@ -106,8 +108,9 @@ public class SelectorController : MonoBehaviour {
 					coreSelector.Add (2);
 				core3.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[3]]);
 				sprite3.color = colors.Dequeue ();
-				/*GameSelection.player3Color = sprite3.color;
-				GameSelection.player3Core = coreSelector[2];*/
+				GameSelection.playerColors.Add(sprite3.color);
+				GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+				GameSelection.playerIAs.Add (GameObject.Find("IAToggle3").GetComponent<Toggle>().isOn);
 			} else if (maxPlayers == 4) {
 				player4.SetActive (true);
 				sprite4.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
@@ -115,8 +118,9 @@ public class SelectorController : MonoBehaviour {
 					coreSelector.Add (0);
 				core4.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[4]]);
 				sprite4.color = colors.Dequeue();
-				/*GameSelection.player4Color = sprite4.color;
-				GameSelection.player4Core = coreSelector[3];*/
+				GameSelection.playerColors.Add(sprite4.color);
+				GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+				GameSelection.playerIAs.Add (GameObject.Find("IAToggle4").GetComponent<Toggle>().isOn);
 			}
 		}
 	}
@@ -133,9 +137,27 @@ public class SelectorController : MonoBehaviour {
 				player3.SetActive (false);
 			}
 			maxPlayers--;
+			GameSelection.playerColors.RemoveAt (GameSelection.playerColors.Count - 1);
+			GameSelection.playerCores.RemoveAt (GameSelection.playerCores.Count - 1);
+			GameSelection.playerIAs.RemoveAt (GameSelection.playerIAs.Count - 1);
 		}
 	}
 
+	public void toggleIAOn(int player){
+		GameSelection.playerIAs [player - 1] = true;
+		/*if (player == 1)
+			GameSelection.player1IA = b;
+		else if (player == 2)
+			GameSelection.player2IA = b;
+		else if (player == 3)
+			GameSelection.player3IA = b;
+		else if (player == 4)
+			GameSelection.player4IA = b;*/
+	}
+
+	public void toggleIAOff(int player){
+		GameSelection.playerIAs [player - 1] = false;
+	}
 
 	private void changeInfo(){
 		StatsContainer stats;
@@ -174,11 +196,16 @@ public class SelectorController : MonoBehaviour {
 		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector[currentPlayer]];
 		GameObject.Find("Core"+currentPlayer).GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
 
-		if (currentPlayer == 1)
-			GameSelection.player1Core = coreSelector[currentPlayer];
-		else if (currentPlayer == 2)
+		if (coreSelector [currentPlayer] == 0) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.WRATH;
+		} else if (coreSelector [currentPlayer] == 1) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.SLOTH;
+		} else if (coreSelector [currentPlayer] == 2) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.GLUTTONY;
+		}	
+		/*else if (currentPlayer == 2)
 			GameSelection.player2Core = coreSelector[currentPlayer];
-		/*else if (currentPlayer == 3)
+		else if (currentPlayer == 3)
 			GameSelection.player3Core = coreSelector[currentPlayer];
 		else if (currentPlayer == 4)
 			GameSelection.player4Core = coreSelector[currentPlayer];*/
@@ -189,11 +216,12 @@ public class SelectorController : MonoBehaviour {
 		currentSprite.color = colors.Dequeue ();
 		GameObject.Find ("Sprite"+currentPlayer).GetComponent<Image> ().color = currentSprite.color;
 
-		if (currentPlayer == 1)
+		GameSelection.playerColors [currentPlayer - 1] = currentSprite.color;
+		/*if (currentPlayer == 1)
 			GameSelection.player1Color = currentSprite.color;
 		else if (currentPlayer == 2)
 			GameSelection.player2Color = currentSprite.color;
-		/*else if (currentPlayer == 3)
+		else if (currentPlayer == 3)
 			GameSelection.player3Color = currentSprite.color;
 		else if (currentPlayer == 4)
 			GameSelection.player4Color = currentSprite.color;
