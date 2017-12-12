@@ -63,8 +63,15 @@ public class TipDialog
 
 	private void placePanel(){
 		RectTransform t = (RectTransform) panel.transform;
-		t.sizeDelta = new Vector2 (500f, 350f);
+		t.sizeDelta = new Vector2 (200f, 100f);
 		t.localPosition = new Vector3 (0f,0f,0f);
+	}
+
+	public void SetPanelAnchors(Vector2 min,Vector2 max){
+		RectTransform t = (RectTransform) panel.transform;
+		t.anchorMin = min;
+		t.anchorMax = max;
+		//t.localPosition = new Vector3 (0f,0f,0f);
 	}
 
 	private void placeText(){
@@ -105,6 +112,8 @@ public class TipDialog
 		SetInfoTextFont(Resources.GetBuiltinResource<Font>("Arial.ttf"));
 		SetInfoTextText ("Default text");
 		text.GetComponent<Text> ().raycastTarget = false;
+		text.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
+		text.GetComponent<Text> ().fontSize = 20;
 
 	}
 
@@ -126,5 +135,20 @@ public class TipDialog
 		panel.SetActive (true);
 		text.SetActive (true);
 		button.SetActive (true);
+	}
+
+	public void SetPanelSize(Vector2 v){
+		RectTransform t = (RectTransform) panel.transform;
+		t.sizeDelta = v;
+	}
+
+	public void SetTextSize(Vector2 v){
+		RectTransform t = (RectTransform) text.transform;
+		t.sizeDelta = v;
+	}
+
+	public void SetButtonSize(Vector2 v){
+		RectTransform t = (RectTransform) button.transform;
+		t.sizeDelta = v;
 	}
 }

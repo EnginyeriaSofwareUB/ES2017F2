@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public class TutorialInputController: InputController
 {
-	
+	TutorialGameController tgc;
+
 	void Start(){
-
-		MoveEnabled = true;
-
+		
 		gameController = Camera.main.GetComponent<TutorialGameController>();
+		tgc = (TutorialGameController)gameController;
 		uiController = Camera.main.GetComponent<TutorialUIController>();
 		cameraController = Camera.main.GetComponent<CameraController>();
 
@@ -18,5 +18,20 @@ public class TutorialInputController: InputController
 		splitTiles = new List<Tile> ();
 		joinTiles = new List<Tile> ();
 
+	}
+
+	protected override void AfterSelect ()
+	{
+		
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.SELECTSLIME) {
+			tgc.marker.SetActive (false);
+		}
+
+	}
+
+	protected override void BeforeShowMove(){
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.SELECTSLIME) {
+			tgc.tutorialFSMCheck ();
+		}
 	}
 }

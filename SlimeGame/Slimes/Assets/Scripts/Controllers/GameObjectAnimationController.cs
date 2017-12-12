@@ -72,6 +72,14 @@ public class GameObjectAnimationController: MonoBehaviour
 	public delegate float TimeFunction(float time);
 
 	void Start(){
+		transformMode = Mode.BOUNCE;
+
+		//test ();
+		//reversetest();
+		//scaleTest();
+	}
+
+	public void initLists(){
 		transformList = new List<Vector3>();
 		rotateList = new List<Vector3>();
 		scaleList = new List<Vector3>();
@@ -83,10 +91,6 @@ public class GameObjectAnimationController: MonoBehaviour
 		transformDurations = new List<float>();
 		rotateDurations = new List<float>();
 		scaleDurations = new List<float>();
-
-		test ();
-		//reversetest();
-		scaleTest();
 	}
 
 	private void reversetest(){
@@ -111,7 +115,7 @@ public class GameObjectAnimationController: MonoBehaviour
 		reverseOffsetTransformOffset = 0;
 		currentTransformDuration = transformDurations [currentTransform];
 		currentTargetPosition = transformList [currentTransform];
-		currentTransformDt = (currentTargetPosition - transform.position)/currentTransformDuration;
+		currentTransformDt = (currentTargetPosition - transform.localPosition)/currentTransformDuration;
 	}
 
 	private void scaleTest(){
@@ -120,18 +124,10 @@ public class GameObjectAnimationController: MonoBehaviour
 		AddScaleTransition (new Vector3 (3f, 3f, 1f), 5f, 5f);
 		//El último valor de duracion no se utiliza
 		AddScaleTransition (new Vector3 (1f, 1f, 1f), 0f, 0f);
-		scaleStatus = Status.PLAYING;
-		currentScale = 0;
+		//scaleStatus = Status.PLAYING;
 		scaleMode = Mode.BOUNCE;
-		currentScaleTime = 0f;
-		currentScaleDuration = scaleDurations[currentScale];
-		scaleOffsetDuration = scaleOffsets [currentScale];
-		scaleCursor = 1;
-		currentTargetScale = scaleList[currentScale + scaleCursor];
-		currentScaleDt = (currentTargetScale - scaleList[0])/currentScaleDuration;
-		reverseDurationScaleOffset = -1;
-		reverseOffsetScaleOffset = -1;
-		currentScale = 1;
+
+
 	}
 
 
@@ -140,18 +136,9 @@ public class GameObjectAnimationController: MonoBehaviour
 		AddTransformTransition (new Vector3 (3f, 0f, 0f), 1f, 3f);
 		AddTransformTransition (new Vector3 (5f, 3f, 1f), 5f, 5f);
 		AddTransformTransition (new Vector3 (-2f, 3f, 1f), 0f, 0f);
-		transformStatus = Status.PLAYING;
-		currentTransform = 0;
+		//transformStatus = Status.PLAYING;
 		transformMode = Mode.BOUNCE;
-		currentTransformTime = 0f;
-		currentTransformDuration = transformDurations[currentTransform];
-		transformOffsetDuration = transformOffsets [currentTransform];
-		transformCursor = 1;
-		currentTargetPosition = transformList [currentTransform + transformCursor];
-		currentTransformDt = (currentTargetPosition - transformList[0])/currentTransformDuration;
-		reverseDurationTransformOffset = -1;
-		reverseOffsetTransformOffset = -1;
-		currentTransform = 1;
+
 	}
 
 	void Update(){
@@ -164,13 +151,13 @@ public class GameObjectAnimationController: MonoBehaviour
 		if(transformStatus==Status.PLAYING){
 			currentTransformTime += Time.deltaTime;
 				Vector3 v = currentTransformDt * Time.deltaTime;
-				if (v.magnitude < (transform.position - currentTargetPosition).magnitude) {
+			if (v.magnitude < (transform.localPosition - currentTargetPosition).magnitude) {
 					if (0 < currentTransformTime - transformOffsetDuration && currentTransformTime - transformOffsetDuration < currentTransformDuration) {
 
-						transform.position += v;
+					transform.localPosition += v;
 					}
 				} else {
-					transform.position = currentTargetPosition;
+				transform.localPosition = currentTargetPosition;
 					currentTransform += transformCursor;
 					currentTransformTime = 0f;
 					switch(transformMode){
@@ -181,7 +168,7 @@ public class GameObjectAnimationController: MonoBehaviour
 							transformOffsetDuration = transformOffsets [currentTransform - 1];
 							currentTransformDuration = transformDurations [currentTransform-1];
 							currentTargetPosition = transformList [currentTransform];
-							currentTransformDt = (currentTargetPosition - transform.position)/currentTransformDuration;
+						currentTransformDt = (currentTargetPosition - transform.localPosition)/currentTransformDuration;
 						}
 						break;
 					case Mode.ONESHOTREVERSE:
@@ -191,7 +178,7 @@ public class GameObjectAnimationController: MonoBehaviour
 							transformOffsetDuration = transformOffsets [currentTransform + 1];
 							currentTransformDuration = transformDurations [currentTransform];
 							currentTargetPosition = transformList [currentTransform];
-							currentTransformDt = (currentTargetPosition - transform.position)/currentTransformDuration;						}
+						currentTransformDt = (currentTargetPosition - transform.localPosition)/currentTransformDuration;						}
 						break;
 					case Mode.BOUNCE:
 						if (currentTransform > transformList.Count-1) {
@@ -202,7 +189,7 @@ public class GameObjectAnimationController: MonoBehaviour
 							transformOffsetDuration = transformOffsets [currentTransform+1];
 							currentTransformDuration = transformDurations [currentTransform];
 							currentTargetPosition = transformList [currentTransform];
-							currentTransformDt = (currentTargetPosition - transform.position)/currentTransformDuration;
+						currentTransformDt = (currentTargetPosition - transform.localPosition)/currentTransformDuration;
 						} else if(currentTransform < 0) {
 							transformCursor = 1;
 							currentTransform = 0;
@@ -211,12 +198,12 @@ public class GameObjectAnimationController: MonoBehaviour
 							transformOffsetDuration = transformOffsets [currentTransform];
 							currentTransformDuration = transformDurations [currentTransform];
 							currentTargetPosition = transformList [currentTransform + transformCursor];
-							currentTransformDt = (currentTargetPosition - transform.position)/currentTransformDuration;
+						currentTransformDt = (currentTargetPosition - transform.localPosition)/currentTransformDuration;
 						} else {
 						transformOffsetDuration = transformOffsets [currentTransform + reverseOffsetTransformOffset];
 							currentTransformDuration = transformDurations [currentTransform + reverseDurationTransformOffset];
 							currentTargetPosition = transformList [currentTransform];
-							currentTransformDt = (currentTargetPosition - transform.position)/currentTransformDuration;
+						currentTransformDt = (currentTargetPosition - transform.localPosition)/currentTransformDuration;
 						}
 						break;
 					case Mode.TRAJECTORYFUNCTION:
@@ -402,13 +389,33 @@ public class GameObjectAnimationController: MonoBehaviour
 
 	public void StartAnimation(){
 		if (transformList.Count > 0) {
+			currentTransform = 0;
+			currentTransformTime = 0f;
+			currentTransformDuration = transformDurations[currentTransform];
+			transformOffsetDuration = transformOffsets [currentTransform];
+			transformCursor = 1;
+			currentTargetPosition = transformList [currentTransform + transformCursor];
+			currentTransformDt = (currentTargetPosition - transformList[0])/currentTransformDuration;
+			reverseDurationTransformOffset = -1;
+			reverseOffsetTransformOffset = -1;
+			currentTransform = 1;
 			transformStatus = Status.PLAYING;
 		}
 		if (rotateList.Count > 0) {
-			transformStatus = Status.PLAYING;
+			rotateStatus = Status.PLAYING;
 		}
 		if (scaleList.Count > 0) {
-			transformStatus = Status.PLAYING;
+			currentScale = 0;
+			currentScaleTime = 0f;
+			currentScaleDuration = scaleDurations[currentScale];
+			scaleOffsetDuration = scaleOffsets [currentScale];
+			scaleCursor = 1;
+			currentTargetScale = scaleList[currentScale + scaleCursor];
+			currentScaleDt = (currentTargetScale - scaleList[0])/currentScaleDuration;
+			reverseDurationScaleOffset = -1;
+			reverseOffsetScaleOffset = -1;
+			currentScale = 1;
+			scaleStatus = Status.PLAYING;
 		}
 	}
 

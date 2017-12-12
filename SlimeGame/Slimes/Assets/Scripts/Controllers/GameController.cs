@@ -193,7 +193,7 @@ public class GameController : MonoBehaviour
     /*
 	Funció que retorna True si s'ha acabat la partida o False si no.
 	 */
-    private Player IsGameEndedAndWinner()
+	protected virtual Player IsGameEndedAndWinner()
     {
         Player ret = null; //si no trobem guanyador retornem null
         int index;
@@ -424,7 +424,7 @@ public class GameController : MonoBehaviour
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
 
-	public List<Tile> GetPossibleMovements(Slime slime){
+	public virtual List<Tile> GetPossibleMovements(Slime slime){
 		ArrayList tiles = new ArrayList();
 		ArrayList distance = new ArrayList ();
 		List<Tile> visited = new List<Tile> ();
@@ -461,7 +461,7 @@ public class GameController : MonoBehaviour
 		return visited;
 	}
 
-	public List<Tile> GetSlimesInAttackRange(Slime slime){
+	public virtual List<Tile> GetSlimesInAttackRange(Slime slime){
 		List<Tile> canAttack = new List<Tile> ();
 		Vector2 myPos = slime.GetActualTile().getPosition();
 		foreach(Player p in players){
@@ -477,7 +477,7 @@ public class GameController : MonoBehaviour
 		return canAttack;
 	}
 
-	public List<Tile> GetSplitRangeTiles(Slime slime){
+	public virtual List<Tile> GetSplitRangeTiles(Slime slime){
 		List<Tile> splitTiles = new List<Tile> ();
 		foreach (TileData td in matrix.getNeighbours (slime.GetTileData(), true)) {
 			if(td.getTile().GetSlimeOnTop() == null)
@@ -499,7 +499,7 @@ public class GameController : MonoBehaviour
 		return fusionSlimes;
 	}
 
-	public List<Tile> GetJoinTile(Slime slime){
+	public virtual List<Tile> GetJoinTile(Slime slime){
 		List<Vector2> directions = new List<Vector2> {
 			new Vector2 (0, -1),new Vector2 (1, -1), new Vector2 (1, 0),new Vector2 (0, 1),new Vector2 (-1,1),new Vector2 (-1, 0)
 		};

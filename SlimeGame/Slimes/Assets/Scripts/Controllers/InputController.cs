@@ -20,6 +20,7 @@ public class InputController : MonoBehaviour
 	protected bool AttackEnabled;
 	protected bool SplitEnabled;
 	protected bool JoinEnabled;
+	protected bool InputEnabled;
 
     void Start()
     {
@@ -29,6 +30,7 @@ public class InputController : MonoBehaviour
 		AttackEnabled = true;
 		SplitEnabled = true;
 		JoinEnabled = true;
+		InputEnabled = true;
 
         gameController = Camera.main.GetComponent<GameController>();
         uiController = Camera.main.GetComponent<UIController>();
@@ -42,7 +44,7 @@ public class InputController : MonoBehaviour
     void Update()
 	{
 		//Boto esquerra del mouse
-		if (gameController.getStatus () == GameControllerStatus.WAITINGFORACTION) {
+		if (InputEnabled && gameController.getStatus () == GameControllerStatus.WAITINGFORACTION) {
 			if (Input.GetMouseButtonDown (0)) {
 				//Obtinc els colliders que hi ha a la posicio del mouse
 				Collider2D[] colliders = Physics2D.OverlapPointAll (Camera.main.ScreenToWorldPoint (Input.mousePosition));
@@ -63,6 +65,7 @@ public class InputController : MonoBehaviour
 						}
 						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
 						s = col.gameObject.GetComponent<Slime>().ToString();
+						AfterSelect();
 						break;
 					/*}else if(col.gameObject.tag == "Slime") {
 						//s = col.gameObject.GetComponent<Slime>().ToString();
@@ -131,14 +134,18 @@ public class InputController : MonoBehaviour
 						gameController.SetSelectedSlime (null);
 					}else{
 						uiController.hideCurrentUITiles ();
+						BeforeShowMove ();
 						if (MoveEnabled) {
 							moveTiles = gameController.GetPossibleMovements (gameController.GetSelectedSlime ());
 							uiController.markTiles (moveTiles, ActionType.MOVE);
 						}
+						AfterShowMove ();
+						BeforeShowAttack ();
 						if (AttackEnabled) {
 							attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime());
 							uiController.markTiles (attackTiles,ActionType.ATTACK);
 						}
+						AfterShowAttack ();
 						List<Tile> tiles = new List<Tile>();
 						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
 						tiles.AddRange(moveTiles);
@@ -166,5 +173,56 @@ public class InputController : MonoBehaviour
 			}
 		}
 	}
+
+	public void SetActiveMove(bool active){
+		MoveEnabled = active;
+	}
+
+	public void SetActiveEat(bool active){
+		EatEnabled = active;
+	}
+
+	public void SetActiveAttack(bool active){
+		AttackEnabled = active;
+	}
+
+	public void SetActiveSplit(bool active){
+		SplitEnabled = active;
+	}
+
+	public void SetActiveJoin(bool active){
+		JoinEnabled = active;
+	}
+
+	public void SetActiveConquer(bool active){
+		ConquerEnabled = active;
+	}
+
+	public void SetActiveInput(bool active){
+		InputEnabled = active;
+	}
+
+	protected virtual void AfterSelect(){
+	
+	}
+
+	protected virtual void AfterShowMove(){
+
+	}
+
+	protected virtual void AfterShowAttack(){
+
+	}
+
+	protected virtual void BeforeShowMove(){
+
+	}
+
+	protected virtual void BeforeShowAttack(){
+
+	}
+
+	protected virtual void OnMove(){
 		
+	}
 }
