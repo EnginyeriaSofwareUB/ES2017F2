@@ -54,7 +54,7 @@ public class GameController : MonoBehaviour
 			a.Show();
 		});
 		*/
-        
+		Time.timeScale = 1;
 		ChainTextDialog ctd = new ChainTextDialog ();
 		ctd.SetButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
 		ctd.SetBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
@@ -109,8 +109,8 @@ public class GameController : MonoBehaviour
             ShowTutorialTip();
 			players.Add(new Player("Jugador 1", 1, StatsFactory.GetTutorialPlayerStats()));
 			players.Add(new Player("IA", 1,  StatsFactory.GetTutorialPlayerStats()));
-            players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo??
-            players[1].SetColor(GameSelection.player2Color);
+            //players[0].SetColor(GameSelection.player1Color); //Perque el set color esta fora del constructor si no funciona el instantiate slime sense aixo??
+            //players[1].SetColor(GameSelection.player2Color);
             matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
             SlimeFactory.instantiateSlime(players[0], 3, -4);
@@ -120,22 +120,33 @@ public class GameController : MonoBehaviour
         }
         else
         {
-			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), AIManager.GetAIByVictoryCondition(this, condicionVictoria) ));
-            players[0].SetColor(GameSelection.player1Color);
-            players[1].SetColor(GameSelection.player2Color);
+			int maxPlayers = GameSelection.playerColors.Count;
+			for (int i=0;i<maxPlayers;i++){
+				if (GameSelection.playerIAs [i]) {
+					players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
+				} else {
+					players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i])));
+				}
+				players[i].SetColor(GameSelection.playerColors[i]);
+				
+
+			}
+			//players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
+			//players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), AIManager.GetAIByVictoryCondition(this, condicionVictoria) ));
+            //players[0].SetColor(GameSelection.player1Color);
+            //players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
             if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
             MapDrawer.instantiateMap(matrix.getIterable());
             int numSlimesPerPlayer = 2;
             List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
-            int i = 0;
+            int j = 0;
             foreach(Player player in players){
-                List<Vector2> positionsSlimes = positions[i];
+                List<Vector2> positionsSlimes = positions[j];
                 foreach(Vector2 positionSlime in positionsSlimes){
                     SlimeFactory.instantiateSlime(player,positionSlime);
                 }
-                i++;
+				j++;
             }
         }
 
