@@ -9,13 +9,9 @@ using SimpleJSON;
 public class SelectorController : MonoBehaviour {
     private string sprite;
 	private List<string> corePaths;
-	//private List<string> coresInfo;
-	private List<MapTypeSelection> mapTypes;
-	private List<Color> colors;
-	private List<int> colorSelector;
+	private Queue<Color> colors;
 	private List<int> coreSelector;
 	private int currentColorSelector;
-	private int mapSelector;
 	private int modoVictoria;
 
 	private int currentPlayer;
@@ -24,7 +20,16 @@ public class SelectorController : MonoBehaviour {
 	private GameObject player3;
 	private GameObject player4;
 
-	public Matrix map;
+	private Image currentSprite;
+	private Image sprite1;
+	private Image sprite2;
+	private Image sprite3;
+	private Image sprite4;
+	private Image currentCore;
+	private Image core1;
+	private Image core2;
+	private Image core3;
+	private Image core4;
 
 	// Use this for initialization
 	void Start () {
@@ -35,56 +40,48 @@ public class SelectorController : MonoBehaviour {
 		coreSelector.Add(0);
 		coreSelector.Add(0);
 		coreSelector.Add(1);
-		mapSelector = 0;
-		colorSelector = new List<int>();
-		colorSelector.Add(0);
-		colorSelector.Add(0);
-		colorSelector.Add(1);
-		mapTypes = new List<MapTypeSelection> ();
-		/*foreach(MapTypes type in Enum.GetValues(typeof(MapTypes))){
-			mapTypes.Add(new MapTypeSelection(type));
-		}*/
-		foreach(SeededMap seed in GetAllInterestingSeededMaps()){
-			mapTypes.Add(new MapTypeSelection(seed));
-		}
-		player3 = GameObject.Find ("Panel3");
-		player4 = GameObject.Find("Panel4");
-		player3.SetActive (false);
-		player4.SetActive (false);
 
-		mapTypes.Add(new MapTypeSelection());
 		corePaths = new List<string> ();
 		corePaths.Add ("Sprites/Wrath");
 		corePaths.Add ("Sprites/Sloth");
 		corePaths.Add ("Sprites/Gluttony");
         sprite = "Sprites/slime_sprite";
-		GameObject.Find ("CurrentSprite").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-		GameObject.Find ("Sprite1").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-		GameObject.Find ("Sprite2").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-        GameObject.Find("CurrentCore").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
-		GameObject.Find("Core1").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
-        GameObject.Find("Core2").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[2]]);
-        colors = new List<Color> ();
-		colors.Add (new Color (1, 0, 0));
-		colors.Add (new Color (0, 0, 1));
-		colors.Add (new Color (0, 1, 0));
-		colors.Add (new Color (1, 1, 0));
-		colors.Add (new Color (0, 1, 1));
-		colors.Add (new Color (1, 0, 1));
-		colors.Add (new Color (1, 1, 1));
-		//coresInfo = new List<string> ();
-		//coresInfo.Add ("Info de SlimeCore0");
-		//coresInfo.Add ("Info de SlimeCore1");
-		//coresInfo.Add ("Info de SlimeCore2");
-		GameObject.Find ("CurrentSprite").GetComponent<Image> ().color = colors[colorSelector[1]];
-		GameObject.Find ("Sprite1").GetComponent<Image> ().color = colors[colorSelector[1]];
-		GameObject.Find ("Sprite2").GetComponent<Image> ().color = colors[colorSelector[2]];
+		currentSprite = GameObject.Find ("CurrentSprite").GetComponent<Image>();
+		sprite1 = GameObject.Find ("Sprite1").GetComponent<Image>();
+		sprite2 = GameObject.Find ("Sprite2").GetComponent<Image>();
+		sprite3 = GameObject.Find ("Sprite3").GetComponent<Image>();
+		sprite4 = GameObject.Find ("Sprite4").GetComponent<Image>();
+		currentCore = GameObject.Find ("CurrentCore").GetComponent<Image>();
+		core1 = GameObject.Find ("Core1").GetComponent<Image>();
+		core2 = GameObject.Find ("Core2").GetComponent<Image>();
+		core3 = GameObject.Find ("Core3").GetComponent<Image>();
+		core4 = GameObject.Find ("Core4").GetComponent<Image>();
 
-		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector[1]];
-		loadMap ();
+		player3 = GameObject.Find ("Panel3");
+		player4 = GameObject.Find("Panel4");
+		player3.SetActive (false);
+		player4.SetActive (false);
 
-		GameSelection.player1Color = colors [colorSelector[1]];
-		GameSelection.player2Color = colors [colorSelector[2]];
+		currentSprite.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+		sprite1.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+		sprite2.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+        currentCore.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
+		core1.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
+        core2.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[2]]);
+        colors = new Queue<Color> ();
+		colors.Enqueue (new Color (1, 0, 0));
+		colors.Enqueue (new Color (0, 0, 1));
+		colors.Enqueue (new Color (0, 1, 0));
+		colors.Enqueue (new Color (1, 1, 0));
+		colors.Enqueue (new Color (0, 1, 1));
+		colors.Enqueue (new Color (1, 0, 1));
+		colors.Enqueue (new Color (1, 1, 1));
+		currentSprite.color = colors.Dequeue();
+		sprite1.color = currentSprite.color;
+		sprite2.color = colors.Dequeue();
+
+		GameSelection.player1Color = sprite1.color;
+		GameSelection.player2Color = sprite2.color;
 		GameSelection.player1Core = coreSelector[1];
 		GameSelection.player2Core = coreSelector[2];
 		GameSelection.modoVictoria = modoVictoria;
@@ -100,23 +97,22 @@ public class SelectorController : MonoBehaviour {
 			maxPlayers++;
 			if (maxPlayers == 3) {
 				player3.SetActive (true);
-				GameObject.Find ("Sprite3").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-				if (coreSelector.Count < 4) {
+				sprite3.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+				if (coreSelector.Count < 4)
 					coreSelector.Add (2);
-					colorSelector.Add (2);
-				}
-				GameObject.Find("Core3").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[3]]);
-				GameObject.Find ("Sprite3").GetComponent<Image> ().color = colors[colorSelector[3]];
-				//Asegurarse de que el color elegido no lo tienen otros jugadores!
+				core3.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[3]]);
+				sprite3.color = colors.Dequeue ();
+				/*GameSelection.player3Color = sprite3.color;
+				GameSelection.player3Core = coreSelector[2];*/
 			} else if (maxPlayers == 4) {
 				player4.SetActive (true);
-				GameObject.Find ("Sprite4").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-				if (coreSelector.Count < 5) {
+				sprite4.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+				if (coreSelector.Count < 5)
 					coreSelector.Add (0);
-					colorSelector.Add (3);
-				}
-				GameObject.Find("Core4").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[4]]);
-				GameObject.Find ("Sprite4").GetComponent<Image> ().color = colors[colorSelector[4]];
+				core4.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[4]]);
+				sprite4.color = colors.Dequeue();
+				/*GameSelection.player4Color = sprite4.color;
+				GameSelection.player4Core = coreSelector[3];*/
 			}
 		}
 	}
@@ -125,10 +121,13 @@ public class SelectorController : MonoBehaviour {
 		if (maxPlayers > 2) {
 			if (currentPlayer == maxPlayers)
 				changeCurrentPlayer(1);
-			if (maxPlayers == 4)
+			if (maxPlayers == 4) {
+				colors.Enqueue (sprite4.color);
 				player4.SetActive (false);
-			else if (maxPlayers == 3)
+			} else if (maxPlayers == 3) {
+				colors.Enqueue (sprite3.color);
 				player3.SetActive (false);
+			}
 			maxPlayers--;
 		}
 	}
@@ -153,8 +152,8 @@ public class SelectorController : MonoBehaviour {
 	}
 	public void changeCurrentPlayer(int cursor){
 		currentPlayer = cursor;
-		GameObject.Find ("CurrentCore").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance ().GetResource (corePaths [coreSelector [cursor]]);
-		GameObject.Find ("CurrentSprite").GetComponent<Image> ().color = GameObject.Find ("Sprite"+cursor).GetComponent<Image> ().color;
+		currentCore.overrideSprite = SpritesLoader.GetInstance ().GetResource (corePaths [coreSelector [cursor]]);
+		currentSprite.color = GameObject.Find ("Sprite"+cursor).GetComponent<Image> ().color;
 		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector [currentPlayer]];
 		changeInfo();
 		GameObject.Find ("PlayerText").GetComponent<Text> ().text = "PLAYER " + cursor;
@@ -162,48 +161,41 @@ public class SelectorController : MonoBehaviour {
 
 	public void changeCore(int cursor){
 		coreSelector[currentPlayer] += cursor;
-		if (coreSelector[currentPlayer] > corePaths.Count - 1) {
+		if (coreSelector[currentPlayer] > corePaths.Count - 1)
 			coreSelector[currentPlayer] = 0;
-		} else if (coreSelector[currentPlayer] < 0) {
+		else if (coreSelector[currentPlayer] < 0)
 			coreSelector[currentPlayer] = corePaths.Count - 1;
-		}
-		GameObject.Find ("CurrentCore").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
+		currentCore.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
 		changeInfo ();
 		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector[currentPlayer]];
 		GameObject.Find("Core"+currentPlayer).GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
 
-		if (currentPlayer == 1) {
+		if (currentPlayer == 1)
 			GameSelection.player1Core = coreSelector[currentPlayer];
-		} else if (currentPlayer == 2) {
+		else if (currentPlayer == 2)
 			GameSelection.player2Core = coreSelector[currentPlayer];
-		} 
+		/*else if (currentPlayer == 3)
+			GameSelection.player3Core = coreSelector[currentPlayer];
+		else if (currentPlayer == 4)
+			GameSelection.player4Core = coreSelector[currentPlayer];*/
 	}
 
-	public void changeColor(int cursor){
-		colorSelector[currentPlayer] += cursor;
-		if (colorSelector[currentPlayer] > colors.Count - 1) {
-			colorSelector[currentPlayer] = 0;
-		} else if (colorSelector[currentPlayer] < 0) {
-			colorSelector[currentPlayer] = colors.Count - 1;
-		}	
-		if (colorSelector[1] == colorSelector[2]) {//Casos con 3 y 4 jugadores
-			colorSelector[currentPlayer] += cursor;
-			if (colorSelector[currentPlayer] > colors.Count - 1) {
-				colorSelector[currentPlayer] = 0;
-			} else if (colorSelector[currentPlayer] < 0) {
-				colorSelector[currentPlayer] = colors.Count - 1;
-			}
-		}
-		GameObject.Find ("CurrentSprite").GetComponent<Image> ().color = colors[colorSelector[currentPlayer]];
-		GameObject.Find ("Sprite"+currentPlayer).GetComponent<Image> ().color = colors[colorSelector[currentPlayer]];
+	public void changeColor(){
+		colors.Enqueue (currentSprite.color);
+		currentSprite.color = colors.Dequeue ();
+		GameObject.Find ("Sprite"+currentPlayer).GetComponent<Image> ().color = currentSprite.color;
 
-		if (currentPlayer == 1) {
-			GameSelection.player1Color = colors[colorSelector[currentPlayer]];
-		} else if (currentPlayer == 2) {
-			GameSelection.player2Color = colors[colorSelector[currentPlayer]];
-		} 
+		if (currentPlayer == 1)
+			GameSelection.player1Color = currentSprite.color;
+		else if (currentPlayer == 2)
+			GameSelection.player2Color = currentSprite.color;
+		/*else if (currentPlayer == 3)
+			GameSelection.player3Color = currentSprite.color;
+		else if (currentPlayer == 4)
+			GameSelection.player4Color = currentSprite.color;
+		*/
 	}	
-
+	/*
 	public void changeMap(int cursor){
 		mapSelector+=cursor;
 		if (mapSelector > mapTypes.Count-1) {
@@ -212,8 +204,8 @@ public class SelectorController : MonoBehaviour {
 			mapSelector = mapTypes.Count - 1;
 		}
 		loadMap ();
-	}
-
+	}*/
+	/*
 	public void loadMap(){
 		foreach (GameObject elem in GameObject.FindGameObjectsWithTag ("Tile")){
 			GameObject.Destroy (elem);
@@ -248,7 +240,7 @@ public class SelectorController : MonoBehaviour {
 		//seededMap.Add(new SeededMap(35,0.5f,0007887));
 		//seededMap.Add(new SeededMap(17,0.9f,000712341237));
 		return allSeeded;
-	}
+	}*/
 
 	public void ModeSelection(){
 		GameObject s = GameObject.Find("ModeSelection");
@@ -267,7 +259,7 @@ public class SelectorController : MonoBehaviour {
 		}
 	}
 }
- enum MapTypeSelectionTypes{
+/* enum MapTypeSelectionTypes{
 	Random,
 	Seeded,
 	Manual
@@ -312,4 +304,4 @@ class MapTypeSelection{
 	public SeededMap GetTypeSeeded(){
 		return seed;
 	}
-}
+}*/

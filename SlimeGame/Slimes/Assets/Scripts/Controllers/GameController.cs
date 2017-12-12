@@ -61,7 +61,7 @@ public class GameController : MonoBehaviour
 			a.Show();
 		});
 		*/
-        
+		Time.timeScale = 1;
 		ChainTextDialog ctd = new ChainTextDialog ();
 		ctd.SetButtonImage(SpritesLoader.GetInstance ().GetResource ("Buttons/button_template"));
 		ctd.SetBackgroundImage(SpritesLoader.GetInstance ().GetResource ("Panels/emergent"));
