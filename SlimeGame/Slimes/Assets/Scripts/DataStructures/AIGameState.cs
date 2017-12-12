@@ -18,6 +18,47 @@ public class AIGameState {
         this.playerActions = playerActions;
     }
 
+    public RawPlayer GetCurrentPlayer()
+    {
+        return players[currentPlayer % players.Count];
+    }
+
+    public RawPlayer GetNextPlayer(){
+        return players[(currentPlayer+1) % players.Count];
+    }
+
+    public int GetRemainingActions(){
+        return GetCurrentPlayer().GetActions() - playerActions;
+    }
+
+    /*
+    Función que devuelve todas las posibles acciones en forma de lista de AISlimeAction (slime, accion)
+     */
+    public List<AIRawSlimeAction> GetLegalActions(){
+        /* Cada slime pot:
+            - Atacar un rival: que hi hagi una slime enemiga al rang d'atac.
+            - Conquerir: CAP? (o que la casella no estigui conquerida?)
+            - Dividirse: que tingui massa > LIMIT i tingui casella lliure al lateral
+            - Fusionarse: si te alguna slime al costat
+            - Menjar: cap condicio
+            - Moure's: que tingui alguna casella lliure on moure's
+         */
+
+         List<AIRawSlimeAction> legalActions = new List<AIRawSlimeAction>();
+         List<RawSlime> slimes = GetCurrentPlayer().GetSlimes();
+
+         foreach(RawSlime slime in slimes){
+             legalActions.AddRange(GetAttackActions(slime));
+             legalActions.AddRange(GetMoveActions(slime));
+             legalActions.AddRange(GetConquerActions(slime));
+             legalActions.AddRange(GetSplitActions(slime));
+             legalActions.AddRange(GetFusionActions(slime));
+             //legalActions.AddRange(GetGrowActions(slime));
+         }
+
+         return legalActions;
+    }
+
     public AIGameState GetSuccessor(AIRawSlimeAction action){
         AIGameState succ = GetCopy();
         int actionSlimeId = action.GetMainSlimeId();
@@ -77,8 +118,8 @@ public class AIGameState {
         RawSlime actionSlime = FindSlimeById(actionSlimeId);
         RawSlime fusionTargetSlime = FindSlimeById(targetSlimeId);
 
-        fusionTargetSlime.GetPlayer().RemoveSlime(actionSlime);
 		fusionTargetSlime.SetMass (actionSlime.GetMass() + fusionTargetSlime.GetMass());
+        fusionTargetSlime.GetPlayer().RemoveSlime(actionSlime);
 
         SpendActions(1);
     }
@@ -118,9 +159,8 @@ public class AIGameState {
         return null;
     }
 
-    public RawPlayer GetCurrentPlayer()
-    {
-        return players[currentPlayer % players.Count];
+    public int GetCurrentTurn(){
+        return currentTurn;
     }
 
     // Deep copy of AIGameState
@@ -180,7 +220,7 @@ public class AIGameState {
 			if (p != slime.GetPlayer()){
 				foreach(RawSlime s in p.GetSlimes()){
 					Vector2 slPos = s.GetActualTile().getPosition();		
-					if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
+					if (Matrix.GetDistance(slPos, myPos) <= slime.GetAttackRange()){
 						canAttack.Add(s);
 					}
 				}
@@ -273,4 +313,29 @@ public class AIGameState {
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
         return actions;
     }
+
+    public RawPlayer GetPlayerById(int id){
+        foreach(RawPlayer pl in players){
+            if(pl.GetId() == id) return pl;
+        }
+        return null;
+    }
+
+    public List<RawPlayer> GetPlayers(){
+        return players;
+    }
+
+    public int GetDistanceToCloserEnemy(RawSlime slime){
+        int distance = Int16.MaxValue;
+		Vector2 myPos = slime.GetActualTile().getPosition();
+		foreach(RawPlayer p in players){
+			if (p != slime.GetPlayer()){
+				foreach(RawSlime s in p.GetSlimes()){
+					Vector2 slPos = s.GetActualTile().getPosition();		
+					distance = Mathf.Min(distance, Matrix.GetDistance(slPos, myPos));
+				}
+			}
+		}
+		return distance;
+	}
 }

@@ -23,8 +23,8 @@ public class TutorialGameController: GameController
 		players = new List<Player> ();
 		players.Add(new Player("Jugador", 1, StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
 		//players.Add(new Player("IA Tutorial", 1, StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
-		players[0].SetColor(GameSelection.player1Color);
-		//players[1].SetColor(GameSelection.player2Color);
+		players[0].SetColor(new Color(1,1,1));
+		//players[1].SetColor(new Color(1,0,1));
 		Slime playerSlime = SlimeFactory.instantiateSlime(players[0], new Vector2(0f,-2f));
 		//SlimeFactory.instantiateSlime(players[1], new Vector2(0f,2f));
 		status = GameControllerStatus.WAITINGFORACTION;

@@ -9,67 +9,83 @@ using SimpleJSON;
 public class SelectorController : MonoBehaviour {
     private string sprite;
 	private List<string> corePaths;
-	private List<string> coresInfo;
-	private List<MapTypeSelection> mapTypes;
-	private List<Color> colors;
-	private int slimeSelector1;
-	private int slimeSelector2;
-	private int colorSelector1;
-	private int colorSelector2;
-	private int mapSelector;
+	private Queue<Color> colors;
+	private List<int> coreSelector;
+	private int currentColorSelector;
 	private int modoVictoria;
 
-	public Matrix map;
+	private int currentPlayer;
+	private int maxPlayers;
+
+	private GameObject player3;
+	private GameObject player4;
+
+	private Image currentSprite;
+	private Image sprite1;
+	private Image sprite2;
+	private Image sprite3;
+	private Image sprite4;
+	private Image currentCore;
+	private Image core1;
+	private Image core2;
+	private Image core3;
+	private Image core4;
 
 	// Use this for initialization
 	void Start () {
+		maxPlayers = 2;
+		currentPlayer = 1;
 		modoVictoria = 0;
-		slimeSelector1 = 0;
-		slimeSelector2 = 1;
-		mapSelector = 0;
-		colorSelector1 = 0;
-		colorSelector2 = 1;
-		mapTypes = new List<MapTypeSelection> ();
-		/*foreach(MapTypes type in Enum.GetValues(typeof(MapTypes))){
-			mapTypes.Add(new MapTypeSelection(type));
-		}*/
-		foreach(SeededMap seed in GetAllInterestingSeededMaps()){
-			mapTypes.Add(new MapTypeSelection(seed));
-		}
-		mapTypes.Add(new MapTypeSelection());
+		coreSelector = new List<int>();
+		coreSelector.Add(0);
+		coreSelector.Add(0);
+		coreSelector.Add(1);
+
 		corePaths = new List<string> ();
 		corePaths.Add ("Sprites/Wrath");
 		corePaths.Add ("Sprites/Sloth");
 		corePaths.Add ("Sprites/Gluttony");
         sprite = "Sprites/slime_sprite";
-		GameObject.Find ("Sprite1").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-		GameObject.Find ("Sprite2").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
-        GameObject.Find("Core1").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[slimeSelector1]);
-        GameObject.Find("Core2").GetComponent<Image>().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[slimeSelector2]);
-        colors = new List<Color> ();
-		colors.Add (new Color (1, 0, 0));
-		colors.Add (new Color (0, 0, 1));
-		colors.Add (new Color (0, 1, 0));
-		colors.Add (new Color (1, 1, 0));
-		colors.Add (new Color (0, 1, 1));
-		colors.Add (new Color (1, 0, 1));
-		colors.Add (new Color (1, 1, 1));
-		coresInfo = new List<string> ();
-		coresInfo.Add ("Info de SlimeCore0");
-		coresInfo.Add ("Info de SlimeCore1");
-		coresInfo.Add ("Info de SlimeCore2");
-		GameObject.Find ("Color1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameObject.Find ("Sprite1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameObject.Find ("Color2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameObject.Find ("Sprite2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameObject.Find ("Text1").GetComponent<Text> ().text = coresInfo [slimeSelector1];
-		GameObject.Find ("Text2").GetComponent<Text> ().text = coresInfo [slimeSelector2];
-		loadMap ();
+		currentSprite = GameObject.Find ("CurrentSprite").GetComponent<Image>();
+		sprite1 = GameObject.Find ("Sprite1").GetComponent<Image>();
+		sprite2 = GameObject.Find ("Sprite2").GetComponent<Image>();
+		sprite3 = GameObject.Find ("Sprite3").GetComponent<Image>();
+		sprite4 = GameObject.Find ("Sprite4").GetComponent<Image>();
+		currentCore = GameObject.Find ("CurrentCore").GetComponent<Image>();
+		core1 = GameObject.Find ("Core1").GetComponent<Image>();
+		core2 = GameObject.Find ("Core2").GetComponent<Image>();
+		core3 = GameObject.Find ("Core3").GetComponent<Image>();
+		core4 = GameObject.Find ("Core4").GetComponent<Image>();
 
-		GameSelection.player1Color = colors [colorSelector1];
-		GameSelection.player2Color = colors [colorSelector2];
-		GameSelection.player1Core = slimeSelector1;
-		GameSelection.player2Core = slimeSelector2;
+		player3 = GameObject.Find ("Panel3");
+		player4 = GameObject.Find("Panel4");
+		player3.SetActive (false);
+		player4.SetActive (false);
+
+		currentSprite.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+		sprite1.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+		sprite2.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+        currentCore.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
+		core1.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[1]]);
+        core2.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[2]]);
+        colors = new Queue<Color> ();
+		colors.Enqueue (new Color (1, 0, 0));
+		colors.Enqueue (new Color (0, 0, 1));
+		colors.Enqueue (new Color (0, 1, 0));
+		colors.Enqueue (new Color (1, 1, 0));
+		colors.Enqueue (new Color (0, 1, 1));
+		colors.Enqueue (new Color (1, 0, 1));
+		colors.Enqueue (new Color (1, 1, 1));
+		currentSprite.color = colors.Dequeue();
+		sprite1.color = currentSprite.color;
+		sprite2.color = colors.Dequeue();
+
+		GameSelection.playerColors.Add(sprite1.color);
+		GameSelection.playerColors.Add(sprite2.color);
+		GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+		GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
+		GameSelection.playerIAs.Add (false);
+		GameSelection.playerIAs.Add (true);
 		GameSelection.modoVictoria = modoVictoria;
 
 		GameObject s = GameObject.Find("ModeSelection");
@@ -82,70 +98,136 @@ public class SelectorController : MonoBehaviour {
 		
 	}
 
-	public void changeCore1(int cursor){
-		slimeSelector1 += cursor;
-		if (slimeSelector1 > corePaths.Count - 1) {
-			slimeSelector1 = 0;
-		} else if (slimeSelector1 < 0) {
-			slimeSelector1 = corePaths.Count - 1;
-		}
-		GameObject.Find ("Core1").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [slimeSelector1]);
-		GameObject.Find ("Text1").GetComponent<Text> ().text = coresInfo [slimeSelector1];
-		GameSelection.player1Core = slimeSelector1;
-	}
-
-	public void changeCore2(int cursor){
-		slimeSelector2 += cursor;
-		if (slimeSelector2 > corePaths.Count - 1) {
-			slimeSelector2 = 0;
-		} else if (slimeSelector2 < 0){
-			slimeSelector2 = corePaths.Count - 1;
-		}
-		GameObject.Find ("Core2").GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [slimeSelector2]);
-		GameObject.Find ("Text2").GetComponent<Text> ().text = coresInfo [slimeSelector2];
-		GameSelection.player2Core = slimeSelector2;
-	}
-
-	public void changeColor1(int cursor){
-		colorSelector1 += cursor;
-		if (colorSelector1 > colors.Count - 1) {
-			colorSelector1 = 0;
-		} else if (colorSelector1 < 0) {
-			colorSelector1 = colors.Count - 1;
-		}	
-		if (colorSelector1 == colorSelector2) {
-			colorSelector1 += cursor;
-			if (colorSelector1 > colors.Count - 1) {
-				colorSelector1 = 0;
-			} else if (colorSelector1 < 0) {
-				colorSelector1 = colors.Count - 1;
+	public void newPlayer(){
+		if (maxPlayers < 4) {
+			maxPlayers++;
+			if (maxPlayers == 3) {
+				player3.SetActive (true);
+				sprite3.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+				if (coreSelector.Count < 4)
+					coreSelector.Add (2);
+				core3.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[3]]);
+				sprite3.color = colors.Dequeue ();
+				GameSelection.playerColors.Add(sprite3.color);
+				GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+				GameSelection.playerIAs.Add (GameObject.Find("IAToggle3").GetComponent<Toggle>().isOn);
+			} else if (maxPlayers == 4) {
+				player4.SetActive (true);
+				sprite4.overrideSprite = SpritesLoader.GetInstance().GetResource(sprite);
+				if (coreSelector.Count < 5)
+					coreSelector.Add (0);
+				core4.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[4]]);
+				sprite4.color = colors.Dequeue();
+				GameSelection.playerColors.Add(sprite4.color);
+				GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+				GameSelection.playerIAs.Add (GameObject.Find("IAToggle4").GetComponent<Toggle>().isOn);
 			}
 		}
-		GameObject.Find ("Color1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameObject.Find ("Sprite1").GetComponent<Image> ().color = colors[colorSelector1];
-		GameSelection.player1Color = colors [colorSelector1];
-	}	
+	}
 
-	public void changeColor2(int cursor){
-		colorSelector2 += cursor;
-		if (colorSelector2 > colors.Count - 1) {
-			colorSelector2 = 0;
-		} else if (colorSelector2 < 0) {
-			colorSelector2 = colors.Count - 1;
-		}	
-		if (colorSelector1 == colorSelector2) {
-			colorSelector2 += cursor;
-			if (colorSelector2 > colors.Count - 1) {
-				colorSelector2 = 0;
-			} else if (colorSelector2 < 0) {
-				colorSelector2 = colors.Count - 1;
+	public void deletePlayer(){
+		if (maxPlayers > 2) {
+			if (currentPlayer == maxPlayers)
+				changeCurrentPlayer(1);
+			if (maxPlayers == 4) {
+				colors.Enqueue (sprite4.color);
+				player4.SetActive (false);
+			} else if (maxPlayers == 3) {
+				colors.Enqueue (sprite3.color);
+				player3.SetActive (false);
 			}
+			maxPlayers--;
+			GameSelection.playerColors.RemoveAt (GameSelection.playerColors.Count - 1);
+			GameSelection.playerCores.RemoveAt (GameSelection.playerCores.Count - 1);
+			GameSelection.playerIAs.RemoveAt (GameSelection.playerIAs.Count - 1);
 		}
-		GameObject.Find ("Color2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameObject.Find ("Sprite2").GetComponent<Image> ().color = colors[colorSelector2];
-		GameSelection.player2Color = colors [colorSelector2];
-	}	
+	}
 
+	public void toggleIAOn(int player){
+		GameSelection.playerIAs [player - 1] = true;
+		/*if (player == 1)
+			GameSelection.player1IA = b;
+		else if (player == 2)
+			GameSelection.player2IA = b;
+		else if (player == 3)
+			GameSelection.player3IA = b;
+		else if (player == 4)
+			GameSelection.player4IA = b;*/
+	}
+
+	public void toggleIAOff(int player){
+		GameSelection.playerIAs [player - 1] = false;
+	}
+
+	private void changeInfo(){
+		StatsContainer stats;
+		if (coreSelector [currentPlayer] == 0) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.WRATH);
+		} else if (coreSelector [currentPlayer] == 1) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.SLOTH);
+		} else if (coreSelector [currentPlayer] == 2) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
+		} else {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
+		}
+		int dmg = stats.attack;
+		int hp = stats.startingHP;
+		int rng = stats.range;
+		int move = stats.move;
+		GameObject.Find ("CoreInfo").GetComponent<Text> ().text = "  " + hp + "     " + dmg + "\n   " + rng + "      " + move;
+	}
+	public void changeCurrentPlayer(int cursor){
+		currentPlayer = cursor;
+		currentCore.overrideSprite = SpritesLoader.GetInstance ().GetResource (corePaths [coreSelector [cursor]]);
+		currentSprite.color = GameObject.Find ("Sprite"+cursor).GetComponent<Image> ().color;
+		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector [currentPlayer]];
+		changeInfo();
+		GameObject.Find ("PlayerText").GetComponent<Text> ().text = "PLAYER " + cursor;
+	}
+
+	public void changeCore(int cursor){
+		coreSelector[currentPlayer] += cursor;
+		if (coreSelector[currentPlayer] > corePaths.Count - 1)
+			coreSelector[currentPlayer] = 0;
+		else if (coreSelector[currentPlayer] < 0)
+			coreSelector[currentPlayer] = corePaths.Count - 1;
+		currentCore.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
+		changeInfo ();
+		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector[currentPlayer]];
+		GameObject.Find("Core"+currentPlayer).GetComponent<Image> ().overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths [coreSelector[currentPlayer]]);
+
+		if (coreSelector [currentPlayer] == 0) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.WRATH;
+		} else if (coreSelector [currentPlayer] == 1) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.SLOTH;
+		} else if (coreSelector [currentPlayer] == 2) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.GLUTTONY;
+		}	
+		/*else if (currentPlayer == 2)
+			GameSelection.player2Core = coreSelector[currentPlayer];
+		else if (currentPlayer == 3)
+			GameSelection.player3Core = coreSelector[currentPlayer];
+		else if (currentPlayer == 4)
+			GameSelection.player4Core = coreSelector[currentPlayer];*/
+	}
+
+	public void changeColor(){
+		colors.Enqueue (currentSprite.color);
+		currentSprite.color = colors.Dequeue ();
+		GameObject.Find ("Sprite"+currentPlayer).GetComponent<Image> ().color = currentSprite.color;
+
+		GameSelection.playerColors [currentPlayer - 1] = currentSprite.color;
+		/*if (currentPlayer == 1)
+			GameSelection.player1Color = currentSprite.color;
+		else if (currentPlayer == 2)
+			GameSelection.player2Color = currentSprite.color;
+		else if (currentPlayer == 3)
+			GameSelection.player3Color = currentSprite.color;
+		else if (currentPlayer == 4)
+			GameSelection.player4Color = currentSprite.color;
+		*/
+	}	
+	/*
 	public void changeMap(int cursor){
 		mapSelector+=cursor;
 		if (mapSelector > mapTypes.Count-1) {
@@ -154,8 +236,8 @@ public class SelectorController : MonoBehaviour {
 			mapSelector = mapTypes.Count - 1;
 		}
 		loadMap ();
-	}
-
+	}*/
+	/*
 	public void loadMap(){
 		foreach (GameObject elem in GameObject.FindGameObjectsWithTag ("Tile")){
 			GameObject.Destroy (elem);
@@ -190,7 +272,7 @@ public class SelectorController : MonoBehaviour {
 		//seededMap.Add(new SeededMap(35,0.5f,0007887));
 		//seededMap.Add(new SeededMap(17,0.9f,000712341237));
 		return allSeeded;
-	}
+	}*/
 
 	public void ModeSelection(){
 		GameObject s = GameObject.Find("ModeSelection");
@@ -209,7 +291,7 @@ public class SelectorController : MonoBehaviour {
 		}
 	}
 }
- enum MapTypeSelectionTypes{
+/* enum MapTypeSelectionTypes{
 	Random,
 	Seeded,
 	Manual
@@ -254,4 +336,4 @@ class MapTypeSelection{
 	public SeededMap GetTypeSeeded(){
 		return seed;
 	}
-}
+}*/

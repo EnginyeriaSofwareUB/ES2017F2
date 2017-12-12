@@ -5,14 +5,18 @@ using UnityEngine;
 
 public class AIConquer : AIInterface{
 
-    public override AISlimeAction GetAction(GameController gameController){
-        // Retornamos una accion aleatoria.
-        AIGameState gameState = gameController.GetGameState();
-        List<AIRawSlimeAction> legalActions = GetLegalActions(gameState);
-        if(legalActions.Count == 0) return null;
-        AIRawSlimeAction picked = legalActions[(int)((new System.Random()).Next(legalActions.Count))];
+    public AIConquer(GameController gameController) : base(gameController){}
+
+    protected override void ThinkAction(){
+        AIRawSlimeAction action = GetActionWithAlphaBeta(gameController.GetGameState());
         // Creamos la AISlimeAction
-        Debug.Log(picked.ToString());
-        return picked.CopyToRealAction(gameController);
+        thoughtAction = action.CopyToRealAction(gameController);
+    }
+
+    protected override double GetStateEvaluation(AIGameState state){
+        RawPlayer AIPlayer = state.GetPlayerById(playerId);
+        int plConquered = AIPlayer.GetConqueredTiles().Count;
+        int plSlimes = AIPlayer.GetSlimes().Count;
+        return  plConquered * 12 + plSlimes * 5;
     }
 }

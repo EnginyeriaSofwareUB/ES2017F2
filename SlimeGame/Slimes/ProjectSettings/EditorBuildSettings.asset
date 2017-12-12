@@ -23,3 +23,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
     guid: 9ce3f646dc52512439ad0a8147a8d82d
+  - enabled: 1
+    path: Assets/Scenes/ChallengeSelection.unity
+    guid: 5f7511f9f12fdb84fa1934794e6aa623
