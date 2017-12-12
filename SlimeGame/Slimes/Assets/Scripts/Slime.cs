@@ -47,15 +47,7 @@ public class Slime : MonoBehaviour {
         s += "Rango de movimiento: " + core.move + "\n";
         s += "Fuerza de ataque: " + core.attack + "\n";
         s += "Coste de atacar: " + core.attackCost + "\n";
-        if(element!= StatsFactory.GetStat(ElementType.NONE))
-        {
-            s += "Recubrimiento de  \n";
-        }
-        else
-        {
-            s += "Sin recubrimiento\n";
-        }
-
+        s += GetElement() + "\n";
         return s;
     }
 
@@ -152,4 +144,25 @@ public class Slime : MonoBehaviour {
 		return new RawSlime(id, maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
 	}
 
+    public string GetElement()
+    {
+        if (element == StatsFactory.GetStat(ElementType.NONE))
+        {
+            return "Sin recubrimiento";
+        }
+        else if(element == StatsFactory.GetStat(ElementType.EARTH))
+        {
+           return "Recubrimiento de tierra";
+        }
+        else if (element == StatsFactory.GetStat(ElementType.FIRE))
+        {
+            return "Recubrimiento de fuego";
+        }
+        else if (element == StatsFactory.GetStat(ElementType.WATER))
+        {
+            return "Recubrimiento de agua";
+        }
+        return "Recubrimiento desconocido";
+
+    }
 }
