@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player {
 
+	public static int ID = 0;
+	public int id;
 	public StatsContainer statsCoreInfo;
 	private string name;
 	private int actions;
@@ -29,6 +31,9 @@ public class Player {
 		this.statsCoreInfo = coreInfo;
         updateActions();
 		isAI = false;
+
+		this.id = ID;
+		ID++;
 	}
 
 	public Player(string name, float actionsPerSlime,StatsContainer coreInfo, AIInterface brain){
@@ -40,6 +45,9 @@ public class Player {
 		this.statsCoreInfo = coreInfo;
         updateActions();
 		SetBrain(brain);
+
+		this.id = ID;
+		ID++;
 	}
 
 	public void SetColor(Color c){
@@ -80,9 +88,28 @@ public class Player {
 	
 	}
 
-	public AISlimeAction GetAction(GameController g){
-		if (brain != null) {
-			return brain.GetAction (g);
+	public bool ThinkAction(){
+		if(!IsThinking()){
+			brain.Start();
+			return true;
+		}
+		return false;
+	}
+
+	public bool IsThinking(){
+		if(brain != null && brain.IsDone){
+			return false;
+		}
+		return true;
+	}
+
+	public void StopThinking(){
+		brain.Abort();
+	}
+
+	public AISlimeAction GetThoughtAction(){
+		if (!IsThinking()) {
+			return brain.PopAction ();
 		}
 		return null;
 	}
@@ -174,5 +201,21 @@ public class Player {
 
 	public int NumConqueredTiles(){
 		return conqueredTiles.Count;
+	}
+
+	public List<Tile> GetConqueredTiles(){
+		return conqueredTiles;
+	}
+
+	public RawPlayer GetRawCopy(){
+		RawPlayer rawPlayer = new RawPlayer(id, actions, statsCoreInfo, actionsPerSlime);
+		List<RawSlime> rawSlimes = new List<RawSlime>();
+		foreach(Slime sl in slimes){
+			RawSlime rawSl = sl.GetRawCopy();
+			rawSl.SetPlayer(rawPlayer);
+			rawSlimes.Add(rawSl);
+		}
+		rawPlayer.SetSlimes(rawSlimes);
+		return rawPlayer;
 	}
 }

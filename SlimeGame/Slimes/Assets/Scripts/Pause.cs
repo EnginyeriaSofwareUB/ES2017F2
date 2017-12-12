@@ -31,6 +31,12 @@ public class Pause : MonoBehaviour {
 		
     public void showHidePausePanel(){
 		pausePanel.SetActive(!pausePanel.activeSelf);
+		Text[] txs = FindObjectsOfType<Text>(); //agafem tots els que tenen text
+		foreach (Text t in txs){
+			//li posem de text el que tenen assignat segons l'idioma seleccionats
+			Debug.Log(t.name);
+			t.text = Languages.GetString(t.name,t.text);
+		}
 		if (!pausePanel.activeSelf){
             Time.timeScale = 1;
         } else {
@@ -40,6 +46,12 @@ public class Pause : MonoBehaviour {
 
     public void showHideSettingsPanel() {
 		settingsPanel.SetActive(!settingsPanel.activeSelf);
+		Text[] txs = FindObjectsOfType<Text>(); //agafem tots els que tenen text
+		foreach (Text t in txs){
+			//li posem de text el que tenen assignat segons l'idioma seleccionats
+			Debug.Log(t.name);
+			t.text = Languages.GetString(t.name,t.text);
+		}
 		if (settingsPanel.activeSelf) {
 			onValueChange (true);
 		}
@@ -72,13 +84,13 @@ public class Pause : MonoBehaviour {
 	public void onValueChange(bool modifyBar){
 		if (modifyBar) {
 			modifyingBar = true;
-			GameObject.Find ("Music").GetComponent<Slider> ().value = music;
-			GameObject.Find ("Effects").GetComponent<Slider> ().value = effects;
+			GameObject.Find ("MusicSlider").GetComponent<Slider> ().value = music;
+			GameObject.Find ("EffectsSlider").GetComponent<Slider> ().value = effects;
 			modifyingBar = false;
 		} else {
 			if (!modifyingBar) {
-				effects = GameObject.Find ("Effects").GetComponent<Slider> ().value;
-				music = GameObject.Find ("Music").GetComponent<Slider> ().value;
+				effects = GameObject.Find ("EffectsSlider").GetComponent<Slider> ().value;
+				music = GameObject.Find ("MusicSlider").GetComponent<Slider> ().value;
 				saveSet ();
 			}
 		}

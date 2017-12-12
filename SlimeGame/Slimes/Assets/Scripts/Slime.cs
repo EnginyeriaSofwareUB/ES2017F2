@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slime : MonoBehaviour {
+	private int id;
 	private Player player;
 	public Tile actualTile;
-	public Dictionary<TileData,List<TileData>> possibleMovements;
-	public bool rangeUpdated;
 	private float mass;
 	private SpriteAnimation canimation;
 	private float maxMass = 300f;
@@ -18,7 +17,6 @@ public class Slime : MonoBehaviour {
 	public GameObject face;
 	// Use this for initialization
 	void Start () {
-		rangeUpdated = false;
 		elementType = ElementType.NONE;
 		ChangeElement(elementType);
 	}
@@ -60,6 +58,14 @@ public class Slime : MonoBehaviour {
 
         return s;
     }
+
+	public void SetId(int id){
+		this.id = id;
+	}
+
+	public int GetId(){
+		return this.id;
+	}
 	public void SetActualTile(Tile newTile){
 		if(actualTile!=null)actualTile.SetSlimeOnTop(null);
 		actualTile=newTile;
@@ -85,16 +91,22 @@ public class Slime : MonoBehaviour {
 	}
 
 	public int GetMovementRange(){
+		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.move + element.move;
 	}
 
 	public int GetAttackRange(){
+		if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.range + element.range;
 	}
 
 	public void changeMass(float q){
 		SetMass (mass + q);
 	}
+
+    public bool CheckId(int id){
+        return this.id == id;
+    }
 
 	public float getDamage(){
 		return player.statsCoreInfo.attack + element.attack;
@@ -135,4 +147,9 @@ public class Slime : MonoBehaviour {
 			canimation.playAnimation ();
 		}
 	}
+
+	public RawSlime GetRawCopy(){
+		return new RawSlime(id, maxMass, minMass, mass, element, actualTile.GetTileData().GetRawCopy());
+	}
+
 }

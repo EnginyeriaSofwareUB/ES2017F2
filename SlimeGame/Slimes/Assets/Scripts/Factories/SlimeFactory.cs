@@ -2,6 +2,7 @@
 using System;
 
 public class SlimeFactory{
+    private static int ID = 0;
 
 	public static Slime instantiateSlime(Player pl,int x,int y){
 		GameObject slimeGameObjectContainer = new GameObject("Slime " + (pl.GetNumSlimes() + 1).ToString() + " - " + pl.GetName());
@@ -30,6 +31,9 @@ public class SlimeFactory{
 		slime.GetComponent<Slime>().setPlayer(pl);
 
 		slime.transform.localPosition = new Vector3 (0f, 0.22f, 0f);
+		
+		slime.GetComponent<Slime>().SetId(ID);
+		ID++;
 
 		return slime.GetComponent<Slime> ();
 	}
