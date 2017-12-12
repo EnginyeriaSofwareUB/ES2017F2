@@ -63,7 +63,7 @@ public class ChallengeSelection : MonoBehaviour {
         {
             //Debug.Log("cinque repte");
         }
-        SceneManager.LoadScene("Main");
+        //SceneManager.LoadScene("Main");
     }
 }
 
