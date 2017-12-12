@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIConquer : AIInterface{
+public class AIMasa : AIInterface{
 
-    public AIConquer(GameController gameController) : base(gameController){}
+    public AIMasa(GameController gameController) : base(gameController){}
 
     protected override void ThinkAction(){
         AIRawSlimeAction action = GetActionWithAlphaBeta(gameController.GetGameState());
@@ -17,6 +17,6 @@ public class AIConquer : AIInterface{
         RawPlayer AIPlayer = state.GetPlayerById(playerId);
         int plConquered = AIPlayer.GetConqueredTiles().Count;
         int plSlimes = AIPlayer.GetSlimes().Count;
-        return  plConquered * 12 + plSlimes * 5;
+        return  0;
     }
 }
