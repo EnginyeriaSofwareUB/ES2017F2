@@ -120,8 +120,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats), AIManager.GetAIByVictoryCondition(this, condicionVictoria))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), new AIRandom(this)));
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), AIManager.GetAIByVictoryCondition(this, condicionVictoria) ));
             players[0].SetColor(GameSelection.player1Color);
             players[1].SetColor(GameSelection.player2Color);
             matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
@@ -529,7 +529,7 @@ public class GameController : MonoBehaviour
 	public void RemoveSlime(Slime slimeToRemove){
 		foreach (Player player in players){
 			if (player.IsSlimeOwner(slimeToRemove)) player.RemoveSlime(slimeToRemove);
-            player.updateActions();
+            //player.updateActions();
             }
 	}
 
@@ -674,7 +674,7 @@ public class GameController : MonoBehaviour
     
     void OnDestroy(){
         foreach(Player pl in players){
-            if(pl.IsThinking()) pl.StopThinking();
+            if(pl.isPlayerAI() && pl.IsThinking()) pl.StopThinking();
         }
 
     }

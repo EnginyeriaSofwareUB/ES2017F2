@@ -90,7 +90,7 @@ public class RawSlime{
     }
 
     public void SetMass(float newmass){
-        mass += newmass;
+        mass = newmass;
     }
 
     public int GetId(){
@@ -102,8 +102,9 @@ public class RawSlime{
     }
 
     public RawSlime Split(TileData toSplit){
-        mass = (mass/2.0f);
-        RawSlime newSlime =  new RawSlime(MAX_MASS, MIN_MASS, mass, element, toSplit);
+        float newmass = (mass/2.0f);
+        this.mass = newmass;
+        RawSlime newSlime =  new RawSlime(MAX_MASS, MIN_MASS, newmass, element, toSplit);
         newSlime.SetPlayer(player);
         player.AddSlime(newSlime);
         return newSlime;

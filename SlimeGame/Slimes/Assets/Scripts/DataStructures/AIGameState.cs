@@ -118,8 +118,8 @@ public class AIGameState {
         RawSlime actionSlime = FindSlimeById(actionSlimeId);
         RawSlime fusionTargetSlime = FindSlimeById(targetSlimeId);
 
-        fusionTargetSlime.GetPlayer().RemoveSlime(actionSlime);
 		fusionTargetSlime.SetMass (actionSlime.GetMass() + fusionTargetSlime.GetMass());
+        fusionTargetSlime.GetPlayer().RemoveSlime(actionSlime);
 
         SpendActions(1);
     }
@@ -220,7 +220,7 @@ public class AIGameState {
 			if (p != slime.GetPlayer()){
 				foreach(RawSlime s in p.GetSlimes()){
 					Vector2 slPos = s.GetActualTile().getPosition();		
-					if (Matrix.GetDistance(slPos, myPos) <= s.GetAttackRange()){
+					if (Matrix.GetDistance(slPos, myPos) <= slime.GetAttackRange()){
 						canAttack.Add(s);
 					}
 				}
@@ -320,4 +320,22 @@ public class AIGameState {
         }
         return null;
     }
+
+    public List<RawPlayer> GetPlayers(){
+        return players;
+    }
+
+    public int GetDistanceToCloserEnemy(RawSlime slime){
+        int distance = Int16.MaxValue;
+		Vector2 myPos = slime.GetActualTile().getPosition();
+		foreach(RawPlayer p in players){
+			if (p != slime.GetPlayer()){
+				foreach(RawSlime s in p.GetSlimes()){
+					Vector2 slPos = s.GetActualTile().getPosition();		
+					distance = Mathf.Min(distance, Matrix.GetDistance(slPos, myPos));
+				}
+			}
+		}
+		return distance;
+	}
 }

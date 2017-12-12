@@ -88,8 +88,11 @@ public abstract class AIInterface : ThreadedJob{
             // Actualizamos el mejor valor del maxValue
             if(bestValue > alpha) alpha = bestValue;
 
+            //if(depth == 0) Debug.Log("[MAX] " + succValue + "-" + action);
+
         }
 
+        //if(depth == 0) Debug.Log("[MAX] CHOSEN: " + bestValue + "-" + bestAction);
         return new KeyValuePair<AIRawSlimeAction, double>(bestAction, bestValue);
     }
 
@@ -116,6 +119,9 @@ public abstract class AIInterface : ThreadedJob{
             if(succValue < bestValue){
                 bestValue = succValue;
                 bestAction = action;
+                
+
+            //Debug.Log("[MIN] " + succValue + "-" + action);
             }
 
             // Si es valor menor que alpha (maximo actual del maxValue), no hace falta seguir
@@ -123,10 +129,9 @@ public abstract class AIInterface : ThreadedJob{
 
             // Actualizamos el mejor valor del minValue
             if(bestValue < beta) beta = bestValue;
-
-
         }
 
+        //Debug.Log("[MIN] CHOSEN: " + bestValue + "-" + bestAction);
         return new KeyValuePair<AIRawSlimeAction, double>(bestAction, bestValue);
 
     }
