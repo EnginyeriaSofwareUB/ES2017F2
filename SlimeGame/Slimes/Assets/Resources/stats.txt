@@ -83,5 +83,35 @@
 		"attackCost":0,
 		"picDirection":"Slimes/Elements/Earth_",
 		"picCount":5
+	},
+	"Steam":{
+		"name":"Steam",
+		"attack":2,
+		"movementRange":2,
+		"attackRange":0,
+		"startingHP":0,
+		"attackCost":0,
+		"picDirection":"Slimes/Elements/vapor",
+		"picCount":11
+	},
+	"Lava":{
+		"name":"Lava",
+		"attack":2,
+		"movementRange":0,
+		"attackRange":2,
+		"startingHP":0,
+		"attackCost":0,
+		"picDirection":"Slimes/Elements/lavaSlime",
+		"picCount":12
+	},
+	"Mud":{
+		"name":"Mud",
+		"attack":0,
+		"movementRange":2,
+		"attackRange":2,
+		"startingHP":0,
+		"attackCost":0,
+		"picDirection":"Slimes/Elements/Mud_slime",
+		"picCount":4
 	}
 }

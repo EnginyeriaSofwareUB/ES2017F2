@@ -138,6 +138,39 @@ public class Slime : MonoBehaviour {
 			canimation.LoadSprites (element.picDirection, element.picCount);
 			canimation.playAnimation ();
 		}
+		if (elementType == ElementType.FIRE ||
+		   elementType == ElementType.WATER ||
+		   elementType == ElementType.EARTH) {
+			switch (newElement) {
+			case ElementType.EARTH:
+				if (elementType == ElementType.FIRE) {
+					elementType = ElementType.LAVA;
+				} else if (elementType == ElementType.WATER) {
+					elementType = ElementType.MUD;
+				}
+				break;
+			case ElementType.FIRE:
+				if (elementType == ElementType.EARTH) {
+					elementType = ElementType.LAVA;
+				} else if (elementType == ElementType.WATER) {
+					elementType = ElementType.STEAM;
+				}
+				break;
+			case ElementType.WATER:
+				if (elementType == ElementType.FIRE) {
+					elementType = ElementType.STEAM;
+				} else if (elementType == ElementType.EARTH) {
+					elementType = ElementType.MUD;
+				}
+				break;
+			default:
+				break;
+			}
+			element = StatsFactory.GetStat (elementType);
+			canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer> ());
+			canimation.LoadSprites (element.picDirection, element.picCount);
+			canimation.playAnimation ();
+		}
 	}
 
 	public RawSlime GetRawCopy(){

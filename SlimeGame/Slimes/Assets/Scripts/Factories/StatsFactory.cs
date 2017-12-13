@@ -20,6 +20,12 @@ public class StatsFactory
 			return (StatsContainer) statsContainer["Fire"];
 		case ElementType.WATER:
 			return (StatsContainer) statsContainer["Water"];
+		case ElementType.LAVA:
+			return (StatsContainer) statsContainer["Lava"];
+		case ElementType.STEAM:
+			return (StatsContainer) statsContainer["Steam"];
+		case ElementType.MUD:
+			return (StatsContainer) statsContainer["Mud"];
 		case ElementType.NONE:
 			return (StatsContainer) statsContainer["None"];
 		default:

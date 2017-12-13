@@ -188,9 +188,9 @@ public class UIController : MonoBehaviour {
 	//Metode que mostra la info que li passis
     public void ShowCanvasInfo(string info)
     {
-        canvasInfo.SetActive(true);
-        Text t = canvasInfo.GetComponentInChildren<Text>();
-        t.text = info;
+        //canvasInfo.SetActive(true);
+        //Text t = canvasInfo.GetComponentInChildren<Text>();
+        //t.text = info;
     }
 	
     //Desactiva el canvas

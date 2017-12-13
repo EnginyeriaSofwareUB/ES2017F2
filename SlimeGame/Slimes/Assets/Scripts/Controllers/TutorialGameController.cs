@@ -9,6 +9,7 @@ public class TutorialGameController: GameController
 	public InGameMarker marker;
 	private TutorialFSMStatus tutorialStatus;
 	protected InputController inputController;
+	private Slime playerSlime;
 	void Start(){
 
 		inputController = Camera.main.GetComponent<TutorialInputController>();
@@ -25,7 +26,7 @@ public class TutorialGameController: GameController
 		//players.Add(new Player("IA Tutorial", 1, StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
 		players[0].SetColor(new Color(1,1,1));
 		//players[1].SetColor(new Color(1,0,1));
-		Slime playerSlime = SlimeFactory.instantiateSlime(players[0], new Vector2(0f,-2f));
+		playerSlime = SlimeFactory.instantiateSlime(players[0], new Vector2(0f,-2f));
 		//SlimeFactory.instantiateSlime(players[1], new Vector2(0f,2f));
 		status = GameControllerStatus.WAITINGFORACTION;
 		uiController.UpdateRound(currentTurn+1);
@@ -97,8 +98,9 @@ public class TutorialGameController: GameController
 		texts.Add ("Prueba a moverte aquí");
 		//--
 		texts.Add ("Muy bien.\nAhora vuelve a donde estabas");
-		texts.Add ("Perfecto");
 		//--
+		texts.Add ("Perfecto");
+
 		texts.Add ("¿Sabias que los slimes pueden hacer muchas mas cosas además de moverse?");
 		texts.Add ("Ya verás, si mantienes pulsado el slime verás que se marcan alrededor unas casillas.\nPrueba a arrastrar y soltar encima de esas casillas a ver que pasa");
 		//--
@@ -171,7 +173,16 @@ public class TutorialGameController: GameController
 			tutorialStatus = TutorialFSMStatus.MOVEFIRSTSLIME;
 			break;
 		case TutorialFSMStatus.MOVEFIRSTSLIME:
-			Debug.Log ("Sida");
+			texts.Add ("Muy bien.\nAhora vuelve a donde estabas");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+
+			});
+			inputController.SetActiveInput (true);
+			inputController.SetActiveMove (true);
+			marker.SetActive(true);
+			marker.SetParentTransform (MapDrawer.GetTileAt (0, -2).transform);
 			break;
 		case TutorialFSMStatus.RETURNSLIME:
 			break;
