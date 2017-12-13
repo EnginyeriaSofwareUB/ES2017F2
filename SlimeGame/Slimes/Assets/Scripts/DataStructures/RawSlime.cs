@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class RawSlime{
     private static int ID = 0;
     private int id;
@@ -17,6 +19,10 @@ public class RawSlime{
         actualTile.SetSlimeOnTop(this);
         this.id = id;
         if(id > ID) ID = id+1; // ID sempre es el maxim de tots els id de RawSlime
+
+        if (stats == null) {
+			element = StatsFactory.GetStat (ElementType.NONE);
+        }
     }
 
     public RawSlime(float maxmass, float minmas, float mass, StatsContainer stats, TileData tile){
@@ -28,6 +34,10 @@ public class RawSlime{
         actualTile.SetSlimeOnTop(this);
         this.id = ID;
         ID++;
+
+        if (stats == null) {
+			element = StatsFactory.GetStat (ElementType.NONE);
+        }
     }
 
 	public int GetMovementRange(){
@@ -35,6 +45,9 @@ public class RawSlime{
 	}
 
     public int GetAttackRange(){
+        if(player == null) Debug.Log("PLAYER NULL");
+        else if(player.statsCoreInfo == null) Debug.Log("PLAYER NULL");
+        else if(element == null) Debug.Log("ELEMENT NULL");
 		return player.statsCoreInfo.range + element.range;
 	}
 
@@ -77,7 +90,7 @@ public class RawSlime{
     }
 
     public void SetMass(float newmass){
-        mass += newmass;
+        mass = newmass;
     }
 
     public int GetId(){
@@ -89,8 +102,10 @@ public class RawSlime{
     }
 
     public RawSlime Split(TileData toSplit){
-        mass = (mass/2.0f);
-        RawSlime newSlime =  new RawSlime(MAX_MASS, MIN_MASS, mass, element, toSplit);
+        float newmass = (mass/2.0f);
+        this.mass = newmass;
+        RawSlime newSlime =  new RawSlime(MAX_MASS, MIN_MASS, newmass, element, toSplit);
+        newSlime.SetPlayer(player);
         player.AddSlime(newSlime);
         return newSlime;
     }

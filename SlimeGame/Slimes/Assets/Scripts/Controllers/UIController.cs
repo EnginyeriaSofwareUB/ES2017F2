@@ -62,14 +62,14 @@ public class UIController : MonoBehaviour {
     // Use this for initialization
     void Start () {
 		gameController = Camera.main.GetComponent<GameController>();
-        //canvasInfo = GameObject.Find("Dialog");
-        //DisableCanvas();
-		/*
+        canvasInfo = GameObject.Find("Dialog");
+        DisableCanvas();
+		
         RectTransform rt = canvasInfo.GetComponent(typeof(RectTransform)) as RectTransform;
         rt.sizeDelta =  new Vector2(200, 150); ;
 
         RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
-        rt2.sizeDelta = new Vector2(200, 150);*/
+        rt2.sizeDelta = new Vector2(200, 150);
         //Si clica OK desactiva el canvas
 		if (canvasInfo != null) {
 			canvasInfo.GetComponentInChildren<Button> ().onClick.AddListener (DisableCanvas);
@@ -188,13 +188,13 @@ public class UIController : MonoBehaviour {
 	}
 
 	//Metode que mostra la info que li passis
-    /*	public void ShowCanvasInfo(string info)
+    public void ShowCanvasInfo(string info)
     {
         canvasInfo.SetActive(true);
         Text t = canvasInfo.GetComponentInChildren<Text>();
         t.text = info;
     }
-	*/
+	
     //Desactiva el canvas
     public void DisableCanvas()
     {

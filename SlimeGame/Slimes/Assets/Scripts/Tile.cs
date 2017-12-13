@@ -34,7 +34,22 @@ public class Tile : MonoBehaviour {
 
     public override string ToString()
     {
-		return data.ToString();
+        if (elementType.Equals(ElementType.NONE))
+        {
+            return "Casilla normal";
+        } else if (elementType.Equals(ElementType.EARTH))
+        {
+            return "Casilla de tierra";
+        }
+        else if (elementType.Equals(ElementType.WATER))
+        {
+            return "Casilla de agua";
+        }
+        else if (elementType.Equals(ElementType.FIRE))
+        {
+            return "Casilla de fuego";
+        }
+        return "Casilla de elemento desconocido";
     }
 
 	public TileData GetTileData(){
