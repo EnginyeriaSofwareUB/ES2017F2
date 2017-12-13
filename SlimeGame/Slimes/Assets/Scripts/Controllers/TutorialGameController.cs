@@ -100,7 +100,6 @@ public class TutorialGameController: GameController
 		texts.Add ("Muy bien.\nAhora vuelve a donde estabas");
 		//--
 		texts.Add ("Perfecto");
-
 		texts.Add ("¿Sabias que los slimes pueden hacer muchas mas cosas además de moverse?");
 		texts.Add ("Ya verás, si mantienes pulsado el slime verás que se marcan alrededor unas casillas.\nPrueba a arrastrar y soltar encima de esas casillas a ver que pasa");
 		//--
@@ -183,22 +182,76 @@ public class TutorialGameController: GameController
 			inputController.SetActiveMove (true);
 			marker.SetActive(true);
 			marker.SetParentTransform (MapDrawer.GetTileAt (0, -2).transform);
+			tutorialStatus = TutorialFSMStatus.RETURNSLIME;
 			break;
 		case TutorialFSMStatus.RETURNSLIME:
+			texts.Add ("Perfecto");
+			texts.Add ("¿Sabias que los slimes pueden hacer muchas mas cosas además de moverse?");
+			texts.Add ("Ya verás, si mantienes pulsado el slime verás que se marcan alrededor unas casillas.\nPrueba a arrastrar y soltar encima de esas casillas a ver que pasa");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				inputController.SetActiveInput (true);
+				marker.SetActive(true);
+				marker.SetParentTransform (MapDrawer.GetTileAt (0, -1).transform);
+			});
+			inputController.SetActiveInput (false);
+			inputController.SetActiveMove (false);
+			inputController.SetActiveSplit (true);
+			marker.SetActive(false);
+			tutorialStatus = TutorialFSMStatus.SPLITSLIME;
 			break;
 		case TutorialFSMStatus.SPLITSLIME:
+			texts.Add ("Wow, se han separado");
+			texts.Add ("Como has conseguido separarte puedes ovservar que la cantidad de acciones que puedes hacer en un turno ha aumentado");
+			texts.Add ("Mueve el nuevo slime aquí");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				inputController.SetActiveInput (true);
+				marker.SetActive (true);
+				marker.SetParentTransform (MapDrawer.GetTileAt (1, -2).transform);
+			});
+			inputController.SetActiveSplit (false);
+			inputController.SetActiveInput (false);
+			inputController.SetActiveMove (true);
+			tutorialStatus = TutorialFSMStatus.MOVESECONDARYSLIME;
 			break;
 		case TutorialFSMStatus.MOVESECONDARYSLIME:
+			texts.Add ("Para juntar tu slime, has de hacer lo mismo que para separarlo pero sobre el slime nuevo");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				inputController.SetActiveInput (true);
+				marker.SetActive (true);
+				marker.SetParentTransform (MapDrawer.GetTileAt (1, -2).transform);
+			});
+			tutorialStatus = TutorialFSMStatus.JOINSLIME;
 			break;
 		case TutorialFSMStatus.JOINSLIME:
+			texts.Add ("¡Cuidado! Un slime enemigo ha aparecido, prueba a atacarle");
+			texts.Add ("Mmmmm. Parece que tu ataque no le ha hecho mucho daño");
+			tutorialStatus = TutorialFSMStatus.ATTACKSLIME;
 			break;
 		case TutorialFSMStatus.ATTACKSLIME:
+			texts.Add ("¿Por que no conviertes a tu slime en un slime de fuego, a ver si así haces mas daño?");
+			texts.Add ("Para ello, primero mueve tu slime a esta casilla de fuego");
+			tutorialStatus = TutorialFSMStatus.MOVETOCONQUER;
 			break;
 		case TutorialFSMStatus.MOVETOCONQUER:
+			texts.Add ("Ahora selecciona tu slime y vuelve a hacer click en el");
+			tutorialStatus = TutorialFSMStatus.CONQUERTILE;
 			break;
 		case TutorialFSMStatus.CONQUERTILE:
+			texts.Add ("Así se hace, ahora tu slime tiene el <b>recubrimiento<b> de fuego");
+			texts.Add ("Ahora vuelve a atacar al slime enemigo");
+			tutorialStatus = TutorialFSMStatus.ATTACKWITHFIRE;
 			break;
 		case TutorialFSMStatus.ATTACKWITHFIRE:
+			texts.Add ("Has conseguido acabar con él");
+			texts.Add ("Ahora ya conoces las bases de <b>Slimers<b>");
+			texts.Add ("Explora los diferentes retos para descubrir sus verdaderos límites, si es que los tienen");
+			tutorialStatus = TutorialFSMStatus.TUTORIALENDED;
 			break;
 		}
 	}
@@ -218,15 +271,34 @@ public class TutorialGameController: GameController
 	}
 
 	public override List<Tile> GetJoinTile(Slime slime){
-		return new List<Tile>();
+		List<Tile> tiles = new List<Tile> ();
+		switch (tutorialStatus) {
+		case TutorialFSMStatus.JOINSLIME:
+			if (selectedSlime != playerSlime && selectedSlime != null) {
+				tiles.Add (MapDrawer.GetTileAt (0, -2));
+			}
+			break;
+		}
+		return tiles;
 	}
 
 	public override List<Tile> GetSplitRangeTiles(Slime slime){
-		return new List<Tile>();
+		List<Tile> tiles = new List<Tile> ();
+		switch (tutorialStatus) {
+		case TutorialFSMStatus.SPLITSLIME:
+			tiles.Add (MapDrawer.GetTileAt (0, -1));
+			break;
+		}
+		return tiles;
 	}
 
 	public override List<Tile> GetSlimesInAttackRange(Slime slime){
-		return new List<Tile>();
+		List<Tile> tiles = new List<Tile> ();
+		switch (tutorialStatus) {
+		default:
+			break;
+		}
+		return tiles;
 	}
 
 	public override List<Tile> GetPossibleMovements(Slime slime){
@@ -239,8 +311,12 @@ public class TutorialGameController: GameController
 			tiles.Add (MapDrawer.GetTileAt (0, -2));
 			break;
 		case TutorialFSMStatus.MOVESECONDARYSLIME:
+			if (selectedSlime != playerSlime && selectedSlime != null) {
+				tiles.Add (MapDrawer.GetTileAt (1, -2));
+			}
 			break;
 		case TutorialFSMStatus.MOVETOCONQUER:
+			tiles.Add (MapDrawer.GetTileAt (-1, -1));
 			break;
 		}
 		return tiles;

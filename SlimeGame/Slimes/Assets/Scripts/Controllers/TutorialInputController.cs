@@ -34,4 +34,44 @@ public class TutorialInputController: InputController
 			tgc.tutorialFSMCheck ();
 		}
 	}
+
+	protected override void OnMove(){
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.MOVEFIRSTSLIME) {
+			tgc.tutorialFSMCheck ();
+		}else if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.RETURNSLIME) {
+			tgc.tutorialFSMCheck ();
+		}else if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.MOVESECONDARYSLIME) {
+			tgc.tutorialFSMCheck ();
+		}else if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.MOVETOCONQUER) {
+			tgc.tutorialFSMCheck ();
+		}
+	}
+
+	protected override void OnSplit(){
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.SPLITSLIME) {
+			tgc.tutorialFSMCheck ();
+		}
+	}
+
+	protected override void OnJoin(){
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.JOINSLIME) {
+			tgc.tutorialFSMCheck ();
+		}
+	}
+
+	protected override void OnConquer ()
+	{
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.CONQUERTILE) {
+			tgc.tutorialFSMCheck ();
+		}
+	}
+
+	protected override void OnAttack ()
+	{
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.ATTACKSLIME) {
+			tgc.tutorialFSMCheck ();
+		} else if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.ATTACKWITHFIRE) {
+			tgc.tutorialFSMCheck ();
+		}
+	}
 }

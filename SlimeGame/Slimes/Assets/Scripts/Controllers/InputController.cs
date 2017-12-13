@@ -73,6 +73,7 @@ public class InputController : MonoBehaviour
 					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
 						if(ConquerEnabled){
 							gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
+							OnConquer ();
 						}//uiController.DisableCanvas ();
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
@@ -90,6 +91,7 @@ public class InputController : MonoBehaviour
 							if (isMoveTile) {
 								//Debug.Log (Time.time + "Move");
 								gameController.DoAction(new SlimeAction(ActionType.MOVE,target));
+								OnMove ();
 								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
@@ -123,12 +125,14 @@ public class InputController : MonoBehaviour
 					}
 					if (s != null && s!=gameController.GetSelectedSlime() && joinTiles.Contains(s.actualTile)) {
 						//Debug.Log (Time.time+"Join");
+						OnJoin ();
 						gameController.DoAction(new SlimeAction(ActionType.FUSION,s));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 					}else if(t!=null && splitTiles.Contains(t)){
 						//Debug.Log (Time.time+"Split");
+						OnSplit ();
 						gameController.DoAction(new SlimeAction(ActionType.SPLIT,t));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
@@ -225,5 +229,21 @@ public class InputController : MonoBehaviour
 
 	protected virtual void OnMove(){
 		
+	}
+
+	protected virtual void OnSplit(){
+	
+	}
+
+	protected virtual void OnJoin(){
+	
+	}
+
+	protected virtual void OnConquer(){
+	
+	}
+
+	protected virtual void OnAttack(){
+	
 	}
 }
