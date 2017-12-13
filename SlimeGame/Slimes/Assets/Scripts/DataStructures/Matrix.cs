@@ -6,7 +6,11 @@ using System;
 public class Matrix {
 	
 	private Dictionary<int, Dictionary<int,TileData>> map;
-	private int shifted;
+
+	public Matrix(Dictionary<int, Dictionary<int,TileData>> map){
+		this.map = map;
+	}
+
 	public Matrix(List<List<TileType>> matrix){
 		//input 		
 		map = new Dictionary<int, Dictionary<int,TileData>> ();
@@ -15,7 +19,7 @@ public class Matrix {
 		int middleCell = (int)(matrix [middleRow].Count / 2); 
 		int firstY = middleRow-middleCell-(int)((matrix.Count)/4);
 		if((matrix.Count)%4 ==1)firstY += 1;
-		shifted = 0;
+		int shifted = 0;
 		if (matrix[0].Count<matrix[1].Count){
 			shifted = 1;
 		}
@@ -55,9 +59,67 @@ public class Matrix {
 		dict[TileType.Sand]=0.7f;
 		
 	    CreateTiles(maxim, totalNumTiles,probabilityNull, seed);
-		DistributeTiles(seed);
+		//DistributeTiles(seed);
 	}
 	
+	public List<List<Vector2>> GetPositions(int numPlayers, int numInitSlimes){
+		List<List<Vector2>> playersTiles = new List<List<Vector2>>();
+		List<TileData> firstOnes = GetNorthPositions(numInitSlimes);
+		for(int i=0; i<6;i++){
+			playersTiles.Add(new List<Vector2>());
+		}	
+		
+		foreach(TileData tile in firstOnes){
+			int x =(int)tile.getPosition().x;
+			int y =(int)tile.getPosition().y;
+			int z =-x-y;
+			Vector2 SO = new Vector2(x,y);//SO
+			Vector2 NO = new Vector2(-y,-z);//NO
+			Vector2 N = new Vector2(z,x);//N
+			Vector2 NE = new Vector2(-x,-y);//NE
+			Vector2 SE = new Vector2(y,z);//SE
+			Vector2 S = new Vector2(-z,-x);//S
+			if(numPlayers>0){
+				playersTiles[0].Add(SE);
+			} 
+			if(numPlayers==2){
+				 playersTiles[1].Add(NO);
+			}
+			if(numPlayers==3){
+				playersTiles[1].Add(N);
+				playersTiles[2].Add(SO);
+			} 
+			if(numPlayers>=4){
+				playersTiles[1].Add(NO);
+				playersTiles[2].Add(SO);
+				playersTiles[3].Add(NE);
+			} 
+			if(numPlayers>=5) playersTiles[4].Add(N);
+			if(numPlayers>5) playersTiles[5].Add(S);
+		}
+		
+		return playersTiles;
+	}
+	public List<TileData> GetNorthPositions(int numPos){
+		List<TileData> list = new List<TileData>();
+		List<int> keysx = new List<int>(map.Keys);
+		keysx.Sort(new Comparison<int>(
+                            (i1, i2) => i2.CompareTo(i1)
+                    ));
+		while(numPos>0){
+			int total = keysx[0];
+			int j = 0;
+			while(numPos>0 && total-j>0){/*map.ContainsKey(total-j) */
+				if(map[total-j].ContainsKey(j)){
+					list.Add(map[total-j][j]);
+					numPos--;
+				}
+				j++;
+			}
+			keysx.Remove(total);
+		}
+		return list;
+	}
 	public List<TileData> GetTotalTiles(){
 		List<TileData> i = new List<TileData>();
 		foreach(int x in map.Keys){
@@ -117,16 +179,16 @@ public class Matrix {
 		}
 		return tile;
 	}
-	/*
-	override public string ToString(){        
+	
+	public override string ToString(){        
 		int count = 0;
 		Debug.Log("Matrix: ");
 		String final = "";
 		foreach(int y in map.Keys){
 			String s = "";
-			if(count%2!=shifted) s+="     ";
+			//if(count%2!=shifted) s+="     ";
 			foreach(int x in map[y].Keys){
-				s+="("+x+","+y+","+map[y][x].type+")";
+				s+="("+x+","+y+","+map[y][x].getTileType()+")";
 			}            
 			//Debug.Log(s);
 			final+=s+"\n";
@@ -134,7 +196,7 @@ public class Matrix {
 		}
 		return final;
 	}
-	 */
+	 
 	public static Vector3 axial_to_cube(Vector2 vec){
 		int xC = (int)vec.x;
 		int zC = (int)vec.y;
@@ -425,5 +487,28 @@ tile.SetTileType(nearestCenter.getTileType());
 
 	public int TotalNumTiles(){
 		return GetTotalTiles().Count;
+	}
+
+	
+	public Matrix GetRawCopy(){
+		Dictionary<int, Dictionary<int,TileData>> mapCopy = new Dictionary<int, Dictionary<int,TileData>> ();
+
+		foreach(int x in map.Keys){
+			mapCopy[x] = new Dictionary<int,TileData>();
+			foreach(int y in map[x].Keys){
+				mapCopy[x][y] = map[x][y].GetRawCopy();
+			}
+		}
+
+		return new Matrix(mapCopy);
+	}
+
+	public bool EqualsTo(Matrix matrix){
+		foreach(int x in map.Keys){
+			foreach(int y in map[x].Keys){
+				if(map[x][y].getTileType() != matrix.getTile(x, y).getTileType()) return false;
+			}
+		}
+		return true;
 	}
 }
