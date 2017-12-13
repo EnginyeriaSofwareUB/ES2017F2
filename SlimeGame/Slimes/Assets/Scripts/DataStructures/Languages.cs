@@ -27,7 +27,9 @@ public static class Languages {
 		{"Map","Mapa"},
 		{"Death","Muerte"},
 		{"Mass","Masa"},
-		{"Conquest","Conquista"}
+		{"Conquest","Conquista"},
+		{"Language","Idioma"}
+
 	};
 
 	private static Dictionary<string,string> catalan = new Dictionary<string,string>(){
@@ -50,7 +52,8 @@ public static class Languages {
 		{"Map","Mapa"},
 		{"Death","Mort"},
 		{"Mass","Massa"},
-		{"Conquest","Conquesta"}
+		{"Conquest","Conquesta"},
+		{"Language","Idioma"}
 	};
 
 	private static Dictionary<string,string> english = new Dictionary<string,string>(){
@@ -73,7 +76,8 @@ public static class Languages {
 		{"Map","Map"},
 		{"Death","Death"},
 		{"Mass","Mass"},
-		{"Conquest","Conquest"}
+		{"Conquest","Conquest"},
+		{"Language","Language"}
 	};
 
 	public static void DefineLanguage(string l){
