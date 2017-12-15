@@ -170,10 +170,10 @@ public class SelectorController : MonoBehaviour {
 		} else {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
 		}
-		int dmg = stats.attack;
-		int hp = stats.startingHP;
+		int dmg = stats.maxBaseAttack;
+		int hp = stats.baseMass;
 		int rng = stats.range;
-		int move = stats.move;
+		int move = stats.movement;
 		GameObject.Find ("CoreInfo").GetComponent<Text> ().text = "  " + hp + "     " + dmg + "\n   " + rng + "      " + move;
 	}
 	public void changeCurrentPlayer(int cursor){

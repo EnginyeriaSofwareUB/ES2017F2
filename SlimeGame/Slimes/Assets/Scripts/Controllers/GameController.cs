@@ -90,10 +90,7 @@ public class GameController : MonoBehaviour
             
 
         }
-        //players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
-        //players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), AIManager.GetAIByVictoryCondition(this, condicionVictoria) ));
-        //players[0].SetColor(GameSelection.player1Color);
-        //players[1].SetColor(GameSelection.player2Color);
+
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
         if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
@@ -107,8 +104,16 @@ public class GameController : MonoBehaviour
             }
             j++;
         }
-        
+		if(players.Count == 0){
+			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(SlimeCoreTypes.WRATH))); // Test with 2 players
+			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(SlimeCoreTypes.GLUTTONY)));
+			players[0].SetColor(Color.blue);
+			players[1].SetColor(Color.red);
+			positions = matrix.GetPositions(players.Count,1);
+			SlimeFactory.instantiateSlime(players[0],positions[0][0]);
+			SlimeFactory.instantiateSlime(players[1],positions[1][0]);
 
+		}
 		//matrix = new Matrix(MapParser.ReadMap(MapTypes.Medium));
 
         currentTurn = 0;
@@ -380,8 +385,8 @@ public class GameController : MonoBehaviour
 	private void SplitSlime(Tile targetTile){
 		Slime newSlime = SlimeFactory.instantiateSlime(selectedSlime.GetPlayer(),new Vector2(targetTile.GetTileData().getPosition().x, targetTile.GetTileData().getPosition().y));
 
-		newSlime.SetMass (selectedSlime.GetMass()/2.0f);
-		selectedSlime.SetMass (selectedSlime.GetMass() / 2.0f);
+		newSlime.SetMass ((int)(selectedSlime.GetMass()/2.0f));
+		selectedSlime.SetMass ((int)(selectedSlime.GetMass()/2.0f));
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
     }
@@ -409,7 +414,7 @@ public class GameController : MonoBehaviour
 		RemoveSlime(selectedSlime);
         //players[currentPlayer].updateActions();
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
-		fusionTarget.SetMass (selectedSlime.GetMass() + fusionTarget.GetMass());
+		fusionTarget.SetMass ((int)(selectedSlime.GetMass() + fusionTarget.GetMass()));
 
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
@@ -434,7 +439,7 @@ public class GameController : MonoBehaviour
 	}
 
 	private void GrowSlime(Slime slime){
-		selectedSlime.SetMass(selectedSlime.GetMass()*1.5f);
+		selectedSlime.GrowSlime();
 		playerActions++;
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}

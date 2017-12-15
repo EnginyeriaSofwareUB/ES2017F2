@@ -19,7 +19,7 @@ public class ProjectileTrajectory : MonoBehaviour {
 	
 	public void SetTrajectorySlimes(Slime shooter, Slime toAttack){
         this.toAttack = toAttack;
-        damage = shooter.getDamage();
+        damage = shooter.getDamage;
         Vector2 startPosition = shooter.GetActualTile().GetTileData().GetRealWorldPosition();
         transform.position = startPosition;
         this.endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
@@ -47,7 +47,7 @@ public class ProjectileTrajectory : MonoBehaviour {
         //Es crida quan es produeix l'event que Destroy del gameobject
         if (toAttack!=null){
             FloatingTextController.CreateFloatingText ((-damage).ToString(),toAttack.transform);
-            toAttack.changeMass (-damage);
+			toAttack.changeMass (-damage*toAttack.GetDamageReduction());
             //Debug.Log(toAttack.GetMass());
             //Debug.Log(!toAttack.isAlive ());
             if (!toAttack.isAlive ()) {

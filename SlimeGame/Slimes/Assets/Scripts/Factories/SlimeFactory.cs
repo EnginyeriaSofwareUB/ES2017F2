@@ -23,18 +23,17 @@ public class SlimeFactory{
 
 		pl.AddSlime(slime.GetComponent<Slime>());
 
-		slime.GetComponent<Slime> ().changeScaleSlime ();
+
 		Tile tile = MapDrawer.GetTileAt(x, y);
 		Vector2 tileWorldPosition = tile.GetTileData().GetRealWorldPosition();//MapDrawer.drawInternCoordenates(new Vector2(x0, y0));
 		slimeGameObjectContainer.transform.position = new Vector3(tileWorldPosition.x, tileWorldPosition.y, 0f);
 		slime.GetComponent<Slime>().SetActualTile(tile);
+		slime.GetComponent<Slime> ().InitElementTypeNone ();
 		slime.GetComponent<Slime>().setPlayer(pl);
-
 		slime.transform.localPosition = new Vector3 (0f, 0.22f, 0f);
 		
 		slime.GetComponent<Slime>().SetId(ID);
 		ID++;
-
 		return slime.GetComponent<Slime> ();
 	}
 

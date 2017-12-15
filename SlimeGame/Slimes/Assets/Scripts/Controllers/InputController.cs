@@ -74,7 +74,7 @@ public class InputController : MonoBehaviour
 						if(ConquerEnabled){
 							gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
 							OnConquer ();
-						}//uiController.DisableCanvas ();
+						}
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
@@ -155,14 +155,14 @@ public class InputController : MonoBehaviour
 						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
 						tiles.AddRange(moveTiles);
 						tiles.AddRange(attackTiles);
-						cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
+						//cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
 					}
 				}
 			} else if (Input.GetMouseButtonDown (1)) {
 				gameController.SetSelectedSlime (null);
     			uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
-				cameraController.GlobalCamera();
+				//cameraController.GlobalCamera();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
 				cameraController.ZoomIn();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
