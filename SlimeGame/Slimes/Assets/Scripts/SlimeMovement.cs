@@ -9,7 +9,7 @@ public class SlimeMovement : MonoBehaviour {
 	private int indexBuffer;
 	public bool moving;
 
-	public float secondsXmovement = 1; //1 segon, pero es pot determinar des de unity
+	public float secondsXmovement = 0.4f; //1 segon, pero es pot determinar des de unity
 	private float startTime;
 
 	private GameController gameController;

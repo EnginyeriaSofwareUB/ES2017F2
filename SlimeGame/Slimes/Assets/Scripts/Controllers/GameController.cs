@@ -398,7 +398,7 @@ public class GameController : MonoBehaviour
 
 	private void RangedAttack(Slime toAttack){
         GameObject projectile = new GameObject("projectile");
-		Sprite sprite = SpritesLoader.GetInstance().GetResource("Projectiles/water_projectile");
+		Sprite sprite = GetSpriteForElement(selectedSlime.GetElementType());
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
@@ -409,6 +409,37 @@ public class GameController : MonoBehaviour
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/fireball");
         soundController.PlaySingle(clip);
     }
+
+	public Sprite GetSpriteForElement(ElementType type){
+		Sprite sp;
+		switch (type) {
+		case ElementType.EARTH:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			break;
+		case ElementType.FIRE:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/fire_projectile");
+			break;
+		case ElementType.LAVA:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			break;
+		case ElementType.MUD:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			break;
+		case ElementType.NONE:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			break;
+		case ElementType.STEAM:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			break;
+		case ElementType.WATER:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			break;
+		default:
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			break;
+		}
+		return sp;
+	}
 
 	private void FusionSlime(Slime fusionTarget){
 		RemoveSlime(selectedSlime);

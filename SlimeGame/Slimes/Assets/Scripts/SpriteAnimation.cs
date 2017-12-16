@@ -29,6 +29,10 @@ public class SpriteAnimation
 	/* Getters and initializers
 	 * 
 	 */
+
+	public void SetMode(SpriteAnimationMode m){
+		mode = m;
+	}
 	public void LoadSprites(string name,int imgQuantity){
 		
 		sprites = new List<Sprite> ();

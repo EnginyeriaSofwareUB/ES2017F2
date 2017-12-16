@@ -130,13 +130,20 @@ public class Tile : MonoBehaviour {
 				//Water case
 			case 2:
 				elementType = ElementType.WATER;
-				tileElementLayerFront.gameObject.transform.position = pos+new Vector3(0.0f,+0.2f);
-				//Animations
+				tileElementLayerFront.gameObject.transform.position = pos + new Vector3 (0.0f, +0.2f);
+					//Animations
 				frontAnimation = new SpriteAnimation (tileElementLayerFront);
-				frontAnimation.LoadSprites("Tiles/Water/tile_water_", 36);
+				frontAnimation.LoadSprites ("Tiles/Water/tile_water_", 36);
 				frontAnimation.RandomStart ();
 				frontAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
 				frontAnimation.playAnimation ();
+
+				tileElementLayerBack.gameObject.transform.position = pos + new Vector3 (1.2f, 0.7f);
+				backAnimation = new SpriteAnimation (tileElementLayerBack);
+				backAnimation.LoadSprites ("Tiles/Water/tile_water_", 36);
+				backAnimation.RandomStart ();
+				backAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
+				backAnimation.playAnimation ();
 				break;
 				//Earth case
 			case 3:

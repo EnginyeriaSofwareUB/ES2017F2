@@ -140,12 +140,17 @@ public class Slime : MonoBehaviour {
 		this.gameObject.transform.localScale = new Vector3(scale, scale, 0.5f);
 	}
 
+	public ElementType GetElementType(){
+		return elementType;
+	}
+
 	public void ChangeElement(ElementType newElement){
 		if (elementType == ElementType.NONE) {
 			elementType = newElement;
 			element = StatsFactory.GetStat (elementType);
 			canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer> ());
 			canimation.LoadSprites (element.picDirection, element.picCount);
+			canimation.SetMode (SpriteAnimationMode.BOUNCE);
 			canimation.playAnimation ();
 			changeScaleSlime ();
 		}
@@ -181,6 +186,7 @@ public class Slime : MonoBehaviour {
 			canimation = new SpriteAnimation (gameObject.GetComponent<SpriteRenderer> ());
 			canimation.LoadSprites (element.picDirection, element.picCount);
 			canimation.playAnimation ();
+			canimation.SetMode (SpriteAnimationMode.LOOP);
 			changeScaleSlime ();
 		}
 	}
