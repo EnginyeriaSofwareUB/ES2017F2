@@ -95,4 +95,12 @@ public class Pause : MonoBehaviour {
 			}
 		}
 	}
+
+	public void Exit (){
+		Time.timeScale = 1;
+		GameSelection.playerColors.Clear ();
+		GameSelection.playerCores.Clear ();
+		GameSelection.playerIAs.Clear ();
+		GameObject.Find ("ExitButton").GetComponent<LoadOnClick> ().LoadScene (3);
+	}
 }
