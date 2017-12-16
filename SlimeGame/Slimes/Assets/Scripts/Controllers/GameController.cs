@@ -175,6 +175,9 @@ public class GameController : MonoBehaviour
         if (winner!=null)
         {
             GameOverInfo.SetWinner(winner);
+			foreach(Player p in players){
+				if(p!=winner) GameOverInfo.SetLoser(p);
+			}
 			GameSelection.playerColors.Clear ();
 			GameSelection.playerCores.Clear ();
 			GameSelection.playerIAs.Clear ();
