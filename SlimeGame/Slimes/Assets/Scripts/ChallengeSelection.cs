@@ -19,7 +19,7 @@ public class ChallengeSelection : MonoBehaviour {
         for (int i = 0; i < s.Count; i++)
         {
             JSONNode text = s[i.ToString()];
-            challenges.Add(new Challenge(text["name"], text["description"],text["maxTurns"], text["winCondition"]));
+            challenges.Add(new Challenge(text["name"], text["description"],text["maxTurns"], text["winCondition"], text["map"]));
         }
 
         if (challenges.Count < maxChallenges)
@@ -68,7 +68,6 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
-            GameSelection.map = null;
             GameSelection.modoVictoria = challenges[1].GetModo();
             GameSelection.map = challenges[1].GetMap();
             //Debug.Log("segon repte");
@@ -81,7 +80,6 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
-            GameSelection.map = null;
             GameSelection.modoVictoria = challenges[2].GetModo();
             GameSelection.map = challenges[2].GetMap();
             //Debug.Log("tercer repte");
@@ -94,7 +92,6 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
-            GameSelection.map = null;
             GameSelection.modoVictoria = challenges[3].GetModo();
             GameSelection.map = challenges[3].GetMap();
             //Debug.Log("quart repte");
@@ -107,7 +104,6 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
-            GameSelection.map = null;
             GameSelection.modoVictoria = challenges[4].GetModo();
             GameSelection.map = challenges[4].GetMap();
             //Debug.Log("cinque repte");

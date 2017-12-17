@@ -11,13 +11,13 @@ public class Challenge{
     Matrix map;
 
 
-    public Challenge(string name, string description, int maxTurns, int modo)
+    public Challenge(string name, string description, int maxTurns, int modo, int map)
     {
         this.name = name;
         this.description = description;
         this.maxTurns = maxTurns;
         this.modo = modo;
-        map = null;
+        this.map = new Matrix(MapParser.ReadMap((MapTypes) map));
     }
 
     public override string ToString()
