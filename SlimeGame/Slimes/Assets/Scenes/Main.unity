@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 40037677}
   - component: {fileID: 40037676}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -339,9 +339,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 40037676}
-        m_MethodName: LoadScene
-        m_Mode: 3
+      - m_Target: {fileID: 601972844}
+        m_MethodName: Exit
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2005,7 +2005,7 @@ GameObject:
   - component: {fileID: 1081275759}
   - component: {fileID: 1081275758}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: SettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3001,7 +3001,7 @@ GameObject:
   - component: {fileID: 1563218355}
   - component: {fileID: 1563218354}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: ResumeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

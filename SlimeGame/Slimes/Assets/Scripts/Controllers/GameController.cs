@@ -78,22 +78,24 @@ public class GameController : MonoBehaviour
         }
 
         
-    
         int maxPlayers = GameSelection.playerColors.Count;
-        for (int i=0;i<maxPlayers;i++){
+		if (maxPlayers == 0) {
+			GameSelection.playerColors.Add (new Color (0, 0, 1));
+			GameSelection.playerColors.Add (new Color (1, 0, 0));
+			GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+			GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+			GameSelection.playerIAs.Add (false);
+			GameSelection.playerIAs.Add (true);
+			maxPlayers = 2;
+		}
+		for (int i=0;i<maxPlayers;i++){
             if (GameSelection.playerIAs [i]) {
                 players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
             } else {
                 players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i])));
             }
             players[i].SetColor(GameSelection.playerColors[i]);
-            
-
         }
-        //players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(GameSelection.player1Stats))); // Test with 2 players
-        //players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(GameSelection.player2Stats), AIManager.GetAIByVictoryCondition(this, condicionVictoria) ));
-        //players[0].SetColor(GameSelection.player1Color);
-        //players[1].SetColor(GameSelection.player2Color);
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
         if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
@@ -173,6 +175,13 @@ public class GameController : MonoBehaviour
         if (winner!=null)
         {
             GameOverInfo.SetWinner(winner);
+			foreach(Player p in players){
+				if(p!=winner) GameOverInfo.SetLoser(p);
+			}
+			GameSelection.playerColors.Clear ();
+			GameSelection.playerCores.Clear ();
+			GameSelection.playerIAs.Clear ();
+			//players.Clear ();
             SceneManager.LoadScene("GameOver");
         }
 
