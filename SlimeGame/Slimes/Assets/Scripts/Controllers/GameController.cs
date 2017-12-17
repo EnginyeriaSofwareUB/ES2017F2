@@ -97,7 +97,7 @@ public class GameController : MonoBehaviour
             players[i].SetColor(GameSelection.playerColors[i]);
         }
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-        if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
+        if (matrix == null) matrix = new Matrix(26, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
@@ -181,6 +181,9 @@ public class GameController : MonoBehaviour
         if (winner!=null)
         {
             GameOverInfo.SetWinner(winner);
+			foreach(Player p in players){
+				if(p!=winner) GameOverInfo.SetLoser(p);
+			}
 			GameSelection.playerColors.Clear ();
 			GameSelection.playerCores.Clear ();
 			GameSelection.playerIAs.Clear ();
@@ -294,7 +297,8 @@ public class GameController : MonoBehaviour
 		selectedSlime = null;
         currentPlayer++;
         playerActions = 0;
-        //uiController.ChangeCamera(players[currentPlayer].GetSlimes());
+		
+        
 		if (currentPlayer >= players.Count) {
 			// Tots els jugadors han fet la seva accio, passem al seguent torn.
 			NextTurn ();
@@ -302,7 +306,9 @@ public class GameController : MonoBehaviour
 			status = GameControllerStatus.PLAYINGACTION;
 			uiController.NextPlayer(GetCurrentPlayer().GetColor(),playerActions,GetCurrentPlayer().actions);
 		}
-		camController.GlobalCamera();
+		camController.AllTilesInCamera(GetPossibleMovements(players[currentPlayer].GetSlimes()));
+		
+		//camController.GlobalCamera();
 		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
@@ -490,7 +496,17 @@ public class GameController : MonoBehaviour
 	public void OnProjectileAnimationEnded(){
 		status = GameControllerStatus.CHECKINGLOGIC;
 	}
-
+	public List<Tile> GetPossibleMovements(List<Slime> slimes){
+		List<Tile> tiles = new List<Tile>();
+		foreach(Slime slime in slimes){
+			tiles.AddRange(GetPossibleMovements(slime));
+			
+		}
+		//debug
+		//uiController.hideCurrentUITiles ();
+		//uiController.markTiles(tiles, ActionType.MOVE);
+		return tiles;
+	}
 	public virtual List<Tile> GetPossibleMovements(Slime slime){
 		ArrayList tiles = new ArrayList();
 		ArrayList distance = new ArrayList ();

@@ -21,7 +21,7 @@ public class InputController : MonoBehaviour
 	protected bool SplitEnabled;
 	protected bool JoinEnabled;
 	protected bool InputEnabled;
-
+	
     void Start()
     {
 		ConquerEnabled = true;

@@ -11,9 +11,9 @@ public static class Languages {
 		{"Play","Jugar"},
 		{"Tutorial","Tutorial"},
 		{"Settings","Ajustes"},
-		{"Back","Atras"},
+		{"Back","Atrás"},
 		{"Effects","Efectos"},
-		{"Music","Musica"},
+		{"Music","Música"},
 		{"Player","Jugador"},
 		{"Round","Ronda"},
 		{"Actions","Acciones:"},
@@ -28,17 +28,26 @@ public static class Languages {
 		{"Death","Muerte"},
 		{"Mass","Masa"},
 		{"Conquest","Conquista"},
-		{"Language","Idioma"}
-
+		{"Language","Idioma"},
+		{"Challenge","Retos"},
+		{"ChallengeSelection","Selección del reto"},
+		{"GameModeText","Modo de Juego"},
+		{"Slimicide","slimicidio"},
+		{"MassAttack","Mass-Attack"},
+		{"Player1","Jugador #1"},
+		{"Player2","Jugador #2"},
+		{"Player3","Jugador #3"},
+		{"Player4","Jugador #4"},
+		{"PlayerText","Jugador #1"}
 	};
 
 	private static Dictionary<string,string> catalan = new Dictionary<string,string>(){
 		{"Play","Jugar"},
 		{"Tutorial","Tutorial"},
-		{"Settings","Configuracio"},
+		{"Settings","Configuració"},
 		{"Back","Endarrere"},
 		{"Effects","Efectes"},
-		{"Music","Musica"},
+		{"Music","Música"},
 		{"Player","Jugador"},
 		{"Round","Ronda"},
 		{"Actions","Accions:"},
@@ -53,7 +62,17 @@ public static class Languages {
 		{"Death","Mort"},
 		{"Mass","Massa"},
 		{"Conquest","Conquesta"},
-		{"Language","Idioma"}
+		{"Language","Idioma"},
+		{"Challenge","Reptes"},
+		{"ChallengeSelection","Selecció del repte"},
+		{"GameModeText","Mode de Joc"},
+		{"Slimicide","slimicidi"},
+		{"MassAttack","Mass-Attack"},
+		{"Player1","Jugador #1"},
+		{"Player2","Jugador #2"},
+		{"Player3","Jugador #3"},
+		{"Player4","Jugador #4"},
+		{"PlayerText","Jugador #1"}
 	};
 
 	private static Dictionary<string,string> english = new Dictionary<string,string>(){
@@ -77,7 +96,17 @@ public static class Languages {
 		{"Death","Death"},
 		{"Mass","Mass"},
 		{"Conquest","Conquest"},
-		{"Language","Language"}
+		{"Language","Language"},
+		{"Challenge","Challenges"},
+		{"ChallengeSelection","Challenge Selection"},
+		{"GameModeText","Game Mode"},
+		{"Slimicide","Slimicide"},
+		{"MassAttack","Mass-Attack"},
+		{"Player1","Player #1"},
+		{"Player2","Player #2"},
+		{"Player3","Player #3"},
+		{"Player4","Player #4"},
+		{"PlayerText","Player #1"}
 	};
 
 	public static void DefineLanguage(string l){

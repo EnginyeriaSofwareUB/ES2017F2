@@ -19,6 +19,8 @@ public class CameraController : MonoBehaviour {
 	float speed;
 	float speedZoom;
 	private bool calibrateZoom = false;
+
+	private bool changeTurnMove = false;
 	void Start () {	
 		speed=10;
 		speedZoom=10;	
@@ -48,6 +50,7 @@ public class CameraController : MonoBehaviour {
 			if(Mathf.Abs(newZoom-cam.orthographicSize)<=0.2){
 				newZoom=-1;
 				beforeZoom=-1;
+				if(changeTurnMove)changeTurnMove=false;
 			}else{
 				int zoomin = -1;
 				if(newZoom-beforeZoom>0)zoomin = 1;
@@ -55,10 +58,12 @@ public class CameraController : MonoBehaviour {
 				if(ortosizenew<=MaxZoom &&ortosizenew>=MinZoom){
 					cam.orthographicSize=ortosizenew;
 				}else{
+					if(changeTurnMove)changeTurnMove=false;
 					newZoom=-1;
 					beforeZoom=-1;
 				}
-			}			
+			}	
+			
 		}		
 		if(center.HasValue){
 			Vector3 mogutDeMoment = this.beforeMovePosition.Value-this.transform.position;
@@ -67,6 +72,7 @@ public class CameraController : MonoBehaviour {
 			if(dist<0.1f){
 				center = null;	
 				beforeMovePosition=null;
+				if(changeTurnMove)changeTurnMove=false;
 			}else{
 				Vector3 realMove = GetVectorSpeed()*Time.deltaTime;
 				this.transform.position-=realMove;
@@ -144,10 +150,11 @@ public class CameraController : MonoBehaviour {
 	
 	
 	public void ChangeZoom(float newZoom){
-		if(newZoom<=MaxZoom&& newZoom>=MinZoom){
-			this.newZoom=newZoom;
-			this.beforeZoom=this.GetComponent<Camera>().orthographicSize;
-		}		
+		if(newZoom>=MaxZoom) newZoom=MaxZoom;
+		if(newZoom<=MinZoom) newZoom=MinZoom;
+		this.newZoom=newZoom;
+		this.beforeZoom=this.GetComponent<Camera>().orthographicSize;
+		
 	}
 	public void InitMaxZoom(){
 		calibrateZoom=true;
@@ -167,17 +174,29 @@ public class CameraController : MonoBehaviour {
 		CenterCamera(originalCenter);//new Vector3(0,0,-1);
 	}
 
-	public void AllTilesInCamera(Tile center, List<Tile> tiles){
-		Vector2 centerPos = center.transform.position;
-		Vector2 size = new Vector2();
+	public void AllTilesInCamera(List<Tile> tiles){
+		changeTurnMove=true;
+		newZoom=-1;
+		center=null;
+		Vector2 first = tiles[0].transform.position;
+		Rect rect = new Rect(first.x, first.y,0,0);
 		foreach(Tile tile in tiles){
-			Vector3 tileWorldPosition = tile.transform.position-center.transform.position;
-			if (Mathf.Abs(tileWorldPosition.x) > size.x)size.x = Mathf.Abs(tileWorldPosition.x);
-            if (Mathf.Abs(tileWorldPosition.y) > size.y)size.y =Mathf.Abs(tileWorldPosition.y);
-			
-		}		
+			Vector3 tileWorldPosition = tile.transform.position;
+			Vector2 point = new Vector2(tileWorldPosition.x,tileWorldPosition.y);
+			if(!rect.Contains(point)){
+				if (point.x > rect.xMax)rect.xMax=point.x;
+				if (point.y > rect.yMax) rect.yMax=point.y;
+				if (point.x < rect.xMin)rect.xMin=point.x;
+				if (point.y < rect.yMin) rect.yMin=point.y;
+				
+			};
+		}
+		//Vector2 centerPos = (max+min)/2.0f;
+		Vector2 centerPos = rect.center; 
 		CenterCamera(new Vector2(centerPos.x,centerPos.y));
-		ChangeZoom(Mathf.Max(MaxZoom*size.y/(yLimit),MaxZoom*size.x/(xLimit)));
+		ChangeZoom(Mathf.Max(MaxZoom*(rect.height)/(2*yLimit),MaxZoom*Mathf.Abs(rect.width)/(2*xLimit)));
 	}
-	
+	public bool IsCameraMoving(){
+		return changeTurnMove; 
+	}
 }

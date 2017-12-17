@@ -101,6 +101,6 @@ public class Pause : MonoBehaviour {
 		GameSelection.playerColors.Clear ();
 		GameSelection.playerCores.Clear ();
 		GameSelection.playerIAs.Clear ();
-		GameObject.Find ("ExitButton").GetComponent<LoadOnClick> ().LoadScene (3);
+		GameObject.Find ("ExitButton").GetComponent<LoadOnClick> ().LoadScene (0);
 	}
 }
