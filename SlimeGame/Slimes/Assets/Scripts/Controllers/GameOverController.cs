@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameOverController : MonoBehaviour {
 
 	int numberLosers;
 	// Use this for initialization
 	void Start () {
-		GameObject go=GameObject.Find("Background/Background Island/WinnerBody");
 		Player winner = GameOverInfo.GetWinner();
-		go.GetComponent<Image>().sprite = SpritesLoader.GetInstance().GetResource(StatsFactory.GetStat(ElementType.NONE).picDirection+3);
+		GameObject.Find("Background/Background Winner poster/Winner").GetComponent<Text>().text=winner.GetName(); 
+		GameObject go=GameObject.Find("Background/Background Island/WinnerBody");
 		go.GetComponent<Image>().color = winner.GetColor();
 		go = GameObject.Find("Background/Background Island/WinnerBody/WinnerFace");
 		go.GetComponent<Image>().sprite = SpritesLoader.GetInstance ().GetResource (winner.statsCoreInfo.picDirection);
@@ -32,5 +33,6 @@ public class GameOverController : MonoBehaviour {
 		for (int i = 1; i<=numberLosers;i++){
 			GameObject.Find("Background/Background Island/Loser"+i).SetActive(false);
 		}
+		SceneManager.LoadScene(0);
 	}
 }
