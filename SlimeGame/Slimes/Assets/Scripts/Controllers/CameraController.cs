@@ -130,6 +130,13 @@ public class CameraController : MonoBehaviour {
 			CenterCamera(this.transform.position + (new Vector3 (1, 0, 0))*GetModulo());
 		}
 	}
+
+	public void Move(Vector2 newPosition){
+		
+		if (this.transform.position.x < xLimit) {
+		}
+	}
+
 	public float GetModulo(){
 		float orto = 1f/this.GetComponent<Camera> ().orthographicSize;
 		return howfar/**orto*/;

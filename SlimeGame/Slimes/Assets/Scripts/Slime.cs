@@ -95,7 +95,11 @@ public class Slime : MonoBehaviour {
 		return range;
 	}
 
-	public void changeMass(float q){
+	public void ChangeMass(float q){
+		SetMass ((int)(mass + q));
+	}
+
+	public void ChangeMass(int q){
 		SetMass ((int)(mass + q));
 	}
 
@@ -107,7 +111,6 @@ public class Slime : MonoBehaviour {
 		StatsContainer core = player.statsCoreInfo;
 		float currentRatio = massRatio;
 		float damageReduction = (currentRatio * (maxDamageReduction - minDamageReduction) + minDamageReduction);
-		Debug.Log ("Damage reduction: " + damageReduction);
 		return (1-damageReduction);
 	}
 
@@ -377,13 +380,21 @@ public class Slime : MonoBehaviour {
 
 	private int movement{
 		get{ 
-			return player.statsCoreInfo.movement + element.movement;
+			if(player.statsCoreInfo.movement + element.movement > 0){
+				return player.statsCoreInfo.movement + element.movement;
+			}else{
+				return 1;
+			}
 		}
 	}
 
 	private int range{
 		get{
-			return player.statsCoreInfo.range + element.range;
+			if(player.statsCoreInfo.range + element.range > 0){
+				return player.statsCoreInfo.range + element.range;
+			}else{
+				return 1;
+			}
 		}
 	}
 

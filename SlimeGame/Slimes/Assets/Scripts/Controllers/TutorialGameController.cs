@@ -22,7 +22,7 @@ public class TutorialGameController: GameController
 		MapDrawer.instantiateMap (matrix.getIterable());
 
 		players = new List<Player> ();
-		players.Add(new Player("Jugador", 1, StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
+		players.Add(new Player("Jugador", StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
 		//players.Add(new Player("IA Tutorial", 1, StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
 		players[0].SetColor(new Color(1,1,1));
 		//players[1].SetColor(new Color(1,0,1));
@@ -31,7 +31,7 @@ public class TutorialGameController: GameController
 		status = GameControllerStatus.WAITINGFORACTION;
 		uiController.UpdateRound(currentTurn+1);
 		uiController.UpdatePlayer(GetCurrentPlayer().GetColor());
-		uiController.UpdateActions(playerActions,GetCurrentPlayer().GetActions());
+		uiController.UpdateActions(playerActions,GetCurrentPlayer().actions);
 		uiController.ShowBothPanels ();
 
 		InitDialogChains ();

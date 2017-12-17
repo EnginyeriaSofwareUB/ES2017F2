@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
 		if (maxPlayers == 0) {
 			GameSelection.playerColors.Add (new Color (0, 0, 1));
 			GameSelection.playerColors.Add (new Color (1, 0, 0));
-			GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+			GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
 			GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
 			GameSelection.playerIAs.Add (false);
 			GameSelection.playerIAs.Add (true);
@@ -90,9 +90,9 @@ public class GameController : MonoBehaviour
 		}
 		for (int i=0;i<maxPlayers;i++){
             if (GameSelection.playerIAs [i]) {
-                players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
+                players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
             } else {
-                players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i])));
+                players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
             }
             players[i].SetColor(GameSelection.playerColors[i]);
         }
@@ -110,8 +110,8 @@ public class GameController : MonoBehaviour
             j++;
         }
 		if(players.Count == 0){
-			players.Add(new Player("Jugador 1", 1, StatsFactory.GetStat(SlimeCoreTypes.WRATH))); // Test with 2 players
-			players.Add(new Player("Jugador 2", 1, StatsFactory.GetStat(SlimeCoreTypes.GLUTTONY)));
+			players.Add(new Player("Jugador 1", StatsFactory.GetStat(SlimeCoreTypes.WRATH))); // Test with 2 players
+			players.Add(new Player("Jugador 2", StatsFactory.GetStat(SlimeCoreTypes.GLUTTONY)));
 			players[0].SetColor(Color.blue);
 			players[1].SetColor(Color.red);
 			positions = matrix.GetPositions(players.Count,1);
@@ -128,9 +128,7 @@ public class GameController : MonoBehaviour
 		uiController.UpdateRound(currentTurn+1);
 		uiController.UpdatePlayer(GetCurrentPlayer().GetColor());
 
-		foreach(Player p in players)
-            p.updateActions();
-		uiController.UpdateActions(playerActions,GetCurrentPlayer().GetActions());
+		uiController.UpdateActions(playerActions,GetCurrentPlayer().actions);
 		uiController.ShowBothPanels ();
         //iniciem la informacio de game over
         totalTiles = matrix.TotalNumTiles();
@@ -212,11 +210,8 @@ public class GameController : MonoBehaviour
     }
 
 	public void checkLogic(){
-		if (playerActions >= players [currentPlayer].GetActions ()) {
+		if (playerActions >= players [currentPlayer].actions) {
 			NextPlayer ();
-			foreach (Player pl in players) {
-				pl.updateActions ();
-			}
 		} else {
 			status = GameControllerStatus.WAITINGFORACTION;
 		}
@@ -278,11 +273,11 @@ public class GameController : MonoBehaviour
      */
     private bool UseActions(int numberOfActions)
     {
-        if (playerActions + numberOfActions > GetCurrentPlayer().GetActions()) return false; // Accions insuficients
+        if (playerActions + numberOfActions > GetCurrentPlayer().actions) return false; // Accions insuficients
 
         playerActions += numberOfActions;
 
-		if (playerActions >= GetCurrentPlayer().GetActions())
+		if (playerActions >= GetCurrentPlayer().actions)
         {
             NextPlayer();
         }
@@ -305,7 +300,7 @@ public class GameController : MonoBehaviour
 			NextTurn ();
 		} else {
 			status = GameControllerStatus.PLAYINGACTION;
-			uiController.NextPlayer(GetCurrentPlayer().GetColor(),playerActions,GetCurrentPlayer().GetActions());
+			uiController.NextPlayer(GetCurrentPlayer().GetColor(),playerActions,GetCurrentPlayer().actions);
 		}
 		camController.GlobalCamera();
 		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
@@ -320,7 +315,7 @@ public class GameController : MonoBehaviour
         playerActions = 0;
         currentTurn++;
 		status = GameControllerStatus.PLAYINGACTION;
-		uiController.NextRound (currentTurn + 1, GetCurrentPlayer ().GetColor (), playerActions, GetCurrentPlayer ().GetActions ());
+		uiController.NextRound (currentTurn + 1, GetCurrentPlayer ().GetColor (), playerActions, GetCurrentPlayer ().actions);
     }
 
     public Slime GetSelectedSlime()
@@ -364,7 +359,7 @@ public class GameController : MonoBehaviour
 			break;
 		}
 		SetSelectedSlime(null);
-		uiController.UpdateActions(playerActions,GetCurrentPlayer().GetActions());
+		uiController.UpdateActions(playerActions,GetCurrentPlayer().actions);
 	}
 
     private void MoveSlime(Tile tile)
@@ -413,6 +408,7 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
+		projectile.transform.Rotate (new Vector3(0f, 0f, Vector3.Angle (new Vector3(1f,0f,0f), toAttack.transform.parent.position - selectedSlime.transform.parent.position)));
 		status = GameControllerStatus.PLAYINGACTION;
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/fireball");
         soundController.PlaySingle(clip);
@@ -620,6 +616,13 @@ public class GameController : MonoBehaviour
         
         return new AIGameState(rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions);
     }
+
+	public void ApplyDamage(Slime attacker,Slime defender){
+		int damage = attacker.getDamage;
+		attacker.ChangeMass ((int)-attacker.GetMass()*attacker.attackDrain);
+		defender.ChangeMass ((int)-damage*defender.GetDamageReduction());
+		FloatingTextController.CreateFloatingText ((-damage).ToString(),defender.transform);
+	}
 
     public Slime FindSlimeById(int id){
         foreach(Player pl in players){

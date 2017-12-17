@@ -9,7 +9,8 @@ public class ProjectileTrajectory : MonoBehaviour {
 
     public bool moving;
     private float damage;
-    private Slime toAttack;
+	private Slime source;
+    private Slime target;
 
 	// Use this for initialization
 	void Start () {
@@ -18,7 +19,8 @@ public class ProjectileTrajectory : MonoBehaviour {
 	}
 	
 	public void SetTrajectorySlimes(Slime shooter, Slime toAttack){
-        this.toAttack = toAttack;
+		this.source = shooter;
+		this.target = toAttack;
         damage = shooter.getDamage;
         Vector2 startPosition = shooter.GetActualTile().GetTileData().GetRealWorldPosition();
         transform.position = startPosition;
@@ -45,19 +47,17 @@ public class ProjectileTrajectory : MonoBehaviour {
     
     void OnDestroy(){
         //Es crida quan es produeix l'event que Destroy del gameobject
-        if (toAttack!=null){
-            FloatingTextController.CreateFloatingText ((-damage).ToString(),toAttack.transform);
-			toAttack.changeMass (-damage*toAttack.GetDamageReduction());
-            //Debug.Log(toAttack.GetMass());
-            //Debug.Log(!toAttack.isAlive ());
-            if (!toAttack.isAlive ()) {
-                toAttack.GetTileData ().SetSlimeOnTop ((Slime)null);
-                toAttack.GetPlayer ().GetSlimes ().Remove (toAttack);
-                Destroy(toAttack.gameObject);
-                GameObject.Find ("Main Camera").GetComponent<GameController> ().RemoveSlime(toAttack);
+		if (target!=null){
+			GameController gameController = GameObject.Find ("Main Camera").GetComponent<GameController> ();
+			gameController.ApplyDamage(source,target);
+			if (!target.isAlive ()) {
+				target.GetTileData ().SetSlimeOnTop ((Slime)null);
+				target.GetPlayer ().GetSlimes ().Remove (target);
+				Destroy(target.gameObject);
+				gameController.RemoveSlime(target);
 
             }
-            GameObject.Find ("Main Camera").GetComponent<GameController> ().OnProjectileAnimationEnded();
+			gameController.OnProjectileAnimationEnded();
         }
 
     }

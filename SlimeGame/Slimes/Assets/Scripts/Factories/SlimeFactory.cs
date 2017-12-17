@@ -30,7 +30,7 @@ public class SlimeFactory{
 		slime.GetComponent<Slime>().SetActualTile(tile);
 		slime.GetComponent<Slime> ().InitElementTypeNone ();
 		slime.GetComponent<Slime>().setPlayer(pl);
-		slime.transform.localPosition = new Vector3 (0f, 0.22f, 0f);
+		slime.transform.localPosition = new Vector3 (0f, 0.35f, 0f);
 		
 		slime.GetComponent<Slime>().SetId(ID);
 		ID++;

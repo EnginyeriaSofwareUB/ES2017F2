@@ -62,7 +62,6 @@ public class RawSlime{
 		float scalingDamage = currentRatio * (core.maxAttackDrain - core.minAttackDrain) + core.minAttackDrain;
 		float scalingRatio = currentRatio * (core.maxAttackMultiplier - core.minAttackMultiplier) + core.minAttackMultiplier;
 		int finalDamage = (int) (scalingRatio * (baseDamage + scalingDamage * mass));
-		Debug.Log (finalDamage);
 		return 10;
 	}
 
