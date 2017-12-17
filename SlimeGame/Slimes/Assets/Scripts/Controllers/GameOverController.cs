@@ -10,7 +10,7 @@ public class GameOverController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Player winner = GameOverInfo.GetWinner();
-		GameObject.Find("Background/Background Winner poster/Winner").GetComponent<Text>().text=winner.GetName(); 
+		GameObject.Find("Background/Background Winner poster/Player").GetComponent<Text>().text+=" #"+winner.GetName().Substring(winner.GetName().Length-1, 1); 
 		GameObject go=GameObject.Find("Background/Background Island/WinnerBody");
 		go.GetComponent<Image>().color = winner.GetColor();
 		go = GameObject.Find("Background/Background Island/WinnerBody/WinnerFace");
