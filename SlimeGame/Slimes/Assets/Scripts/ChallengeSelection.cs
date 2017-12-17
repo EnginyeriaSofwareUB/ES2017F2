@@ -20,12 +20,12 @@ public class ChallengeSelection : MonoBehaviour {
             challenges.Add(new Challenge(text["name"], text["description"]));
         }
 
-        if (challenges.Count < 4){
+        if (challenges.Count < 5){
             //Desactivar els que estan buids
-            for(int i = 0; i < 4-challenges.Count; i++)
+            for(int i = 0; i < 5-challenges.Count; i++)
             {
-                GameObject.Find("TextC" + (4 - i).ToString()).SetActive(false);
-                GameObject.Find("ButtonC" + (4 - i).ToString()).SetActive(false);
+                GameObject.Find("TextC" + (5 - i).ToString()).SetActive(false);
+                GameObject.Find("ButtonC" + (5 - i).ToString()).SetActive(false);
             }
         }
         if(challenges.Count > 5)
