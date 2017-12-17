@@ -167,27 +167,29 @@ public class CameraController : MonoBehaviour {
 		CenterCamera(originalCenter);//new Vector3(0,0,-1);
 	}
 
-	public void AllTilesInCamera(List<Tile> tiles){
-		changeTurnMove=true;
-		newZoom=-1;
-		center=null;
-		Vector2 first = tiles[0].transform.position;
-		Rect rect = new Rect(first.x, first.y,0,0);
-		foreach(Tile tile in tiles){
-			Vector3 tileWorldPosition = tile.transform.position;
-			Vector2 point = new Vector2(tileWorldPosition.x,tileWorldPosition.y);
-			if(!rect.Contains(point)){
-				if (point.x > rect.xMax)rect.xMax=point.x;
-				if (point.y > rect.yMax) rect.yMax=point.y;
-				if (point.x < rect.xMin)rect.xMin=point.x;
-				if (point.y < rect.yMin) rect.yMin=point.y;
-				
-			};
+	public void AllTilesInCamera(List<Tile> tiles){		
+		if(tiles!=null && tiles.Count>0){
+			Vector2 first = tiles[0].transform.position;
+			changeTurnMove=true;
+			newZoom=-1;
+			center=null;
+			Rect rect = new Rect(first.x, first.y,0,0);
+			foreach(Tile tile in tiles){
+				Vector3 tileWorldPosition = tile.transform.position;
+				Vector2 point = new Vector2(tileWorldPosition.x,tileWorldPosition.y);
+				if(!rect.Contains(point)){
+					if (point.x > rect.xMax)rect.xMax=point.x;
+					if (point.y > rect.yMax) rect.yMax=point.y;
+					if (point.x < rect.xMin)rect.xMin=point.x;
+					if (point.y < rect.yMin) rect.yMin=point.y;
+					
+				};
+			}
+			//Vector2 centerPos = (max+min)/2.0f;
+			Vector2 centerPos = rect.center; 
+			CenterCamera(new Vector2(centerPos.x,centerPos.y));
+			ChangeZoom(Mathf.Max(MaxZoom*(rect.height)/(2*yLimit),MaxZoom*Mathf.Abs(rect.width)/(2*xLimit)));
 		}
-		//Vector2 centerPos = (max+min)/2.0f;
-		Vector2 centerPos = rect.center; 
-		CenterCamera(new Vector2(centerPos.x,centerPos.y));
-		ChangeZoom(Mathf.Max(MaxZoom*(rect.height)/(2*yLimit),MaxZoom*Mathf.Abs(rect.width)/(2*xLimit)));
 	}
 	public bool IsCameraMoving(){
 		return changeTurnMove; 

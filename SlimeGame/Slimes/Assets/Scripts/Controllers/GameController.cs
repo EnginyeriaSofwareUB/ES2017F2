@@ -465,7 +465,7 @@ public class GameController : MonoBehaviour
 		List<Tile> tiles = new List<Tile>();
 		foreach(Slime slime in slimes){
 			tiles.AddRange(GetPossibleMovements(slime));
-			
+			tiles.AddRange(GetSlimesInAttackRange(slime));			
 		}
 		//debug
 		//uiController.hideCurrentUITiles ();
