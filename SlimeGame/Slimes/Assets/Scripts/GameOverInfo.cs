@@ -9,6 +9,7 @@ public static class GameOverInfo {
 
     public static void Init ()
     {
+        winner=null;
         losers = new List<Player>();
     }
 
@@ -19,5 +20,13 @@ public static class GameOverInfo {
     public static void SetWinner (Player player)
     {
         winner=player;
+    }
+
+    public static Player GetWinner (){
+        return winner;
+    }
+
+    public static List<Player> GetLosers(){
+        return losers;
     }
 }
