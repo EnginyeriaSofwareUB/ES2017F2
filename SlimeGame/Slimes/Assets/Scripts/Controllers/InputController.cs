@@ -21,7 +21,7 @@ public class InputController : MonoBehaviour
 	protected bool SplitEnabled;
 	protected bool JoinEnabled;
 	protected bool InputEnabled;
-
+	
     void Start()
     {
 		ConquerEnabled = true;
@@ -43,6 +43,21 @@ public class InputController : MonoBehaviour
 
     void Update()
 	{
+		if(InputEnabled && gameController.getStatus () != GameControllerStatus.GAMEEND && !cameraController.IsCameraMoving()){
+			if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
+				cameraController.ZoomIn();
+			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
+				cameraController.ZoomOut();
+			} else if (Input.GetKey (KeyCode.UpArrow)) {
+				cameraController.MoveUp();				
+			} else if (Input.GetKey (KeyCode.DownArrow)) {
+				cameraController.MoveDown();				
+			} else if (Input.GetKey (KeyCode.LeftArrow)) {
+				cameraController.MoveLeft();				
+			} else if (Input.GetKey (KeyCode.RightArrow)) {
+				cameraController.MoveRight();
+			}
+		}
 		//Boto esquerra del mouse
 		if (InputEnabled && gameController.getStatus () == GameControllerStatus.WAITINGFORACTION) {
 			if (Input.GetMouseButtonDown (0)) {
@@ -155,26 +170,14 @@ public class InputController : MonoBehaviour
 						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
 						tiles.AddRange(moveTiles);
 						tiles.AddRange(attackTiles);
-						cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
+						//cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
 					}
 				}
 			} else if (Input.GetMouseButtonDown (1)) {
 				gameController.SetSelectedSlime (null);
     			uiController.DisableCanvas ();
 				uiController.hideCurrentUITiles ();
-				cameraController.GlobalCamera();
-			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
-				cameraController.ZoomIn();
-			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
-				cameraController.ZoomOut();
-			} else if (Input.GetKey (KeyCode.UpArrow)) {
-				cameraController.MoveUp();				
-			} else if (Input.GetKey (KeyCode.DownArrow)) {
-				cameraController.MoveDown();				
-			} else if (Input.GetKey (KeyCode.LeftArrow)) {
-				cameraController.MoveLeft();				
-			} else if (Input.GetKey (KeyCode.RightArrow)) {
-				cameraController.MoveRight();
+				//cameraController.GlobalCamera();
 			}
 		}
 	}
