@@ -9,7 +9,7 @@ public class SlimeMovement : MonoBehaviour {
 	private int indexBuffer;
 	public bool moving;
 
-	public float secondsXmovement = 1; //1 segon, pero es pot determinar des de unity
+	public float secondsXmovement = 0.4f; //1 segon, pero es pot determinar des de unity
 	private float startTime;
 
 	private GameController gameController;
@@ -33,8 +33,8 @@ public class SlimeMovement : MonoBehaviour {
 
 	void Update(){
 		//si tenim recorregut a fer:
-		gameObject.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*4+2);
-		gameObject.GetComponent<Slime>().face.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*4+2)+1;
+		gameObject.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*5+2);
+		gameObject.GetComponent<Slime>().face.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*5+2)+1;
 
 		if (bufferPositions != null && bufferPositions.Count>0) {
 			float i = (Time.time - startTime) / secondsXmovement;

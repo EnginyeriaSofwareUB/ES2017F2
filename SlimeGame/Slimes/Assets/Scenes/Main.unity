@@ -2698,8 +2698,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 343205268}
-        m_MethodName: showhidePanel
+      - m_Target: {fileID: 608162607}
+        m_MethodName: GrowSlime
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -8,8 +8,6 @@ public class Player {
 	public int id;
 	public StatsContainer statsCoreInfo;
 	private string name;
-	private int actions;
-    private float actionsPerSlime;
 	private List<Slime> slimes;
 	private List<Tile> conqueredTiles;
     private List<SlimeAction> tutorialActions;
@@ -20,30 +18,26 @@ public class Player {
 
 	private AIInterface brain;
 
-	public Player(string name, float actionsPerSlime,StatsContainer coreInfo){
+	public Player(string name,StatsContainer coreInfo){
 		this.name = name;
-		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
 		conqueredTiles = new List<Tile>();
 
         positionTutorial=0;
         tutorialActions = new List<SlimeAction>();
 		this.statsCoreInfo = coreInfo;
-        updateActions();
 		isAI = false;
 
 		this.id = ID;
 		ID++;
 	}
 
-	public Player(string name, float actionsPerSlime,StatsContainer coreInfo, AIInterface brain){
+	public Player(string name,StatsContainer coreInfo, AIInterface brain){
 		this.name = name;
 		//this.actions = actions;
-		this.actionsPerSlime = actionsPerSlime;
 		slimes = new List<Slime>();
 		conqueredTiles = new List<Tile>();
 		this.statsCoreInfo = coreInfo;
-        updateActions();
 		SetBrain(brain);
 
 		this.id = ID;
@@ -67,11 +61,13 @@ public class Player {
         //tutorialActions.Add(new SlimeAction(ActionType.CONQUER, MapDrawer.GetTileAt(-1, -1)));
         tutorialActions.Add(new SlimeAction(ActionType.ATTACK, MapDrawer.GetTileAt(-2, 1)));
     }
-    public void updateActions()
+
+	public int actions
     {
-        actions = (int) actionsPerSlime * slimes.Count;
-        if (actions < 1)
-            actions = 1;
+		get{ 
+			return statsCoreInfo.baseActions + (int)(slimes.Count/statsCoreInfo.slimeCountActionGain);
+		}
+        
     }
 
 	public Color GetColor(){
@@ -131,12 +127,11 @@ public class Player {
 	public string GetName(){
 		return name;
 	}
+
 	public int GetNumSlimes(){
 		return slimes.Count;
 	}
-	public int GetActions(){
-		return this.actions;
-	}
+
 	public List<Slime> GetSlimes(){
 		return slimes;
 	}
@@ -208,7 +203,7 @@ public class Player {
 	}
 
 	public RawPlayer GetRawCopy(){
-		RawPlayer rawPlayer = new RawPlayer(id, actions, statsCoreInfo, actionsPerSlime);
+		RawPlayer rawPlayer = new RawPlayer(id, actions, statsCoreInfo, statsCoreInfo.slimeCountActionGain);
 		List<RawSlime> rawSlimes = new List<RawSlime>();
 		foreach(Slime sl in slimes){
 			RawSlime rawSl = sl.GetRawCopy();
