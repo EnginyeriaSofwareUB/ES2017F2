@@ -79,6 +79,7 @@ public class SelectorController : MonoBehaviour {
 		currentSprite.color = colors.Dequeue();
 		sprite1.color = currentSprite.color;
 		sprite2.color = colors.Dequeue();
+		GameObject.Find ("PaintStroke").GetComponent<Image> ().color = currentSprite.color;
 
 		GameSelection.playerColors.Add(sprite1.color);
 		GameSelection.playerColors.Add(sprite2.color);
@@ -88,10 +89,7 @@ public class SelectorController : MonoBehaviour {
 		GameSelection.playerIAs.Add (true);
 		GameSelection.modoVictoria = modoVictoria;
 
-		GameObject s = GameObject.Find("ModeSelection");
-		s.GetComponent<Slider>().value = 0;
-		s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Death","Death");
-	}
+		}
 	
 	// Update is called once per frame
 	void Update () {
@@ -180,6 +178,7 @@ public class SelectorController : MonoBehaviour {
 		currentPlayer = cursor;
 		currentCore.overrideSprite = SpritesLoader.GetInstance ().GetResource (corePaths [coreSelector [cursor]]);
 		currentSprite.color = GameObject.Find ("Sprite"+cursor).GetComponent<Image> ().color;
+		GameObject.Find ("PaintStroke").GetComponent<Image> ().color = currentSprite.color;
 		//GameObject.Find ("CoreInfo").GetComponent<Text> ().text = coresInfo [coreSelector [currentPlayer]];
 		changeInfo();
 		GameObject.Find ("PlayerText").GetComponent<Text> ().text = "PLAYER " + cursor;
@@ -215,6 +214,7 @@ public class SelectorController : MonoBehaviour {
 		colors.Enqueue (currentSprite.color);
 		currentSprite.color = colors.Dequeue ();
 		GameObject.Find ("Sprite"+currentPlayer).GetComponent<Image> ().color = currentSprite.color;
+		GameObject.Find ("PaintStroke").GetComponent<Image> ().color = currentSprite.color;
 
 		GameSelection.playerColors [currentPlayer - 1] = currentSprite.color;
 		/*if (currentPlayer == 1)
@@ -274,21 +274,26 @@ public class SelectorController : MonoBehaviour {
 		return allSeeded;
 	}*/
 
-	public void ModeSelection(){
-		GameObject s = GameObject.Find("ModeSelection");
-		modoVictoria = (int)s.GetComponent<Slider>().value;
+	public void ModeSelection(int value){
+		//GameObject s = GameObject.Find("ModeSelection");
+		modoVictoria = value;
 		GameSelection.modoVictoria = modoVictoria;
+		float yPos = 0;
 		switch(modoVictoria){
-			case 0:
-				s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Death","Death");
-				break;
-			case 1:
-				s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Conquest","Conquest");
-				break;
-			case 2:
-				s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Mass","Mass");
-				break;
+		case 0:
+			//s.transform.Find ("TextMode").GetComponent<Text> ().text = Languages.GetString ("Death", "Death");
+			yPos = GameObject.Find ("ModePanel1").GetComponent<RectTransform> ().anchoredPosition.y;
+			break;
+		case 1:
+			//s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Conquest","Conquest");
+			yPos = GameObject.Find ("ModePanel2").GetComponent<RectTransform> ().anchoredPosition.y;
+			break;
+		case 2:
+			//s.transform.Find("TextMode").GetComponent<Text>().text = Languages.GetString("Mass","Mass");
+			yPos = GameObject.Find ("ModePanel3").GetComponent<RectTransform> ().anchoredPosition.y;
+			break;
 		}
+		GameObject.Find ("Pin").GetComponent<RectTransform> ().anchoredPosition = new Vector3 (140, yPos, 0);
 	}
 }
 /* enum MapTypeSelectionTypes{

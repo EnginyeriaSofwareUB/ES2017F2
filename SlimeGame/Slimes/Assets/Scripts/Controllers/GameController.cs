@@ -78,19 +78,24 @@ public class GameController : MonoBehaviour
         }
 
         
-    
         int maxPlayers = GameSelection.playerColors.Count;
-        for (int i=0;i<maxPlayers;i++){
+		if (maxPlayers == 0) {
+			GameSelection.playerColors.Add (new Color (0, 0, 1));
+			GameSelection.playerColors.Add (new Color (1, 0, 0));
+			GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+			GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+			GameSelection.playerIAs.Add (false);
+			GameSelection.playerIAs.Add (true);
+			maxPlayers = 2;
+		}
+		for (int i=0;i<maxPlayers;i++){
             if (GameSelection.playerIAs [i]) {
                 players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
             } else {
                 players.Add(new Player("Jugador "+(i+1),1,StatsFactory.GetStat(GameSelection.playerCores[i])));
             }
             players[i].SetColor(GameSelection.playerColors[i]);
-            
-
         }
-
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
         if (matrix == null) matrix = new Matrix(11, 0.3f, 1234567);
         MapDrawer.instantiateMap(matrix.getIterable());
@@ -178,6 +183,10 @@ public class GameController : MonoBehaviour
         if (winner!=null)
         {
             GameOverInfo.SetWinner(winner);
+			GameSelection.playerColors.Clear ();
+			GameSelection.playerCores.Clear ();
+			GameSelection.playerIAs.Clear ();
+			//players.Clear ();
             SceneManager.LoadScene("GameOver");
         }
 
