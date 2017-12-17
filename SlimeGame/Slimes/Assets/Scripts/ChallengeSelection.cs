@@ -7,30 +7,33 @@ using UnityEngine.SceneManagement;
 
 public class ChallengeSelection : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    List<Challenge> challenges;
+    // Use this for initialization
+    void Start () {
         //Primer crear els reptes:
-        List<Challenge> challenges;
+        int maxChallenges = 5;
+        
         string textTutorial = (Resources.Load("challenges") as TextAsset).text;
         challenges = new List<Challenge>();
         JSONNode s = JSON.Parse(textTutorial);
         for (int i = 0; i < s.Count; i++)
         {
             JSONNode text = s[i.ToString()];
-            challenges.Add(new Challenge(text["name"], text["description"]));
+            challenges.Add(new Challenge(text["name"], text["description"],text["maxTurns"], text["winCondition"]));
         }
 
-        if (challenges.Count < 5){
+        if (challenges.Count < maxChallenges)
+        {
             //Desactivar els que estan buids
-            for(int i = 0; i < 5-challenges.Count; i++)
+            for(int i = 0; i < maxChallenges - challenges.Count; i++)
             {
-                GameObject.Find("TextC" + (5 - i).ToString()).SetActive(false);
-                GameObject.Find("ButtonC" + (5 - i).ToString()).SetActive(false);
+                GameObject.Find("TextC" + (maxChallenges - i).ToString()).SetActive(false);
+                GameObject.Find("ButtonC" + (maxChallenges - i).ToString()).SetActive(false);
             }
         }
-        if(challenges.Count > 5)
+        if(challenges.Count > maxChallenges)
         {
-            Debug.Log("Masses reptes, nomes es veuen 5");
+            Debug.Log("Masses reptes, nomes es veuen " + maxChallenges);
         }
         //Activem els texts i els botons com ens sembla
         for(int i =0; i < challenges.Count; i++)
@@ -45,25 +48,71 @@ public class ChallengeSelection : MonoBehaviour {
         //Aqui canvies lo que es necessiti segons quin repte seleccionis
         if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC1"))
         {
+            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 0, 0));
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerIAs.Add(false);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.map = null;
+            GameSelection.modoVictoria = challenges[0].GetModo();
+            GameSelection.map = challenges[0].GetMap();
+
             //Debug.Log("primer repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC2"))
         {
+            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 0, 0));
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerIAs.Add(false);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.map = null;
+            GameSelection.modoVictoria = challenges[1].GetModo();
+            GameSelection.map = challenges[1].GetMap();
             //Debug.Log("segon repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC3"))
         {
+            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 0, 0));
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerIAs.Add(false);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.map = null;
+            GameSelection.modoVictoria = challenges[2].GetModo();
+            GameSelection.map = challenges[2].GetMap();
             //Debug.Log("tercer repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC4"))
         {
+            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 0, 0));
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerIAs.Add(false);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.map = null;
+            GameSelection.modoVictoria = challenges[3].GetModo();
+            GameSelection.map = challenges[3].GetMap();
             //Debug.Log("quart repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC5"))
         {
+            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 0, 0));
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerIAs.Add(false);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.map = null;
+            GameSelection.modoVictoria = challenges[4].GetModo();
+            GameSelection.map = challenges[4].GetMap();
             //Debug.Log("cinque repte");
         }
-        //SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("Main");
     }
 }
 
