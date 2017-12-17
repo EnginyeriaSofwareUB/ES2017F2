@@ -428,4 +428,16 @@ public class Slime : MonoBehaviour {
 		}
 	}
 
+	public bool canSplit{
+		get{ 
+			return mass > 30;
+		}
+	}
+
+	public bool canAttack{
+		get{ 
+			return mass > 15;
+		}
+	}
+
 }

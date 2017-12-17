@@ -90,14 +90,16 @@ public class GameController : MonoBehaviour
 		}
 		for (int i=0;i<maxPlayers;i++){
             if (GameSelection.playerIAs [i]) {
-                players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
+				players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
+
+                //players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
             } else {
                 players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
             }
             players[i].SetColor(GameSelection.playerColors[i]);
         }
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-        if (matrix == null) matrix = new Matrix(26, 0.3f, 1234567);
+		if (matrix == null) matrix = new Matrix(26, 0.3f, Random.Range(0,10000));
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
@@ -393,17 +395,21 @@ public class GameController : MonoBehaviour
     }
 
 	private void SplitSlime(Tile targetTile){
-		Slime newSlime = SlimeFactory.instantiateSlime(selectedSlime.GetPlayer(),new Vector2(targetTile.GetTileData().getPosition().x, targetTile.GetTileData().getPosition().y));
+		if (selectedSlime.canSplit) {
+			Slime newSlime = SlimeFactory.instantiateSlime (selectedSlime.GetPlayer (), new Vector2 (targetTile.GetTileData ().getPosition ().x, targetTile.GetTileData ().getPosition ().y));
 
-		newSlime.SetMass ((int)(selectedSlime.GetMass()/2.0f));
-		selectedSlime.SetMass ((int)(selectedSlime.GetMass()/2.0f));
-		playerActions++;
-		status = GameControllerStatus.CHECKINGLOGIC;
+			newSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f));
+			selectedSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f));
+			playerActions++;
+			status = GameControllerStatus.CHECKINGLOGIC;
+		}
     }
 
 	private void AttackSlime(Slime targetSlime){
-		playerActions++;
-        RangedAttack(targetSlime);
+		if (selectedSlime.canAttack) {
+			playerActions++;
+			RangedAttack (targetSlime);
+		}
 	}
 
 	private void RangedAttack(Slime toAttack){

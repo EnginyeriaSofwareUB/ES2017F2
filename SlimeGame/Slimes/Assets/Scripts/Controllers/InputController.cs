@@ -64,7 +64,8 @@ public class InputController : MonoBehaviour
 						if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> ().GetPlayer () == gameController.GetCurrentPlayer () && 
 							gameController.GetSelectedSlime() != col.gameObject.GetComponent<Slime>()) {
 							uiController.hideCurrentUITiles ();
-							if (SplitEnabled) {
+							gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
+							if (SplitEnabled && gameController.GetSelectedSlime().canSplit) {
 								splitTiles = gameController.GetSplitRangeTiles (col.gameObject.GetComponent<Slime> ());
 								uiController.markTiles (splitTiles,ActionType.SPLIT);
 							}
@@ -72,7 +73,6 @@ public class InputController : MonoBehaviour
 								joinTiles = gameController.GetJoinTile (col.gameObject.GetComponent<Slime> ());
 								uiController.markTiles (joinTiles,ActionType.FUSION);
 							}
-							gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
 							s = col.gameObject.GetComponent<Slime>().ToString();
 							AfterSelect();
 							break;
@@ -163,7 +163,7 @@ public class InputController : MonoBehaviour
 							}
 							AfterShowMove ();
 							BeforeShowAttack ();
-							if (AttackEnabled) {
+							if (AttackEnabled && gameController.GetSelectedSlime().canAttack) {
 								attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime());
 								uiController.markTiles (attackTiles,ActionType.ATTACK);
 							}
@@ -217,74 +217,69 @@ public class InputController : MonoBehaviour
 				// Priority to action colliders
 				string s = " ";
 				foreach (Collider2D col in colliders) {
-					if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> ().GetPlayer () == gameController.GetCurrentPlayer () && 
-						gameController.GetSelectedSlime() != col.gameObject.GetComponent<Slime>()) {
+					if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> ().GetPlayer () == gameController.GetCurrentPlayer () &&
+						(gameController.GetSelectedSlime () != col.gameObject.GetComponent<Slime> () || gameController.GetSelectedSlime() == null)) {
 						uiController.hideCurrentUITiles ();
-						if (SplitEnabled) {
+						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
+						if (SplitEnabled && gameController.GetSelectedSlime ().canSplit) {
 							splitTiles = gameController.GetSplitRangeTiles (col.gameObject.GetComponent<Slime> ());
-							uiController.markTiles (splitTiles,ActionType.SPLIT);
+							uiController.markTiles (splitTiles, ActionType.SPLIT);
 						}
 						if (JoinEnabled) {
 							joinTiles = gameController.GetJoinTile (col.gameObject.GetComponent<Slime> ());
-							uiController.markTiles (joinTiles,ActionType.FUSION);
+							uiController.markTiles (joinTiles, ActionType.FUSION);
 						}
-						gameController.SetSelectedSlime (col.gameObject.GetComponent<Slime> ());
-						s = col.gameObject.GetComponent<Slime>().ToString();
-						AfterSelect();
+						s = col.gameObject.GetComponent<Slime> ().ToString ();
+						AfterSelect ();
 						break;
 						/*}else if(col.gameObject.tag == "Slime") {
 						//s = col.gameObject.GetComponent<Slime>().ToString();
 */ 
 					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
-						if(ConquerEnabled){
-							gameController.DoAction(new SlimeAction(ActionType.CONQUER,col.gameObject.GetComponent<Slime> ().GetActualTile()));
+						if (ConquerEnabled) {
+							gameController.DoAction (new SlimeAction (ActionType.CONQUER, col.gameObject.GetComponent<Slime> ().GetActualTile ()));
 							OnConquer ();
 						}
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
 						break;
-					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime>().GetPlayer()!=gameController.GetCurrentPlayer()
-						&& gameController.GetSelectedSlime()==null){
-						s = col.gameObject.GetComponent<Slime>().ToString();
+					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> ().GetPlayer () != gameController.GetCurrentPlayer ()
+					           && gameController.GetSelectedSlime () == null) {
+						s = col.gameObject.GetComponent<Slime> ().ToString ();
 						break;
-					} else if(col.gameObject.tag == "Tile") {
+					} else if (col.gameObject.tag == "Tile") {
 						Tile target = col.gameObject.GetComponent<Tile> ();
 						bool isMoveTile = moveTiles.Contains (target);
 						bool isAttackTile = attackTiles.Contains (target);
 						if ((isMoveTile || isAttackTile) && gameController.GetSelectedSlime () != null) {
 							if (isMoveTile) {
 								//Debug.Log (Time.time + "Move");
-								gameController.DoAction(new SlimeAction(ActionType.MOVE,target));
+								gameController.DoAction (new SlimeAction (ActionType.MOVE, target));
 								OnMove ();
 								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							} else if (isAttackTile) {
 								//Debug.Log (Time.time + "Attack");
-								gameController.DoAction(new SlimeAction(ActionType.ATTACK,target.GetSlimeOnTop ()));
+								gameController.DoAction (new SlimeAction (ActionType.ATTACK, target.GetSlimeOnTop ()));
 								uiController.DisableCanvas ();
 								uiController.hideCurrentUITiles ();
 								gameController.SetSelectedSlime (null);
 							}
 						} else {
 							//Quan selecciona una casella, sense seleccionar cap slime abans
-							s = target.ToString();
+							s = target.ToString ();
 							uiController.DisableCanvas ();
 							uiController.hideCurrentUITiles ();
 							gameController.SetSelectedSlime (null);
 						}
 					}
 				}
-				if (colliders.Length == 0) {
-					uiController.DisableCanvas ();
-					uiController.hideCurrentUITiles ();
-					gameController.SetSelectedSlime (null);
-				}
 				if (!s.Equals (" ")) {
 					uiController.ShowCanvasInfo (s);
 				}
-			} else if (Input.GetMouseButtonUp (0) && gameController.GetSelectedSlime()!=null) {
+			} else if (Input.GetMouseButtonUp (0) && gameController.GetSelectedSlime () != null) {
 				if (gameController.GetSelectedSlime () != null) {
 					Collider2D[] colliders = Physics2D.OverlapPointAll (Camera.main.ScreenToWorldPoint (Input.mousePosition));
 					Tile t = null;
@@ -296,21 +291,27 @@ public class InputController : MonoBehaviour
 							s = c.gameObject.GetComponent<Slime> ();
 						}
 					}
-					if (s != null && s!=gameController.GetSelectedSlime() && joinTiles.Contains(s.actualTile)) {
+					Debug.Log (t);
+					Debug.Log (s);
+					if (s != null && s != gameController.GetSelectedSlime () && joinTiles.Contains (s.actualTile)) {
 						//Debug.Log (Time.time+"Join");
 						OnJoin ();
-						gameController.DoAction(new SlimeAction(ActionType.FUSION,s));
+						gameController.DoAction (new SlimeAction (ActionType.FUSION, s));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
-					}else if(t!=null && splitTiles.Contains(t)){
+					} else if (t != null && splitTiles.Contains (t)) {
 						//Debug.Log (Time.time+"Split");
 						OnSplit ();
-						gameController.DoAction(new SlimeAction(ActionType.SPLIT,t));
+						gameController.DoAction (new SlimeAction (ActionType.SPLIT, t));
 						uiController.DisableCanvas ();
 						uiController.hideCurrentUITiles ();
 						gameController.SetSelectedSlime (null);
-					}else{
+					} else if (s == null && t == null) {
+						uiController.DisableCanvas ();
+						uiController.hideCurrentUITiles ();
+						gameController.SetSelectedSlime (null);
+					} else {
 						uiController.hideCurrentUITiles ();
 						BeforeShowMove ();
 						if (MoveEnabled) {
@@ -319,15 +320,15 @@ public class InputController : MonoBehaviour
 						}
 						AfterShowMove ();
 						BeforeShowAttack ();
-						if (AttackEnabled) {
-							attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime());
-							uiController.markTiles (attackTiles,ActionType.ATTACK);
+						if (AttackEnabled && gameController.GetSelectedSlime ().canAttack) {
+							attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime ());
+							uiController.markTiles (attackTiles, ActionType.ATTACK);
 						}
 						AfterShowAttack ();
-						List<Tile> tiles = new List<Tile>();
+						List<Tile> tiles = new List<Tile> ();
 						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
-						tiles.AddRange(moveTiles);
-						tiles.AddRange(attackTiles);
+						tiles.AddRange (moveTiles);
+						tiles.AddRange (attackTiles);
 						//cameraController.AllTilesInCamera(gameController.GetSelectedSlime().actualTile,tiles);
 					}
 				}
@@ -419,5 +420,14 @@ public class InputController : MonoBehaviour
 
 	protected virtual void OnAttack(){
 	
+	}
+
+	public void GrowSlime(){
+		if (gameController.GetSelectedSlime () != null) {
+			gameController.DoAction (new SlimeAction(ActionType.EAT,gameController.GetSelectedSlime()));
+			gameController.SetSelectedSlime (null);
+			uiController.hideCurrentUITiles();
+			uiController.DisableCanvas ();
+		}
 	}
 }
