@@ -13,6 +13,7 @@ public class Slime : MonoBehaviour {
 	private ElementType elementType;
 	private StatsContainer element;
 	public GameObject face;
+	private GameObjectAnimationController controller;
 	// Use this for initialization
 	void Start () {
 		ChangeElement(elementType);
@@ -189,6 +190,83 @@ public class Slime : MonoBehaviour {
 			canimation.SetMode (SpriteAnimationMode.LOOP);
 			changeScaleSlime ();
 		}
+
+		CenterFace ();
+	
+	}
+
+	private void CenterFace(){
+		if (controller != null) {
+			Destroy (controller);
+		}
+		//controller = face.AddComponent<GameObjectAnimationController> ();
+		//controller.initLists ();
+		switch (elementType) {
+		case ElementType.EARTH:
+			face.transform.localPosition = new Vector3 (0.85f,-0.2f,0f);
+			face.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+			/*
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0.5f, 0f);
+			controller.AddTransformTransition (face.transform.localPosition, 0.0f, 0.0f);
+			*/
+			break;
+		case ElementType.FIRE:
+			face.transform.localPosition = new Vector3 (0.05f,-0.5f,0f);
+			face.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+			/*
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0.5f, 0f);
+			controller.AddTransformTransition (face.transform.localPosition, 0.0f, 0.0f);
+			*/
+			break;
+		case ElementType.LAVA:
+			face.transform.localPosition = new Vector3 (0.5f, 0.45f, 0f);
+			face.transform.localScale = new Vector3 (1f, 1f, 1f);
+			/*
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0.5f, 0f);
+			controller.AddTransformTransition (face.transform.localPosition, 0.0f, 0.0f);
+			*/
+			break;
+		case ElementType.MUD:
+			face.transform.localPosition = new Vector3 (0.15f,0.5f,0f);
+			face.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+			/*
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0.5f, 0f);
+			controller.AddTransformTransition (face.transform.localPosition, 0.0f, 0.0f);
+			*/
+			break;
+		case ElementType.NONE:
+			face.transform.localPosition = new Vector3 (0.2f,-0.15f,0f);
+			face.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+			/*
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0.38f, 0f);
+			controller.AddTransformTransition (face.transform.localPosition, 0.0f, 0.0f);
+			*/
+			break;
+		case ElementType.STEAM:
+			face.transform.localPosition = new Vector3 (0.05f,0.3f,0f);
+			face.transform.localScale = new Vector3(0.65f, 0.65f, 0.65f);
+			/*
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0.5f, 0f);
+			controller.AddTransformTransition (face.transform.localPosition, 0.0f, 0.0f);
+			*/
+			break;
+		case ElementType.WATER:
+			face.transform.localPosition = new Vector3 (0.25f,0f,0f);
+			face.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+			/*
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
+			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0.5f, 0f);
+			controller.AddTransformTransition (face.transform.localPosition, 0.0f, 0.0f);
+			*/
+			break;
+		}
+		//controller.StartAnimation ();
 	}
 
 	public RawSlime GetRawCopy(){

@@ -87,7 +87,7 @@ public class Tile : MonoBehaviour {
 		tileElementLayerBack.gameObject.transform.position = pos;
 		tileElementLayerBack.gameObject.transform.localScale = new Vector2(1f,1f);
 		tileElementLayerBack.sortingLayerName = "TileElement";
-		tileElementLayerBack.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4);
+		tileElementLayerBack.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*5);
 		tileElementLayerBack.color = new Color (1f, 1f, 1f, 1f);
 
 		GameObject gotileElementLayer2 = new GameObject ("TileElementLayer2");
@@ -97,7 +97,7 @@ public class Tile : MonoBehaviour {
 		tileElementLayerFront.gameObject.transform.localScale = new Vector2(1f,1f);
 		tileElementLayerFront.sortingLayerName = "TileElement";
 		tileElementLayerFront.color = new Color (1f, 1f, 1f, 1f);
-		tileElementLayerFront.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*4+3);
+		tileElementLayerFront.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*5+4);
 		switch(Random.Range(1,5)){
 			//Fire case
 			case 1:
@@ -130,19 +130,19 @@ public class Tile : MonoBehaviour {
 				//Water case
 			case 2:
 				elementType = ElementType.WATER;
-				tileElementLayerFront.gameObject.transform.position = pos + new Vector3 (0.0f, +0.2f);
+				tileElementLayerFront.gameObject.transform.position = pos + new Vector3 (0.0f, 0.0f);
 					//Animations
 				frontAnimation = new SpriteAnimation (tileElementLayerFront);
-				frontAnimation.LoadSprites ("Tiles/Water/tile_water_", 36);
+				frontAnimation.LoadSprites ("Tiles/Water/tile_water_", 10, 26);
 				frontAnimation.RandomStart ();
-				frontAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
+				frontAnimation.mode = SpriteAnimationMode.BOUNCE;
 				frontAnimation.playAnimation ();
 
 				tileElementLayerBack.gameObject.transform.position = pos + new Vector3 (1.2f, 0.7f);
 				backAnimation = new SpriteAnimation (tileElementLayerBack);
-				backAnimation.LoadSprites ("Tiles/Water/tile_water_", 36);
+				backAnimation.LoadSprites ("Tiles/Water/tile_water_", 10, 26);
 				backAnimation.RandomStart ();
-				backAnimation.mode = SpriteAnimationMode.SUBBOUNCE;
+				backAnimation.mode = SpriteAnimationMode.BOUNCE;
 				backAnimation.playAnimation ();
 				break;
 				//Earth case

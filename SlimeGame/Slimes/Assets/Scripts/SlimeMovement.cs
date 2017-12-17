@@ -33,8 +33,8 @@ public class SlimeMovement : MonoBehaviour {
 
 	void Update(){
 		//si tenim recorregut a fer:
-		gameObject.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*4+2);
-		gameObject.GetComponent<Slime>().face.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*4+2)+1;
+		gameObject.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*5+2);
+		gameObject.GetComponent<Slime>().face.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-parent.transform.position.y*5+2)+1;
 
 		if (bufferPositions != null && bufferPositions.Count>0) {
 			float i = (Time.time - startTime) / secondsXmovement;

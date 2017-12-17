@@ -10,6 +10,7 @@ public class InGameMarker
 	public delegate void OnClickOkDialog();
 
 	public InGameMarker (){
+		
 		markerContainer = new GameObject ("MarkerContainer");
 		marker = new GameObject ("Marker");
 		marker.transform.SetParent (markerContainer.transform);

@@ -41,6 +41,15 @@ public class SpriteAnimation
 		}
 	}
 
+	public void LoadSprites(string name,int imgQuantity,int start){
+		
+		sprites = new List<Sprite> ();
+		for (int i = 0; i < imgQuantity; i++) {
+			sprites.Add (SpritesLoader.GetInstance().GetResource(name+(i+start)));
+		}
+
+	}
+
 	public void setSprites(List<Sprite> list){
 		sprites = list;
 	}

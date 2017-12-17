@@ -398,20 +398,20 @@ public class GameController : MonoBehaviour
 
 	private void RangedAttack(Slime toAttack){
         GameObject projectile = new GameObject("projectile");
-		Sprite sprite = GetSpriteForElement(selectedSlime.GetElementType());
+		Sprite sprite = GetSpriteForElement(selectedSlime.GetElementType(), projectile);
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
 		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
-        projectile.GetComponent<Transform>().localScale = new Vector3(0.3f, 0.3f, 1f);
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
 		status = GameControllerStatus.PLAYINGACTION;
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/fireball");
         soundController.PlaySingle(clip);
     }
 
-	public Sprite GetSpriteForElement(ElementType type){
+	public Sprite GetSpriteForElement(ElementType type,GameObject p){
 		Sprite sp;
+		p.transform.localScale = new Vector3 (0.7f, 0.7f, 0f);
 		switch (type) {
 		case ElementType.EARTH:
 			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
