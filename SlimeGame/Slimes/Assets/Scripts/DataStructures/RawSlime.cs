@@ -41,7 +41,7 @@ public class RawSlime{
     }
 
 	public int GetMovementRange(){
-		return player.statsCoreInfo.move + element.move;
+		return player.statsCoreInfo.movement + element.movement;
 	}
 
     public int GetAttackRange(){
@@ -55,8 +55,14 @@ public class RawSlime{
 		return actualTile;
 	}
 
-    public float getDamage(){
-		return player.statsCoreInfo.attack + element.attack;
+    public int getDamage(){
+		StatsContainer core = player.statsCoreInfo;
+		float currentRatio = (((float)(mass - core.minCalcMass)) / (core.maxCalcMass - core.minCalcMass));
+		int baseDamage = (int) (currentRatio * (core.maxBaseAttack - core.minBaseAttack) + core.minBaseAttack);
+		float scalingDamage = currentRatio * (core.maxAttackDrain - core.minAttackDrain) + core.minAttackDrain;
+		float scalingRatio = currentRatio * (core.maxAttackMultiplier - core.minAttackMultiplier) + core.minAttackMultiplier;
+		int finalDamage = (int) (scalingRatio * (baseDamage + scalingDamage * mass));
+		return 10;
 	}
 
     public bool isAlive(){

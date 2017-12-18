@@ -29,12 +29,25 @@ public class SpriteAnimation
 	/* Getters and initializers
 	 * 
 	 */
+
+	public void SetMode(SpriteAnimationMode m){
+		mode = m;
+	}
 	public void LoadSprites(string name,int imgQuantity){
 		
 		sprites = new List<Sprite> ();
 		for (int i = 0; i < imgQuantity; i++) {
 			sprites.Add (SpritesLoader.GetInstance().GetResource(name+i));
 		}
+	}
+
+	public void LoadSprites(string name,int imgQuantity,int start){
+		
+		sprites = new List<Sprite> ();
+		for (int i = 0; i < imgQuantity; i++) {
+			sprites.Add (SpritesLoader.GetInstance().GetResource(name+(i+start)));
+		}
+
 	}
 
 	public void setSprites(List<Sprite> list){

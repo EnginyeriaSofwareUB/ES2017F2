@@ -152,7 +152,7 @@ public class UIController : MonoBehaviour {
 	protected void HideTurnPanel(){
 		state = 1;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, -80, 0);
 		endPosT = new Vector3 (230, 120, 0);
 	}
@@ -160,7 +160,7 @@ public class UIController : MonoBehaviour {
 	protected void ShowTurnPanel(){
 		state = 2;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, 120, 0);
 		endPosT = new Vector3 (230, -80, 0);
 	}
@@ -168,7 +168,7 @@ public class UIController : MonoBehaviour {
 	protected void HideBothPanels(){
 		state = 3;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, -80, 0);
 		endPosT = new Vector3 (230, 120, 0);
 		startPosR = new Vector3 (0, -40, 0);
@@ -178,7 +178,7 @@ public class UIController : MonoBehaviour {
 	public void ShowBothPanels(){
 		state = 4;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, 120, 0);
 		endPosT = new Vector3 (230, -80, 0);
 		startPosR = new Vector3 (0, 80, 0);
@@ -188,9 +188,9 @@ public class UIController : MonoBehaviour {
 	//Metode que mostra la info que li passis
     public void ShowCanvasInfo(string info)
     {
-        //canvasInfo.SetActive(true);
-        //Text t = canvasInfo.GetComponentInChildren<Text>();
-        //t.text = info;
+        canvasInfo.SetActive(true);
+        Text t = canvasInfo.GetComponentInChildren<Text>();
+        t.text = info;
     }
 	
     //Desactiva el canvas
