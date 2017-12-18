@@ -16,19 +16,24 @@ public class CameraController : MonoBehaviour {
 
 	private GameController controller;
 	// Use this for initialization
-	float speed;
+	float speedPosition;
+	float speedPositionInitial;
 	float speedZoom;
 	private bool calibrateZoom = false;
 
 	private bool changeTurnMove = false;
+	bool coordinateWithPosition=false;
+	float MaxDiagonalSpeed;
 	void Start () {	
-		speed=10;
-		speedZoom=10;	
+		speedZoom=11;	
+		speedPositionInitial=Mathf.Sqrt(MaxDiagonalSpeed);
+		speedPosition=11;
+		MaxDiagonalSpeed=Mathf.Pow(speedZoom,2)+Mathf.Pow(speedPosition,2);
 		howfar = 1;
 		newZoom=-1;
 		beforeZoom=-1;
 		MaxZoom=-1;
-		MinZoom=3;
+		MinZoom=6;
 		center=null;
 		controller = this.GetComponent<GameController>();
 		originalCenter = new Vector3(this.transform.position.x,this.transform.position.y,this.transform.position.z);
@@ -72,6 +77,8 @@ public class CameraController : MonoBehaviour {
 			if(dist<0.1f){
 				center = null;	
 				beforeMovePosition=null;
+				speedPosition=speedPositionInitial;
+				coordinateWithPosition=false;
 				if(changeTurnMove)changeTurnMove=false;
 			}else{
 				Vector3 realMove = GetVectorSpeed()*Time.deltaTime;
@@ -81,22 +88,29 @@ public class CameraController : MonoBehaviour {
 	}
 	float GetSpeedZoom(){
 		float speed = speedZoom;
-		if(this.beforeMovePosition.HasValue && this.center.HasValue){
-			float x1 = Vector3.Magnitude(this.beforeMovePosition.Value-this.center.Value);
-			float x2 = Mathf.Abs(newZoom-beforeZoom);
-			speed = (Vector3.Magnitude(GetVectorSpeed())*x2)/x1;			
+		if(this.beforeMovePosition.HasValue && this.center.HasValue && coordinateWithPosition){
+			float xDist = Vector3.Magnitude(this.beforeMovePosition.Value-this.center.Value);//or this position
+			float zDist = Mathf.Abs(newZoom-beforeZoom);
+			speed=Mathf.Sqrt(MaxDiagonalSpeed/(1f+(Mathf.Pow(xDist,2)/Mathf.Pow(zDist,2))));
+			//changing speed position
+			speedPosition=speed*xDist/zDist;
+			//speed = (Vector3.Magnitude(GetVectorSpeed())*x2)/x1;			
 		}
+		/*if(speed>MaxZoomSpeed){
+			speed=MaxZoomSpeed;
+
+		}*/
 		return speed;
 	}
 	Vector3 GetVectorSpeed(){
 		Camera cam = this.GetComponent<Camera>();
-		return (this.beforeMovePosition.Value-this.center.Value).normalized*speed;
+		return (this.beforeMovePosition.Value-this.center.Value).normalized*speedPosition;
 	}
 	float GetHorizontalExtent(Camera cam){
-		return 0.7f* cam.orthographicSize * cam.aspect;
+		return 0.9f* cam.orthographicSize * cam.aspect;
 	}
 	float GetVerticalExtent(Camera cam){
-		return 0.7f* cam.orthographicSize;
+		return 0.9f* cam.orthographicSize;
 	}
 	public static void InitMapSize(Vector2 mapSize){
 		xLimit = (int) mapSize.x;
@@ -194,6 +208,7 @@ public class CameraController : MonoBehaviour {
 			}
 			//Vector2 centerPos = (max+min)/2.0f;
 			Vector2 centerPos = rect.center; 
+			coordinateWithPosition=true;
 			CenterCamera(new Vector2(centerPos.x,centerPos.y));
 			ChangeZoom(Mathf.Max(MaxZoom*(rect.height)/(2*yLimit),MaxZoom*Mathf.Abs(rect.width)/(2*xLimit)));
 		}
