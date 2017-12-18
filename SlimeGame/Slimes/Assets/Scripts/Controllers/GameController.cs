@@ -155,7 +155,7 @@ public class GameController : MonoBehaviour
         }
 
         GameOverInfo.Init();
-        AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/HappySong");
+        AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/MainGameTheme");
         soundController.PlayLoop(clip);
 		camController.InitMaxZoom();
 
