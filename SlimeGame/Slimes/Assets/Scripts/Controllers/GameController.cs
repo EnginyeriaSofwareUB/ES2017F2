@@ -647,9 +647,9 @@ public class GameController : MonoBehaviour
 
 	public void ApplyDamage(Slime attacker,Slime defender){
 		int damage = attacker.getDamage;
-		attacker.ChangeMass ((int)-attacker.GetMass()*attacker.attackDrain);
-		defender.ChangeMass ((int)-damage*defender.GetDamageReduction());
-		FloatingTextController.CreateFloatingText ((-damage).ToString(),defender.transform);
+		attacker.ChangeMass ((int)(-attacker.GetMass()*attacker.attackDrain));
+		defender.ChangeMass ((int)(-damage*(1-defender.damageReduction)));
+		FloatingTextController.CreateFloatingText (((int)-damage).ToString(),defender.transform);
 	}
 
     public Slime FindSlimeById(int id){

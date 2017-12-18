@@ -410,6 +410,12 @@ public class Slime : MonoBehaviour {
 		}
 	}
 
+	public float damageReduction{
+		get{ 
+			return (massRatio*(maxDamageReduction-minDamageReduction)+minDamageReduction);
+		}
+	}
+
 	public int getDamage {
 		get {
 			float currentRatio = massRatio;
