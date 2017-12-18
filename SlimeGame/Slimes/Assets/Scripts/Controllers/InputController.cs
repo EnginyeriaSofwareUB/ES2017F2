@@ -210,6 +210,83 @@ public class InputController : MonoBehaviour
 	private void PcInput(){
 		//Boto esquerra del mouse
 
+		bool inputStarted = Input.GetMouseButtonDown(0);
+		bool inputMaintained = Input.GetMouseButton (0);
+		bool inputEnded = Input.GetMouseButtonUp(0);
+		bool selectedSlime = gameController.GetSelectedSlime()!=null;
+
+		if (InputEnabled && gameController.getStatus () == GameControllerStatus.WAITINGFORACTION &&
+			(inputStarted || inputMaintained || inputEnded)) {
+			Collider2D[] colliders = Physics2D.OverlapPointAll (Camera.main.ScreenToWorldPoint (Input.mousePosition));
+			Slime s=null;
+			Tile t=null;
+			foreach (Collider2D col in colliders) {
+				if (col.gameObject.tag == "Slime") {
+					s = col.gameObject.GetComponent<Slime> ();
+				} else if (col.gameObject.tag == "Tile") {
+					t = col.gameObject.GetComponent<Tile> ();
+				}
+			}
+			if (selectedSlime) {
+				if (inputStarted) {
+					//Selecciono al slime si es del player actual, sino, solo muestro la información
+					if (s != null && s.GetPlayer () == gameController.GetCurrentPlayer () && s != gameController.GetSelectedSlime ()) {
+						gameController.SetSelectedSlime (s);
+					} else if (t != null) {
+						if (moveTiles.Contains (t)) {
+							gameController.DoAction (new SlimeAction (ActionType.MOVE, t));
+							OnMove ();
+						} else if (attackTiles.Contains (t)) {
+							gameController.DoAction(new SlimeAction(ActionType.ATTACK,t.GetSlimeOnTop ()));
+						} else {
+							gameController.SetSelectedSlime (null);
+						}
+						ClearMarkedTiles ();
+					}
+					//Acciones de slime manteniendo pulsado
+				} else if (inputMaintained) {
+					if (SplitEnabled && gameController.GetSelectedSlime ().canSplit) {
+						splitTiles = gameController.GetSplitRangeTiles (gameController.GetSelectedSlime());
+						uiController.markTiles (splitTiles, ActionType.SPLIT);
+					}
+					if (JoinEnabled) {
+						joinTiles = gameController.GetJoinTile (gameController.GetSelectedSlime());
+						uiController.markTiles (joinTiles, ActionType.FUSION);
+					}
+					//Acciones de slime al soltar el ratón
+				} else if (inputEnded) {
+					ClearMarkedTiles ();
+					BeforeShowMove ();
+					if (MoveEnabled) {
+						moveTiles = gameController.GetPossibleMovements (gameController.GetSelectedSlime ());
+						uiController.markTiles (moveTiles, ActionType.MOVE);
+					}
+					AfterShowMove ();
+					BeforeShowAttack ();
+					if (AttackEnabled && gameController.GetSelectedSlime ().canAttack) {
+						attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime ());
+						uiController.markTiles (attackTiles, ActionType.ATTACK);
+					}
+					AfterShowAttack ();
+					List<Tile> tiles = new List<Tile> ();
+					uiController.showSelectedSlime (gameController.GetSelectedSlime ());
+				}
+			} else {
+				if (inputStarted) {
+					//Selecciono al slime si es del player actual, sino, solo muestro la información
+					if (s != null && s.GetPlayer () == gameController.GetCurrentPlayer ()) {
+						gameController.SetSelectedSlime (s);
+					} else {
+
+					}
+				} else if (inputMaintained) {
+					
+				} else if (inputEnded) {
+					
+				}
+			}
+		}
+		/*
 		if (InputEnabled && gameController.getStatus () == GameControllerStatus.WAITINGFORACTION) {
 			if (Input.GetMouseButtonDown (0)) {
 				//Obtinc els colliders que hi ha a la posicio del mouse
@@ -232,9 +309,6 @@ public class InputController : MonoBehaviour
 						s = col.gameObject.GetComponent<Slime> ().ToString ();
 						AfterSelect ();
 						break;
-						/*}else if(col.gameObject.tag == "Slime") {
-						//s = col.gameObject.GetComponent<Slime>().ToString();
-*/ 
 					} else if (col.gameObject.tag == "Slime" && col.gameObject.GetComponent<Slime> () == gameController.GetSelectedSlime ()) {
 						if (ConquerEnabled) {
 							gameController.DoAction (new SlimeAction (ActionType.CONQUER, col.gameObject.GetComponent<Slime> ().GetActualTile ()));
@@ -350,7 +424,7 @@ public class InputController : MonoBehaviour
 			} else if (Input.GetKey (KeyCode.RightArrow)) {
 				cameraController.MoveRight();
 			}
-		}
+		}*/
 	}
 
 
@@ -430,4 +504,9 @@ public class InputController : MonoBehaviour
 			uiController.DisableCanvas ();
 		}
 	}
+
+	public void ClearMarkedTiles(){
+		uiController.hideCurrentUITiles ();
+	}
+
 }

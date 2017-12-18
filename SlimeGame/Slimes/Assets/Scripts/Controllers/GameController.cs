@@ -99,7 +99,7 @@ public class GameController : MonoBehaviour
             players[i].SetColor(GameSelection.playerColors[i]);
         }
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-		if (matrix == null) matrix = new Matrix(26, 0.3f, Random.Range(0,10000));
+		if (matrix == null) matrix = new Matrix(8, 0.3f, Random.Range(0,10000));
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
@@ -641,9 +641,9 @@ public class GameController : MonoBehaviour
 
 	public void ApplyDamage(Slime attacker,Slime defender){
 		int damage = attacker.getDamage;
-		attacker.ChangeMass ((int)-attacker.GetMass()*attacker.attackDrain);
-		defender.ChangeMass ((int)-damage*defender.GetDamageReduction());
-		FloatingTextController.CreateFloatingText ((-damage).ToString(),defender.transform);
+		attacker.ChangeMass ((int)(-attacker.GetMass()*attacker.attackDrain));
+		defender.ChangeMass ((int)(-damage*(1-defender.damageReduction)));
+		FloatingTextController.CreateFloatingText (((int)-damage).ToString(),defender.transform);
 	}
 
     public Slime FindSlimeById(int id){
