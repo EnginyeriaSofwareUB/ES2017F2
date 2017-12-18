@@ -39,6 +39,8 @@ public class UIController : MonoBehaviour {
 	public GameObject roundPanel;
 	public GameObject infoPanel;
 
+	public GameObject growButton;
+
 	protected float currentTime;
 	protected float maxTime;
 	protected float normalizedValue;
@@ -56,6 +58,8 @@ public class UIController : MonoBehaviour {
 	protected Color tempColor;
 	protected int tempAct;
 	protected int tempMaxAct;
+	protected Slime tempSlime;
+	protected Tile tempTerrain;
 
 	protected int state;
 	/* state 0: do nothing
@@ -65,6 +69,7 @@ public class UIController : MonoBehaviour {
 	 * state 4: show both panels
 	 * state 5: show info panel
 	 * state 6: hide info panel
+	 * state 7: hide and show info panel
 	*/
 
 	public int xLimit;
@@ -72,6 +77,8 @@ public class UIController : MonoBehaviour {
     public int minZoom;
     public int maxZoom;
     public int speed;
+
+	public bool selected;
 
     // Use this for initialization
     void Start () {
@@ -107,7 +114,9 @@ public class UIController : MonoBehaviour {
 		rectTransformT = turnPanel.GetComponent<RectTransform> ();
 		rectTransformR = roundPanel.GetComponent<RectTransform> ();
 		rectTransformI = infoPanel.GetComponent<RectTransform> ();
+		growButton = GameObject.Find ("GrowButton");
 		state = 0;
+		selected = false;
 	}
 	
 	// Update is called once per frame
@@ -144,22 +153,33 @@ public class UIController : MonoBehaviour {
 					gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
 				}
 			}
-		} else if (state == 5 || state == 6) {
+		} else if (state == 5 || state == 6 || state == 7) {
 			if (currentTime < maxTime) {
 				currentTime += Time.deltaTime;
 				normalizedValue = currentTime / maxTime;
-				rectTransformI.anchoredPosition = Vector3.Lerp (startPosT, endPosT, normalizedValue);
+				rectTransformI.anchoredPosition = Vector3.Lerp (startPosI, endPosI, normalizedValue);
 			} else {
-				if (state == 5) {
+				if (state == 7){
+					state = 5;
+					ShowInfoPanel(tempSlime, tempTerrain);
+				} else {
+					state = 0;
+				}
+
+				gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
+				/*if (state == 5) {
+					state = 0;
 					//UpdateInfo ();
 					//UpdateRound (tempRound);
 					//UpdatePlayer (tempColor);
 					//UpdateActions (tempAct, tempMaxAct);
-					ShowInfoPanel ();
+					//ShowInfoPanel ();
 				} else {
 					state = 0;
 					gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
-				}
+				}*/
+				//state = 0;
+				//gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
 			}
 		}
 	}
@@ -230,17 +250,34 @@ public class UIController : MonoBehaviour {
 
 	public void HideInfoPanel(){
 		state = 5;
+		selected = false;
 		currentTime = 0;
 		maxTime = 0.25f;
 		startPosI = new Vector3 (-205, -200, 0);
 		endPosI = new Vector3 (10, -200, 0);
 	}
 
-	public void ShowInfoPanel(){
+	public void ShowInfoPanel(Slime slime, Tile terrain){
+		UpdateInfo (slime, terrain);
 		state = 6;
+		selected = true;
+		tempSlime = slime;
+		tempTerrain = terrain;
+		maxTime = 0.25f;
 		currentTime = 0;
 		startPosI = new Vector3 (10, -200, 0);
 		endPosI = new Vector3 (-205, -200, 0);
+	}
+
+	public void HideAndShowInfoPanel(Slime slime, Tile terrain){
+		state = 7;
+		selected = false;
+		tempSlime = slime;
+		tempTerrain = terrain;
+		currentTime = 0;
+		maxTime = 0.25f;
+		startPosI = new Vector3 (-205, -200, 0);
+		endPosI = new Vector3 (10, -200, 0);
 	}
 
 
@@ -251,7 +288,7 @@ public class UIController : MonoBehaviour {
 			health.GetComponent<Text>().text = slime.GetMass().ToString();
 			range.GetComponent<Text>().text = slime.GetAttackRange ().ToString();
 			movement.GetComponent<Text>().text = slime.GetMovementRange ().ToString();
-			attack.GetComponent<Text>().text = slime.getDamage.ToString();
+			attack.GetComponent<Text> ().text = slime.getDamage.ToString ()+" ("+slime.attackDrain+")";
 		} else {
 			health.GetComponent<Text>().text = "";
 			range.GetComponent<Text>().text = "";
@@ -260,10 +297,10 @@ public class UIController : MonoBehaviour {
 		}
 
 		if (terrain != null) {
-			health.GetComponent<Text>().text = slime.GetMass().ToString();
-			range.GetComponent<Text>().text = slime.GetAttackRange ().ToString();
-			movement.GetComponent<Text>().text = slime.GetMovementRange ().ToString();
-			attack.GetComponent<Text>().text = slime.getDamage.ToString();
+			/*healthT.GetComponent<Text>().text = terrain.GetMass().ToString();
+			rangeT.GetComponent<Text>().text = terrain.GetAttackRange ().ToString();
+			movementT.GetComponent<Text>().text = terrain.GetMovementRange ().ToString();
+			attackT.GetComponent<Text>().text = terrain.getDamage.ToString();*/
 		} else {
 			healthT.GetComponent<Text>().text = "";
 			rangeT.GetComponent<Text>().text = "";
@@ -286,6 +323,14 @@ public class UIController : MonoBehaviour {
 			canvasInfo.SetActive (false);
 		}
     }
+
+	public void DisableGrowButton(){
+		growButton.SetActive (false);
+	}
+
+	public void EnableGrowButton(){
+		growButton.SetActive (true);
+	}
 
 	public void markTiles(List<Tile> tiles,ActionType at){
 		foreach (Tile t in tiles) {

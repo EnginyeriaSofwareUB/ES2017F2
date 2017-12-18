@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
     protected Slime selectedSlime;
     public Matrix matrix;
 	protected List<Player> players;
-	protected GameObject panelTip, textTip;
+	//protected GameObject panelTip, textTip;
 	protected int currentTurn;
 	protected int currentPlayer;
 	protected int playerActions;
@@ -65,10 +65,10 @@ public class GameController : MonoBehaviour
 		soundController = gameObject.GetComponent<SoundController>();
         camController = Camera.main.GetComponent<CameraController>();
         conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
-        panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
-        textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
+        //panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
+        //textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
         //panelTip.GetComponent<DialogInfo>().Active(false);
-        textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
+        //textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
 
         if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
