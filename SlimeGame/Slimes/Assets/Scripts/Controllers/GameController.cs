@@ -635,7 +635,14 @@ public class GameController : MonoBehaviour
             Debug.Log("MATRIX COPIED CORRECTLY");
         }*/
         
-        return new AIGameState(rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions);
+        switch(condicionVictoria){
+			case ModosVictoria.CONQUISTA:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions, percentageTilesToWin);
+			case ModosVictoria.MASA:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions, massToWin);
+			default:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions, 0);
+		} 
     }
 
 	public void ApplyDamage(Slime attacker,Slime defender){
@@ -658,7 +665,6 @@ public class GameController : MonoBehaviour
         foreach(Player pl in players){
             if(pl.isPlayerAI() && pl.IsThinking()) pl.StopThinking();
         }
-
     }
 
 }

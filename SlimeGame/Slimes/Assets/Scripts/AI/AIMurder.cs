@@ -39,6 +39,7 @@ public class AIMurder : AIInterface{
 
         int distanceToEnemy = Int16.MaxValue;
         foreach(RawSlime sl in player.GetSlimes()){
+            totalPlayerMass += sl.GetMass();
             distanceToEnemy = Mathf.Min(distanceToEnemy, state.GetDistanceToCloserEnemy(sl));
         }
 
@@ -61,13 +62,18 @@ public class AIMurder : AIInterface{
         //Debug.Log("TOTAL AI MASS: " + totalPlayerMass);
         double score = 1000;
         score += totalPlayerMass; // Ens interessa tenir molta massa.
-        score += playerSlimes*3; // Si pot dividirse per arribar al objectiu, ho fara
-        score -= totalEnemiesMass; // Predileccio per atacar
-        score -= enemiesSlimes * 20; // Valor 100 a SLIME MORTA
+        score += playerSlimes*30; // Si pot dividirse per arribar al objectiu, ho fara
+        score -= totalEnemiesMass * 10; // Predileccio per atacar
+        score -= enemiesSlimes * 200; // slime morta
         score -= distanceToEnemy; // Com menys distancia millor
-        score -= enemiesThatCanAttackMe; // Com menys enemics puguin atacarme, millor
-        score -= minimumMass * 2; // Predileccio per atacar al que esta mes fluix
+        score -= enemiesThatCanAttackMe * 2; // Com menys enemics puguin atacarme, millor
+        score -= minimumMass * 5; // Predileccio per atacar al que esta mes fluix
 
-        return  score;
+
+        RawPlayer winner = state.IsGameEndedAndWinner();
+        if(winner != null && winner.GetId() == player.GetId()) score += 10000; // if it wins
+        else if(winner != null) score -= 10000; // if it loses
+
+        return  score * GetAIError();
     }
 }

@@ -8,7 +8,7 @@ public abstract class AIInterface : ThreadedJob{
     //private int maxDepth = 3;
     //private int minDepth = 1;
     //private float depthSlimeFactor = 3; // cada 2 slimes en propiedad, se restará 1 accion de profundidad, hasta 1
-    private int depth = 1; // profundidad de acciones que se analizará.
+    private int depth = 3; // profundidad de acciones que se analizará.
     protected int playerId = 0; // jugador propietario de la IA
     private int turn = 0; // turno sobre el que se esta calculando la accion
     private static int counter;
@@ -26,7 +26,7 @@ public abstract class AIInterface : ThreadedJob{
          //Debug.Log("THINKING");
          counter = 0;
          ThinkAction();
-         Debug.Log("State evaluations: " + counter);
+         //Debug.Log("State evaluations: " + counter);
          //Debug.Log("FIN");
      }
 
@@ -49,8 +49,11 @@ public abstract class AIInterface : ThreadedJob{
 
         // Normalmente trabajaremos con profundidad 2. Si en cualquiera de estos dos pasos de profundidad hay que analizar mas de 3 slimes,
         // solamente bajaremos 1 grado de profundidad (sino demasiado coste).
+        if(playerSlimes > 2 ||
+        (state.GetRemainingActions() <= 1 && state.GetNextPlayer().GetSlimes().Count > 3)) depth = 2;
+
         if(playerSlimes > 3 ||
-        (state.GetRemainingActions() <= 1 && state.GetNextPlayer().GetSlimes().Count > 3)) depth = 1;
+        (state.GetRemainingActions() <= 1 && state.GetNextPlayer().GetSlimes().Count > 4)) depth = 1;
         
         //Debug.Log("DEPTH: " + depth);
 
@@ -61,7 +64,7 @@ public abstract class AIInterface : ThreadedJob{
         counter++;
         /*Si nos pasamos de profundidad o el fantasma no puede hacer ninguna acción, estamos ante una hoja y devolvemos
         la puntuación del estado actual y ninguna acción, obviamente.*/
-        List<AIRawSlimeAction> legalActions = state.GetLegalActions();
+        List<AIRawSlimeAction> legalActions = state.GetLegalActions(depth > 0);
         if(depth >= this.depth || legalActions.Count <= 0) return new KeyValuePair<AIRawSlimeAction, double>(null, GetStateEvaluation(state));
         //Debug.Log("MAXING: " + legalActions.Count + "actions (DEPTH=" + depth + ")");
         
@@ -101,7 +104,7 @@ public abstract class AIInterface : ThreadedJob{
         counter++;
         /*Si nos pasamos de profundidad o el fantasma no puede hacer ninguna acción, estamos ante una hoja y devolvemos
         la puntuación del estado actual y ninguna acción, obviamente.*/
-        List<AIRawSlimeAction> legalActions = state.GetLegalActions();
+        List<AIRawSlimeAction> legalActions = state.GetLegalActions(depth > 0);
         if(depth >= this.depth || legalActions.Count <= 0) return new KeyValuePair<AIRawSlimeAction, double>(null, GetStateEvaluation(state));
         
         //Debug.Log("MINING: " + legalActions.Count + "actions (DEPTH=" + depth + ")");
@@ -136,5 +139,19 @@ public abstract class AIInterface : ThreadedJob{
         //Debug.Log("[MIN] CHOSEN: " + bestValue + "-" + bestAction);
         return new KeyValuePair<AIRawSlimeAction, double>(bestAction, bestValue);
 
+    }
+
+    protected float GetAIError(){
+        return 1; //TODO delete this line
+
+        int randomSign = (new System.Random()).Next(2);
+        if(randomSign == 0) randomSign = -1;
+        float random = (new System.Random()).Next(10000) / 100;
+        if(random < 50) return 0;
+        else if(random < 80) return randomSign * 1 * random / 100;
+        else if(random < 95) return randomSign * 2 * random / 100;
+        else if(random < 98) return randomSign * 3 * random / 100;
+        else if(random < 99.5) return randomSign * 5 * random / 100;
+        else return randomSign * 10 * random / 100;
     }
 }

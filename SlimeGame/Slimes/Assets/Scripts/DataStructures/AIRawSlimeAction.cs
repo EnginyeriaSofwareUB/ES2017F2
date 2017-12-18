@@ -40,6 +40,7 @@ public class AIRawSlimeAction {
         switch(GetAction()){
             case ActionType.ATTACK:
             case ActionType.FUSION:
+			case ActionType.EAT:
                 Slime targetSlime = gameController.FindSlimeById(GetTargetSlimeId());
                 return new AISlimeAction(actionSlime, GetAction(), targetSlime);
             default:
