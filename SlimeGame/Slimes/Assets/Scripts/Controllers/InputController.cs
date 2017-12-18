@@ -44,10 +44,22 @@ public class InputController : MonoBehaviour
     void Update()
 	{
 		if (Application.isMobilePlatform) {
-			AndroidInput ();
+			ManageInput (
+				Input.GetTouch(0).phase==TouchPhase.Began,
+				Input.GetTouch(0).phase==TouchPhase.Stationary||Input.GetTouch(0).phase==TouchPhase.Moved,
+				Input.GetTouch(0).phase==TouchPhase.Ended,
+				Camera.main.ScreenToWorldPoint (Input.GetTouch(0).position)
+			);
 		} else {
-			PcInput ();
+			ManageInput (
+				Input.GetMouseButtonDown(0),
+				Input.GetMouseButton (0),
+				Input.GetMouseButtonUp(0),
+				Camera.main.ScreenToWorldPoint (Input.mousePosition)
+			);
+			CheckKeyBoardInputMovement ();
 		}
+
 
 	}
 
@@ -207,17 +219,12 @@ public class InputController : MonoBehaviour
         }
 	}
 
-	private void PcInput(){
-		//Boto esquerra del mouse
-
-		bool inputStarted = Input.GetMouseButtonDown(0);
-		bool inputMaintained = Input.GetMouseButton (0);
-		bool inputEnded = Input.GetMouseButtonUp(0);
+	private void ManageInput(bool inputStarted, bool inputMaintained, bool inputEnded,Vector3 position){
 		bool selectedSlime = gameController.GetSelectedSlime()!=null;
 
 		if (InputEnabled && gameController.getStatus () == GameControllerStatus.WAITINGFORACTION &&
 			(inputStarted || inputMaintained || inputEnded)) {
-			Collider2D[] colliders = Physics2D.OverlapPointAll (Camera.main.ScreenToWorldPoint (Input.mousePosition));
+			Collider2D[] colliders = Physics2D.OverlapPointAll (position);
 			Slime s=null;
 			Tile t=null;
 			foreach (Collider2D col in colliders) {
@@ -232,12 +239,18 @@ public class InputController : MonoBehaviour
 					//Selecciono al slime si es del player actual, sino, solo muestro la información
 					if (s != null && s.GetPlayer () == gameController.GetCurrentPlayer () && s != gameController.GetSelectedSlime ()) {
 						gameController.SetSelectedSlime (s);
+						ClearMarkedTiles ();
 					} else if (t != null) {
 						if (moveTiles.Contains (t)) {
 							gameController.DoAction (new SlimeAction (ActionType.MOVE, t));
 							OnMove ();
 						} else if (attackTiles.Contains (t)) {
 							gameController.DoAction(new SlimeAction(ActionType.ATTACK,t.GetSlimeOnTop ()));
+						} else if(gameController.GetSelectedSlime().actualTile == t) {
+							if (ConquerEnabled) {
+								gameController.DoAction (new SlimeAction (ActionType.CONQUER, gameController.GetSelectedSlime().actualTile));
+								OnConquer ();
+							}
 						} else {
 							gameController.SetSelectedSlime (null);
 						}
@@ -255,21 +268,31 @@ public class InputController : MonoBehaviour
 					}
 					//Acciones de slime al soltar el ratón
 				} else if (inputEnded) {
-					ClearMarkedTiles ();
-					BeforeShowMove ();
-					if (MoveEnabled) {
-						moveTiles = gameController.GetPossibleMovements (gameController.GetSelectedSlime ());
-						uiController.markTiles (moveTiles, ActionType.MOVE);
+					if (splitTiles.Contains (t)) {
+						gameController.DoAction (new SlimeAction (ActionType.SPLIT, t));
+						ClearMarkedTiles ();
+						OnSplit ();
+					} else if (joinTiles.Contains (t)) {
+						gameController.DoAction (new SlimeAction (ActionType.FUSION, t.GetSlimeOnTop()));
+						ClearMarkedTiles ();
+						OnJoin ();
+					} else {
+						ClearMarkedTiles ();
+						BeforeShowMove ();
+						if (MoveEnabled) {
+							moveTiles = gameController.GetPossibleMovements (gameController.GetSelectedSlime ());
+							uiController.markTiles (moveTiles, ActionType.MOVE);
+						}
+						AfterShowMove ();
+						BeforeShowAttack ();
+						if (AttackEnabled && gameController.GetSelectedSlime ().canAttack) {
+							attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime ());
+							uiController.markTiles (attackTiles, ActionType.ATTACK);
+						}
+						AfterShowAttack ();
+						List<Tile> tiles = new List<Tile> ();
+						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
 					}
-					AfterShowMove ();
-					BeforeShowAttack ();
-					if (AttackEnabled && gameController.GetSelectedSlime ().canAttack) {
-						attackTiles = gameController.GetSlimesInAttackRange (gameController.GetSelectedSlime ());
-						uiController.markTiles (attackTiles, ActionType.ATTACK);
-					}
-					AfterShowAttack ();
-					List<Tile> tiles = new List<Tile> ();
-					uiController.showSelectedSlime (gameController.GetSelectedSlime ());
 				}
 			} else {
 				if (inputStarted) {
@@ -280,7 +303,7 @@ public class InputController : MonoBehaviour
 
 					}
 				} else if (inputMaintained) {
-					
+					CheckInputMovement ();
 				} else if (inputEnded) {
 					
 				}
@@ -415,18 +438,25 @@ public class InputController : MonoBehaviour
 				cameraController.ZoomIn();
 			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
 				cameraController.ZoomOut();
-			} else if (Input.GetKey (KeyCode.UpArrow)) {
-				cameraController.MoveUp();				
-			} else if (Input.GetKey (KeyCode.DownArrow)) {
-				cameraController.MoveDown();				
-			} else if (Input.GetKey (KeyCode.LeftArrow)) {
-				cameraController.MoveLeft();				
-			} else if (Input.GetKey (KeyCode.RightArrow)) {
-				cameraController.MoveRight();
-			}
+			} else 
 		}*/
 	}
 
+	public void CheckInputMovement(){
+		
+	}
+
+	public void CheckKeyBoardInputMovement(){
+		if (Input.GetKey (KeyCode.UpArrow)) {
+			cameraController.MoveUp();				
+		} else if (Input.GetKey (KeyCode.DownArrow)) {
+			cameraController.MoveDown();				
+		} else if (Input.GetKey (KeyCode.LeftArrow)) {
+			cameraController.MoveLeft();				
+		} else if (Input.GetKey (KeyCode.RightArrow)) {
+			cameraController.MoveRight();
+		}
+	}
 
 	public void SetActiveMove(bool active){
 		MoveEnabled = active;
@@ -507,6 +537,10 @@ public class InputController : MonoBehaviour
 
 	public void ClearMarkedTiles(){
 		uiController.hideCurrentUITiles ();
+		moveTiles = new List<Tile> ();
+		attackTiles = new List<Tile> ();
+		splitTiles = new List<Tile> ();
+		joinTiles = new List<Tile> ();
 	}
 
 }
