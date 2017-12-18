@@ -8,9 +8,10 @@ public abstract class AIInterface : ThreadedJob{
     //private int maxDepth = 3;
     //private int minDepth = 1;
     //private float depthSlimeFactor = 3; // cada 2 slimes en propiedad, se restará 1 accion de profundidad, hasta 1
-    private int depth = 2; // profundidad de acciones que se analizará.
+    private int depth = 1; // profundidad de acciones que se analizará.
     protected int playerId = 0; // jugador propietario de la IA
     private int turn = 0; // turno sobre el que se esta calculando la accion
+    private static int counter;
 
     abstract protected void ThinkAction();
     abstract protected double GetStateEvaluation(AIGameState state);
@@ -23,18 +24,17 @@ public abstract class AIInterface : ThreadedJob{
     protected override void ThreadFunction()
      {
          //Debug.Log("THINKING");
+         counter = 0;
          ThinkAction();
+         Debug.Log("State evaluations: " + counter);
          //Debug.Log("FIN");
      }
 
     // Devuelve la accion pensada.
     public AISlimeAction PopAction(){
-        if(thoughtAction != null){
-            AISlimeAction toReturn = thoughtAction;
-            thoughtAction = null;
-            return toReturn;
-        }
-        return null;
+        AISlimeAction toReturn = thoughtAction;
+        thoughtAction = null;
+        return toReturn;
     }    
 
 
@@ -58,6 +58,7 @@ public abstract class AIInterface : ThreadedJob{
     }
 
     private KeyValuePair<AIRawSlimeAction, double> GetMaxValueAction(AIGameState state, int depth, double alpha, double beta){
+        counter++;
         /*Si nos pasamos de profundidad o el fantasma no puede hacer ninguna acción, estamos ante una hoja y devolvemos
         la puntuación del estado actual y ninguna acción, obviamente.*/
         List<AIRawSlimeAction> legalActions = state.GetLegalActions();
@@ -97,6 +98,7 @@ public abstract class AIInterface : ThreadedJob{
     }
 
     private KeyValuePair<AIRawSlimeAction, double> GetMinValueAction(AIGameState state, int depth, double alpha, double beta){
+        counter++;
         /*Si nos pasamos de profundidad o el fantasma no puede hacer ninguna acción, estamos ante una hoja y devolvemos
         la puntuación del estado actual y ninguna acción, obviamente.*/
         List<AIRawSlimeAction> legalActions = state.GetLegalActions();
