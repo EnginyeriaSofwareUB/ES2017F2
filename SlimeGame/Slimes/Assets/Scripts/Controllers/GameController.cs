@@ -99,7 +99,7 @@ public class GameController : MonoBehaviour
             players[i].SetColor(GameSelection.playerColors[i]);
         }
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-		if (matrix == null) matrix = new Matrix(26, 0.3f, Random.Range(0,10000));
+		if (matrix == null) matrix = new Matrix(8, 0.3f, Random.Range(0,10000));
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
@@ -174,7 +174,9 @@ public class GameController : MonoBehaviour
             {
                 //This player loses
                 GameOverInfo.SetLoser(players[i]);
-                players.RemoveAt(i);
+				//si li tocava al que ha mort i aquest era l'ultim de la llista, el torn es el del primer de la llista
+				if(currentPlayer==i && i==players.Count-1) currentPlayer = 0;
+                players.RemoveAt(i); //definitivament el borrem de la llista
             }
         }
 
@@ -193,25 +195,25 @@ public class GameController : MonoBehaviour
             SceneManager.LoadScene("GameOver");
         }
 
-        //S'ha de posar despres de la comprovacio de ended
-        // Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
-        if (players[currentPlayer].isPlayerAI())
-        {
-            if(status == GameControllerStatus.WAITINGFORACTION){
-                status = GameControllerStatus.AILOGIC;
-                GetCurrentPlayer().ThinkAction();
-            }else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking()){
-                status = GameControllerStatus.PLAYINGACTION;
-                AISlimeAction action = players[currentPlayer].GetThoughtAction();
-                if(action != null){
-                    SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
-                    DoAction((SlimeAction)action); // Hacemos la accion.
-                }else {
-                    Debug.Log("IA returned NULL action");
-                    NextPlayer(); // No pot fer cap accio
-                }
-            }
-        }
+		//S'ha de posar despres de la comprovacio de ended
+		// Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
+		if (players[currentPlayer].isPlayerAI())
+		{
+			if(status == GameControllerStatus.WAITINGFORACTION){
+				status = GameControllerStatus.AILOGIC;
+				GetCurrentPlayer().ThinkAction();
+			}else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking()){
+				status = GameControllerStatus.PLAYINGACTION;
+				AISlimeAction action = players[currentPlayer].GetThoughtAction();
+				if(action != null){
+					SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
+					DoAction((SlimeAction)action); // Hacemos la accion.
+				}else {
+					Debug.Log("IA returned NULL action");
+					NextPlayer(); // No pot fer cap accio
+				}
+			}
+		}
     }
 
 	public void checkLogic(){
@@ -397,9 +399,9 @@ public class GameController : MonoBehaviour
 	private void SplitSlime(Tile targetTile){
 		if (selectedSlime.canSplit) {
 			Slime newSlime = SlimeFactory.instantiateSlime (selectedSlime.GetPlayer (), new Vector2 (targetTile.GetTileData ().getPosition ().x, targetTile.GetTileData ().getPosition ().y));
-
-			newSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f));
-			selectedSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f));
+			newSlime.InitMass(); //posem vida a 0, i a la seguent linia li posem la vida real, d'aquesta manera es veu el popup amb '+'
+			newSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f),true);
+			selectedSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f),true);
 			playerActions++;
 			status = GameControllerStatus.CHECKINGLOGIC;
 		}
@@ -462,7 +464,7 @@ public class GameController : MonoBehaviour
 		RemoveSlime(selectedSlime);
         //players[currentPlayer].updateActions();
 		selectedSlime.GetActualTile ().SetSlimeOnTop (null);
-		fusionTarget.SetMass ((int)(selectedSlime.GetMass() + fusionTarget.GetMass()));
+		fusionTarget.SetMass ((int)(selectedSlime.GetMass() + fusionTarget.GetMass()),true);
 
 		Destroy (selectedSlime.gameObject);
 		playerActions++;
@@ -641,9 +643,9 @@ public class GameController : MonoBehaviour
 
 	public void ApplyDamage(Slime attacker,Slime defender){
 		int damage = attacker.getDamage;
-		attacker.ChangeMass ((int)-attacker.GetMass()*attacker.attackDrain);
-		defender.ChangeMass ((int)-damage*defender.GetDamageReduction());
-		FloatingTextController.CreateFloatingText ((-damage).ToString(),defender.transform);
+		attacker.ChangeMass ((int)(-attacker.GetMass()*attacker.attackDrain));
+		defender.ChangeMass ((int)(-damage*(1-defender.damageReduction)));
+		//FloatingTextController.CreateFloatingText (((int)-damage).ToString(),defender.transform);
 	}
 
     public Slime FindSlimeById(int id){
