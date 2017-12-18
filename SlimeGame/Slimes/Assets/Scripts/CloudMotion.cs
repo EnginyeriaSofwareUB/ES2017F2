@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class CloudMotion : MonoBehaviour {
 	float currentTime;
-	float maxTime;
-	Vector3 startPos;
-	Vector3 endPos;
+	public float maxTime;
+	public Vector3 startPos;
+	public Vector3 endPos;
 	RectTransform rectTransform;
 	float normalizedValue;
 
 	// Use this for initialization
 	void Start () {
 		currentTime = 0;
-		maxTime = 6;
-		startPos = new Vector3 (-1000, 200, 0);
-		endPos = new Vector3 (1000, 200, 0);
+		//maxTime = 6;
+		//startPos = new Vector3 (-1000, 200, 0);
+		//endPos = new Vector3 (1000, 200, 0);
 		rectTransform = gameObject.GetComponent<RectTransform> ();
 	}
 	
