@@ -64,7 +64,7 @@ public class GameController : MonoBehaviour
         uiController = Camera.main.GetComponent<UIController>();
 		soundController = gameObject.GetComponent<SoundController>();
         camController = Camera.main.GetComponent<CameraController>();
-        conquerSprite = SpritesLoader.GetInstance().GetResource("Test/conquerTile");
+        conquerSprite = SpritesLoader.GetInstance().GetResource("Tiles/conquest_flag");
         panelTip = GameObject.Find("PanelTip"); //ja tenim el panell, per si el necessitem activar, i desactivar amb : panelTip.GetComponent<DialogInfo> ().Active (boolean);
         textTip = GameObject.Find("TextTip"); //ja tenim el textBox, per canviar el text : textTip.GetComponent<Text> ().text = "Text nou";
         //panelTip.GetComponent<DialogInfo>().Active(false);
@@ -418,7 +418,7 @@ public class GameController : MonoBehaviour
         projectile.AddComponent<ProjectileTrajectory>();
         projectile.AddComponent<SpriteRenderer>().sprite = sprite;
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
-		projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
+		//projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
 		projectile.transform.Rotate (new Vector3(0f, 0f, Vector3.Angle (new Vector3(1f,0f,0f), toAttack.transform.parent.position - selectedSlime.transform.parent.position)));
 		status = GameControllerStatus.PLAYINGACTION;
@@ -431,24 +431,30 @@ public class GameController : MonoBehaviour
 		p.transform.localScale = new Vector3 (0.7f, 0.7f, 0f);
 		switch (type) {
 		case ElementType.EARTH:
-			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			p.transform.localScale = new Vector3 (0.25f, 0.25f, 0f);
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/earth_projectile");
 			break;
 		case ElementType.FIRE:
+			p.transform.localScale = new Vector3 (0.9f, 0.9f, 0f);
 			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/fire_projectile");
 			break;
 		case ElementType.LAVA:
-			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			p.transform.localScale = new Vector3 (0.3f, 0.3f, 0f);
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/lava_projectile");
 			break;
 		case ElementType.MUD:
-			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			p.transform.localScale = new Vector3 (0.3f, 0.3f, 0f);
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/mud_projectile");
 			break;
 		case ElementType.NONE:
 			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
 			break;
 		case ElementType.STEAM:
-			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
+			p.transform.localScale = new Vector3 (0.3f, 0.3f, 0f);
+			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/steam_projectile");
 			break;
 		case ElementType.WATER:
+			p.transform.localScale = new Vector3 (0.9f, 0.9f, 0f);
 			sp = SpritesLoader.GetInstance ().GetResource ("Projectiles/water_projectile");
 			break;
 		default:
@@ -471,6 +477,8 @@ public class GameController : MonoBehaviour
 
 	private void ConquerTile(Tile tile){
 		tile.tileConquerLayer.sprite = conquerSprite;
+		tile.tileConquerLayer.transform.localScale = new Vector3(0.3f, 0.3f, 0f);
+		tile.tileConquerLayer.transform.localPosition = new Vector3(-2.4f, 3.5f, 0f);
         //borrem la tile conquerida de qui la tenia abans
         foreach(Player player in players){
             if (player.HasConqueredTile(tile)) player.RemoveConqueredTile(tile);
@@ -478,7 +486,7 @@ public class GameController : MonoBehaviour
         //afegim la tile conquerida
         players[currentPlayer].AddConqueredTile(tile);
 		Color c = selectedSlime.GetPlayer ().GetColor ();
-		c.a = 0.5f;
+		//c.a = 0.5f;
 		tile.tileConquerLayer.color = c;
 		playerActions++;
 		selectedSlime.ChangeElement (tile.elementType);

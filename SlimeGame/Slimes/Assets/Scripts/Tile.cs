@@ -74,8 +74,9 @@ public class Tile : MonoBehaviour {
 		gotileUILayer.GetComponent<Transform> ().SetParent (this.transform);
 		tileConquerLayer = gotileUILayer.AddComponent<SpriteRenderer> ();
 		tileConquerLayer.gameObject.transform.position = pos;
-		tileConquerLayer.gameObject.transform.localScale = new Vector2(1f,1f);;
-		tileConquerLayer.sortingLayerName = "TileConquest";
+		tileConquerLayer.gameObject.transform.localScale = new Vector2(1f,1f);
+		tileConquerLayer.sortingLayerName = "TileElement";
+		tileConquerLayer.sortingOrder = (int) (1000-data.GetRealWorldPosition().y*5);
 		tileConquerLayer.color = new Color (1f, 1f, 1f, 1f);
 	}
 
