@@ -86,7 +86,7 @@ public class InputController : MonoBehaviour
 						gameController.SetSelectedSlime (s);
 						ClearMarkedTiles ();
 						uiController.HideAndShowInfoPanel (s,t);
-					} else if (s != null && s != gameController.GetSelectedSlime ()) {
+					} else if (s != null && s != gameController.GetSelectedSlime () && !attackTiles.Contains (t)) {
 						uiController.HideAndShowInfoPanel (s, t);
 						uiController.DisableGrowButton ();
 						gameController.SetSelectedSlime (null);
@@ -95,19 +95,22 @@ public class InputController : MonoBehaviour
 						if (moveTiles.Contains (t)) {
 							gameController.DoAction (new SlimeAction (ActionType.MOVE, t));
 							OnMove ();
+							uiController.HideInfoPanel ();
 						} else if (attackTiles.Contains (t)) {
 							gameController.DoAction (new SlimeAction (ActionType.ATTACK, t.GetSlimeOnTop ()));
+							uiController.HideInfoPanel ();
 						} else if (gameController.GetSelectedSlime ().actualTile == t) {
 							if (ConquerEnabled) {
 								gameController.DoAction (new SlimeAction (ActionType.CONQUER, gameController.GetSelectedSlime ().actualTile));
 								OnConquer ();
 							}
+							uiController.HideInfoPanel ();
 						} else {
 							uiController.HideAndShowInfoPanel (s, t);
 							uiController.DisableGrowButton ();
-							gameController.SetSelectedSlime (null);
-							ClearMarkedTiles ();
 						}
+						gameController.SetSelectedSlime (null);
+						ClearMarkedTiles ();
 					} else {
 						uiController.HideInfoPanel ();
 						ClearMarkedTiles ();
