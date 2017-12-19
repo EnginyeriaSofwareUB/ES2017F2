@@ -32,14 +32,32 @@ public class AIConquer : AIInterface{
                 if(sl.canSplit) playerSlimesSplitable++;
             }
 
-            score += plConquered * 6;
-            score += plSlimes * 5;
-            score += playerSlimesSplitable;
-
-            // Contrincantes
+            // INFO sobre los ENEMIGOS
             List<RawPlayer> enemies = state.GetPlayers().FindAll(p => true);
             enemies.Remove(player);
-            score -= 100 * (enemies.Count); // Cuanto menos jugadores, mejor.
+            int enemiesSlimes = 0;
+            float totalEnemiesMass = 0;
+            int enemiesThatCanAttackMe = 0;
+            float minimumMass = Int16.MaxValue;
+            foreach(RawPlayer enemy in enemies){
+                foreach(RawSlime sl in enemy.GetSlimes()){
+                    enemiesSlimes++;
+                    totalEnemiesMass += sl.GetMass();
+
+                    enemiesThatCanAttackMe += state.GetSlimesInAttackRange(sl).FindAll(r => r.GetPlayer().GetId() == player.GetId()).Count;
+                    minimumMass = Mathf.Min(sl.GetMass(), minimumMass);
+                }
+            }
+
+            score += plConquered * 12;
+            score += plSlimes * 10;
+            score += playerSlimesSplitable * 5;
+
+            score -= 200 * (enemies.Count); // Cuanto menos jugadores, mejor.
+            score -= totalEnemiesMass; // Predileccio per atacar
+            score -= enemiesSlimes * 100; // slime morta
+            score -= enemiesThatCanAttackMe * 2; // Com menys enemics puguin atacarme, millor
+            score -= minimumMass * 5; // Predileccio per atacar al que esta mes fluix
         }
         return  score * GetAIError();
     }
