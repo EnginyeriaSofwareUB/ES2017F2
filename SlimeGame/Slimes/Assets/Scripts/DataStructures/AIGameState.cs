@@ -10,12 +10,18 @@ public class AIGameState {
     private int currentPlayer;
     private int playerActions;
 
-    public AIGameState(Matrix matrix, List<RawPlayer> players, int currentTurn, int currentPlayer, int playerActions){
+    private ModosVictoria condicionVictoria;
+    private float victoryValue;
+
+    public AIGameState(ModosVictoria condicionVictoria, Matrix matrix, List<RawPlayer> players, int currentTurn, int currentPlayer, int playerActions, float victoryValue){
         this.matrix = matrix;
         this.players = players;
         this.currentTurn = currentTurn;
         this.currentPlayer = currentPlayer;
         this.playerActions = playerActions;
+
+        this.condicionVictoria = condicionVictoria;
+        this.victoryValue = victoryValue;
     }
 
     public RawPlayer GetCurrentPlayer()
@@ -34,7 +40,7 @@ public class AIGameState {
     /*
     Función que devuelve todas las posibles acciones en forma de lista de AISlimeAction (slime, accion)
      */
-    public List<AIRawSlimeAction> GetLegalActions(){
+    public List<AIRawSlimeAction> GetLegalActions(bool lowCost = false){
         /* Cada slime pot:
             - Atacar un rival: que hi hagi una slime enemiga al rang d'atac.
             - Conquerir: CAP? (o que la casella no estigui conquerida?)
@@ -49,11 +55,11 @@ public class AIGameState {
 
          foreach(RawSlime slime in slimes){
              legalActions.AddRange(GetAttackActions(slime));
-             legalActions.AddRange(GetMoveActions(slime));
+             if(!lowCost) legalActions.AddRange(GetMoveActions(slime));
              legalActions.AddRange(GetConquerActions(slime));
              legalActions.AddRange(GetSplitActions(slime));
              legalActions.AddRange(GetFusionActions(slime));
-             //legalActions.AddRange(GetGrowActions(slime));
+             legalActions.AddRange(GetGrowActions(slime));
          }
 
          return legalActions;
@@ -80,16 +86,38 @@ public class AIGameState {
             case ActionType.FUSION:
                 succ.Fusion(actionSlimeId, action.GetTargetSlimeId());
                 break;
+            case ActionType.EAT:
+                succ.Eat(actionSlimeId);
+                break;
 		}
+
+        
+        succ.UpdatePlayers();
 
         return succ;
 	}
+
+    public void UpdatePlayers(){
+        for (int i = players.Count-1;i>=0;i--){
+            if (players[i].GetSlimes().Count == 0)
+            {
+                //si li tocava al que ha mort i aquest era l'ultim de la llista, el torn es el del primer de la llista
+                if(currentPlayer==i && i==players.Count-1) currentPlayer = 0;
+                players.RemoveAt(i); //definitivament el borrem de la llista
+
+            }
+        }
+    }
 
     public void Attack(int actionSlimeId, int targetSlimeId){
         RawSlime actionSlime = FindSlimeById(actionSlimeId);
         RawSlime targetSlime = FindSlimeById(targetSlimeId);
 
-        if(targetSlime.changeMass (-actionSlime.getDamage()) <= 0){
+        int damage = actionSlime.getDamage;
+		if(actionSlime.changeMass ((int)-actionSlime.GetMass()*actionSlime.attackDrain) <= 0){
+            actionSlime.GetPlayer().RemoveSlime(actionSlime);
+        }
+		if(targetSlime.changeMass ((int)-damage*targetSlime.GetDamageReduction()) <= 0){
             targetSlime.GetPlayer().RemoveSlime(targetSlime);
         }
 
@@ -129,6 +157,14 @@ public class AIGameState {
         TileData toMove = matrix.getTile((int)tileVector.x, (int)tileVector.y);
 
         actionSlime.SetTile(toMove);
+
+        SpendActions(1);
+    }
+
+    public void Eat(int actionSlimeId){
+        RawSlime actionSlime = FindSlimeById(actionSlimeId);
+        
+        actionSlime.GrowSlime();
 
         SpendActions(1);
     }
@@ -189,7 +225,7 @@ public class AIGameState {
 			}
 		}
         
-        return new AIGameState(rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions);
+        return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, currentPlayer, playerActions, victoryValue);
     }
 
     public override string ToString() {
@@ -257,8 +293,10 @@ public class AIGameState {
     public List<AIRawSlimeAction> GetAttackActions(RawSlime slime){
         // Devolvemos las acciones que puede hacer para atacar a otro jugador con ESA slime
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
-        foreach(RawSlime toAttack in GetSlimesInAttackRange(slime)){
-            actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.ATTACK, toAttack.GetId()));
+        if(slime.canAttack){
+            foreach(RawSlime toAttack in GetSlimesInAttackRange(slime)){
+                actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.ATTACK, toAttack.GetId()));
+            }
         }
         return actions;
     }
@@ -267,8 +305,10 @@ public class AIGameState {
         // Devolvemos las acciones que puede hacer para atacar a otro jugador con cualquier slime que tenga
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
         foreach(RawSlime slime in GetCurrentPlayer().GetSlimes()){
-            foreach(RawSlime toAttack in GetSlimesInAttackRange(slime)){
-                actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.ATTACK, toAttack.GetId()));
+            if(slime.canAttack){
+                foreach(RawSlime toAttack in GetSlimesInAttackRange(slime)){
+                    actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.ATTACK, toAttack.GetId()));
+                }
             }
         }
         return actions;
@@ -286,15 +326,18 @@ public class AIGameState {
     public List<AIRawSlimeAction> GetConquerActions(RawSlime slime){
         // Devolvemos la accion de conquerir el terreno sobre el que esta esa slime
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
-        actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.CONQUER, slime.GetActualTile().getPosition()));
+        // Si no l'ha conquerit ja, pot conquerirla.
+        if(!slime.GetPlayer().GetConqueredTiles().Contains(slime.GetActualTile())) actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.CONQUER, slime.GetActualTile().getPosition()));
         return actions;
     }
 
     public List<AIRawSlimeAction> GetSplitActions(RawSlime slime){
         // Devolvemos las acciones de dividirse que puede hacer con esa slime
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
-        foreach(TileData tile in GetSplitRangeTiles(slime)){
-            actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.SPLIT, tile.getPosition()));
+        if(slime.canSplit){
+            foreach(TileData tile in GetSplitRangeTiles(slime)){
+                actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.SPLIT, tile.getPosition()));
+            }
         }
         return actions;
     }
@@ -309,8 +352,8 @@ public class AIGameState {
     }
 
     private List<AIRawSlimeAction> GetGrowActions(RawSlime slime){
-        // TODO sin implementar
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
+        if(slime.canGrow) actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.EAT, slime.GetId()));
         return actions;
     }
 
@@ -338,4 +381,42 @@ public class AIGameState {
 		}
 		return distance;
 	}
+
+    public RawPlayer IsGameEndedAndWinner()
+    {
+        RawPlayer ret = null; //si no trobem guanyador retornem null
+        int index;
+        bool find;
+        //sempre comprovem la condicio de asesinato
+        if (players.Count == 1){
+            return players[0];
+        }
+        switch(condicionVictoria){
+            case ModosVictoria.CONQUISTA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].GetConqueredTiles().Count/victoryValue>=matrix.TotalNumTiles()){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+
+            case ModosVictoria.MASA:
+                find = false;
+                index = 0;
+                while (!find && index<players.Count){
+                    if (players[index].GetTotalMass()>=victoryValue){
+                        find = true;
+                        ret = players[index];
+                    }
+                    index++;
+                }
+                break;
+        }
+        return ret; //si no troba guanyador retornem null, si hi ha guanyador retornem el guanyador
+
+    }
 }

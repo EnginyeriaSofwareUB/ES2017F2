@@ -285,7 +285,7 @@ public class Slime : MonoBehaviour {
 	}
 
 	public RawSlime GetRawCopy(){
-		return new RawSlime(id, player.statsCoreInfo.maxCalcMass, player.statsCoreInfo.minCalcMass, mass, element, actualTile.GetTileData().GetRawCopy());
+		return new RawSlime(id, mass, elementType, element, actualTile.GetTileData().GetRawCopy());
 	}
 
     public string GetElement()

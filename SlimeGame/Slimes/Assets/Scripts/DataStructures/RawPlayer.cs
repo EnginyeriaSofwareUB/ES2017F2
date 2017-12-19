@@ -55,6 +55,14 @@ public class RawPlayer{
         return conqueredTiles;
     }
 
+    public float GetTotalMass(){
+		float totalMass = 0;
+		foreach (RawSlime slime in slimes){
+			totalMass+=slime.GetMass();
+		}
+		return totalMass;
+	}
+
     public override string ToString(){
         string toReturn = "PLAYER (Conquered: " + conqueredTiles.Count + " tiles)\n";
         foreach(RawSlime sl in slimes){

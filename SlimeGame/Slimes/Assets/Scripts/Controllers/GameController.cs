@@ -30,6 +30,7 @@ public class GameController : MonoBehaviour
 	protected float massToWin;
 	protected int totalTiles;
 	protected float percentageTilesToWin;
+    protected int MAX_TURNS;
 
     // Use this for initialization
     void Start()
@@ -77,8 +78,10 @@ public class GameController : MonoBehaviour
             condicionVictoria = ModosVictoria.ASESINATO; //por defecto
         }
 
-        
+        MAX_TURNS = GameSelection.MAX_TURNS;
+
         int maxPlayers = GameSelection.playerColors.Count;
+
 		if (maxPlayers == 0) {
 			GameSelection.playerColors.Add (new Color (0, 0, 1));
 			GameSelection.playerColors.Add (new Color (1, 0, 0));
@@ -90,9 +93,9 @@ public class GameController : MonoBehaviour
 		}
 		for (int i=0;i<maxPlayers;i++){
             if (GameSelection.playerIAs [i]) {
-				players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
+				//players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
 
-                //players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
+                players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
             } else {
                 players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
             }
@@ -112,7 +115,7 @@ public class GameController : MonoBehaviour
             j++;
         }
 		if(players.Count == 0){
-			players.Add(new Player("Jugador 1", StatsFactory.GetStat(SlimeCoreTypes.WRATH))); // Test with 2 players
+			players.Add(new Player("Jugador 1", StatsFactory.GetStat(SlimeCoreTypes.WRATH), AIManager.GetAIByVictoryCondition(this,condicionVictoria))); // Test with 2 players
 			players.Add(new Player("Jugador 2", StatsFactory.GetStat(SlimeCoreTypes.GLUTTONY)));
 			players[0].SetColor(Color.blue);
 			players[1].SetColor(Color.red);
@@ -140,7 +143,15 @@ public class GameController : MonoBehaviour
         switch(condicionVictoria){
             case ModosVictoria.CONQUISTA:
                 //define percentage tiles to win
-                percentageTilesToWin = 0.25f;
+                if(MAX_TURNS == 0)
+                {
+                    percentageTilesToWin = 0.25f;
+                }
+                else
+                {
+                    percentageTilesToWin = 0.75f;
+                }
+                
                 //Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
                 break;
             case ModosVictoria.MASA:
@@ -240,9 +251,13 @@ public class GameController : MonoBehaviour
         Player ret = null; //si no trobem guanyador retornem null
         int index;
         bool find;
-        //sempre comprovem la condicio de asesinato
-        if (players.Count == 1){
+        //sempre que no estiguem en un reto comprovem la condicio de asesinato
+        if (players.Count == 1 && MAX_TURNS == 0){
             return players[0];
+        }
+        if(MAX_TURNS != 0 && currentTurn >= MAX_TURNS)
+        {
+            return players[1];
         }
         //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
         switch(condicionVictoria){
@@ -269,6 +284,12 @@ public class GameController : MonoBehaviour
                     index++;
                 }
                 break;
+            case ModosVictoria.ASESINATO: //necessari per als retos de assassinat
+                if(players.Count == 1)
+                {
+                    ret = players[0];
+                }
+                break;
         }
         return ret; //si no troba guanyador retornem null, si hi ha guanyador retornem el guanyador
 
@@ -276,7 +297,6 @@ public class GameController : MonoBehaviour
 	
     /*
 	Funció que avança al seguent jugador.
-    TODO no se usa
 	 */
     private void NextPlayer()
     {
@@ -359,18 +379,18 @@ public class GameController : MonoBehaviour
     private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
-        if(tileTo.GetSlimeOnTop() != null) {
+        /*if(tileTo.GetSlimeOnTop() != null) {
             Debug.Log("WARNING: trying to move to tile with a slime");
             Debug.Log("ID:" + tileTo.GetSlimeOnTop().GetId());
         }
         if(tileTo.getTileType() == TileType.Null) Debug.Log("WARNING: trying to move to BLOCK");
         if(Matrix.GetDistance(selectedSlime.GetActualTile().getPosition(), tileTo.getPosition()) > selectedSlime.GetMovementRange())
-            Debug.Log("WARNING: trying to move to tile too far");
+            Debug.Log("WARNING: trying to move to tile too far");*/
 
 		Dictionary<TileData,List<TileData>> moves = matrix.possibleCoordinatesAndPath(
 			(int)selectedSlime.actualTile.getPosition().x, (int)selectedSlime.actualTile.getPosition().y, selectedSlime.GetMovementRange());
         
-        if(moves[tileTo] == null) Debug.Log("WARNING!!!\n" + moves.Keys);
+        //if(moves[tileTo] == null) Debug.Log("WARNING!!!\n" + moves.Keys);
 		List<TileData> path = moves[tileTo];
 		path [path.Count-1].SetSlimeOnTop (selectedSlime);
 		selectedSlime.SetActualTile (tile);
@@ -642,7 +662,14 @@ public class GameController : MonoBehaviour
             Debug.Log("MATRIX COPIED CORRECTLY");
         }*/
         
-        return new AIGameState(rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions);
+        switch(condicionVictoria){
+			case ModosVictoria.CONQUISTA:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions, percentageTilesToWin);
+			case ModosVictoria.MASA:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions, massToWin);
+			default:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions, 0);
+		} 
     }
 
 	public void ApplyDamage(Slime attacker,Slime defender){
@@ -665,7 +692,6 @@ public class GameController : MonoBehaviour
         foreach(Player pl in players){
             if(pl.isPlayerAI() && pl.IsThinking()) pl.StopThinking();
         }
-
     }
 
 }
