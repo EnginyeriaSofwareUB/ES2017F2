@@ -85,21 +85,39 @@ public class InputController : MonoBehaviour
 					if (s != null && s.GetPlayer () == gameController.GetCurrentPlayer () && s != gameController.GetSelectedSlime ()) {
 						gameController.SetSelectedSlime (s);
 						ClearMarkedTiles ();
+						uiController.HideAndShowInfoPanel (s,t);
+					} else if (s != null && s != gameController.GetSelectedSlime () && !attackTiles.Contains (t)) {
+						uiController.HideAndShowInfoPanel (s, t);
+						uiController.DisableGrowButton ();
+						gameController.SetSelectedSlime (null);
+						ClearMarkedTiles ();
 					} else if (t != null) {
 						if (moveTiles.Contains (t)) {
 							gameController.DoAction (new SlimeAction (ActionType.MOVE, t));
 							OnMove ();
+							uiController.HideInfoPanel ();
 						} else if (attackTiles.Contains (t)) {
-							gameController.DoAction(new SlimeAction(ActionType.ATTACK,t.GetSlimeOnTop ()));
-						} else if(gameController.GetSelectedSlime().actualTile == t) {
+							gameController.DoAction (new SlimeAction (ActionType.ATTACK, t.GetSlimeOnTop ()));
+							uiController.HideInfoPanel ();
+						} else if (gameController.GetSelectedSlime ().actualTile == t) {
 							if (ConquerEnabled) {
-								gameController.DoAction (new SlimeAction (ActionType.CONQUER, gameController.GetSelectedSlime().actualTile));
+								gameController.DoAction (new SlimeAction (ActionType.CONQUER, gameController.GetSelectedSlime ().actualTile));
 								OnConquer ();
 							}
+							uiController.HideInfoPanel ();
 						} else {
-							gameController.SetSelectedSlime (null);
+							uiController.HideAndShowInfoPanel (s, t);
+							uiController.DisableGrowButton ();
 						}
+						gameController.SetSelectedSlime (null);
 						ClearMarkedTiles ();
+					} else if (t==null && s==null) {
+						ClearMarkedTiles();
+						gameController.SetSelectedSlime (null);
+					} else {
+						uiController.HideInfoPanel ();
+						ClearMarkedTiles ();
+						gameController.SetSelectedSlime (null);
 					}
 					//Acciones de slime manteniendo pulsado
 				} else if (inputMaintained) {
@@ -136,7 +154,9 @@ public class InputController : MonoBehaviour
 						}
 						AfterShowAttack ();
 						List<Tile> tiles = new List<Tile> ();
-						uiController.showSelectedSlime (gameController.GetSelectedSlime ());
+						//uiController.showSelectedSlime (gameController.GetSelectedSlime ());
+						//uiController.UpdateInfo(gameController.GetSelectedSlime(),null);
+						//uiController.HideAndShowInfoPanel (s,t);
 					}
 				}
 			} else {
@@ -144,8 +164,19 @@ public class InputController : MonoBehaviour
 					//Selecciono al slime si es del player actual, sino, solo muestro la información
 					if (s != null && s.GetPlayer () == gameController.GetCurrentPlayer ()) {
 						gameController.SetSelectedSlime (s);
-					} else {
-
+						if (uiController.selected) {
+							uiController.HideAndShowInfoPanel (s, t);
+						} else {
+							uiController.ShowInfoPanel (s,t);
+						}
+						uiController.EnableGrowButton ();
+					} else if (s != null || t != null){
+						if (uiController.selected) {
+							uiController.HideAndShowInfoPanel (s, t);
+						} else {
+							uiController.ShowInfoPanel (s,t);
+						}
+						uiController.DisableGrowButton ();
 					}
 				} else if (inputMaintained) {
 					CheckInputMovement ();
@@ -282,7 +313,8 @@ public class InputController : MonoBehaviour
 			gameController.DoAction (new SlimeAction(ActionType.EAT,gameController.GetSelectedSlime()));
 			gameController.SetSelectedSlime (null);
 			uiController.hideCurrentUITiles();
-			uiController.DisableCanvas ();
+			//uiController.DisableCanvas ();
+			uiController.HideInfoPanel();
 		}
 	}
 

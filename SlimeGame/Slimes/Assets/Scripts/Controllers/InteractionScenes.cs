@@ -5,6 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class InteractionScenes : MonoBehaviour {
 
+	SoundController soundController;
+
+	public void Start(){
+		soundController = gameObject.GetComponent<SoundController>();
+        AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/HappySong");
+        soundController.PlayLoop(clip);
+	}
+
 	public void loadScene(int s){
 		//cridar aquest quan s'hagi d'obrir l'scene de settings
 		PlayerPrefs.SetString ("PreviousScene", SceneManager.GetActiveScene ().name);
