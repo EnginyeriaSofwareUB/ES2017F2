@@ -44,6 +44,16 @@ public class StatsFactory
 			return (StatsContainer) statsContainer["Sloth"];
 		case SlimeCoreTypes.WRATH:
 			return (StatsContainer) statsContainer["Wrath"];
+		case SlimeCoreTypes.ENVY:
+			return (StatsContainer) statsContainer["Envy"];
+		case SlimeCoreTypes.GREED:
+			return (StatsContainer) statsContainer["Greed"];
+		case SlimeCoreTypes.INNOCENCE:
+			return (StatsContainer) statsContainer["Innocence"];
+		case SlimeCoreTypes.LUST:
+			return (StatsContainer) statsContainer["Lust"];
+		case SlimeCoreTypes.PRIDE:
+			return (StatsContainer) statsContainer["Pride"];
 		default:
 			return null;
 		}

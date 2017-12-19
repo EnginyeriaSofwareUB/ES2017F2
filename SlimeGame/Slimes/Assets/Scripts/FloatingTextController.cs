@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FloatingTextController : MonoBehaviour {
 
@@ -13,7 +14,7 @@ public class FloatingTextController : MonoBehaviour {
 			popupText = Resources.Load<FloatingText> ("Prefabs/PopupTextParent");
 	}
 
-	public static void CreateFloatingText(string text, Transform location){
+	public static void CreateFloatingText(string text, Transform location,Color color){
 
 		FloatingText instance = Instantiate (popupText);
 		if (instance != null){
@@ -22,6 +23,7 @@ public class FloatingTextController : MonoBehaviour {
 			instance.transform.SetParent (canvas.transform,false);
 			instance.transform.position = screenPosition;
 			instance.SetText (text);
+			instance.gameObject.transform.GetChild (0).gameObject.GetComponent<Text> ().color = color;
 		}
 	}
 }

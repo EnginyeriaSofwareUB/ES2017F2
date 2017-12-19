@@ -121,7 +121,7 @@ public class Slime : MonoBehaviour {
 		if (mass > maxMass) {
 			mass = maxMass;
 		}
-		FloatingTextController.CreateFloatingText (printInteger((int)(this.mass-lastMass)),this.transform);
+		FloatingTextController.CreateFloatingText (printInteger((int)(this.mass-lastMass)),this.transform,Color.green);
 		changeScaleSlime ();
 	}
 
@@ -130,7 +130,13 @@ public class Slime : MonoBehaviour {
 	}
 
 	public void SetMass(int mass,bool popup){
-		if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform);
+		if ((int)(mass - this.mass) > 0) {
+			if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform,Color.green);
+		} else if ((int)(mass - this.mass) < 0) {
+			if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform,Color.red);
+		} else {
+			if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform,Color.black);
+		}
 		this.mass = mass;
 		changeScaleSlime ();
 	}
@@ -236,7 +242,7 @@ public class Slime : MonoBehaviour {
 			*/
 			break;
 		case ElementType.LAVA:
-			face.transform.localPosition = new Vector3 (0.5f, 0.45f, 0f);
+			face.transform.localPosition = new Vector3 (0f, -0.3f, 0f);
 			face.transform.localScale = new Vector3 (1f, 1f, 1f);
 			/*
 			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);

@@ -42,9 +42,15 @@ public class SelectorController : MonoBehaviour {
 		coreSelector.Add(1);
 
 		corePaths = new List<string> ();
-		corePaths.Add ("Sprites/Wrath");
-		corePaths.Add ("Sprites/Sloth");
-		corePaths.Add ("Sprites/Gluttony");
+		corePaths.Add ("Slimes/Faces/wrath");
+		corePaths.Add ("Slimes/Faces/sloth");
+		corePaths.Add ("Slimes/Faces/gluttony");
+		corePaths.Add ("Slimes/Faces/envy");
+		corePaths.Add ("Slimes/Faces/greed");
+		corePaths.Add ("Slimes/Faces/lust");
+		corePaths.Add ("Slimes/Faces/pride");
+		corePaths.Add ("Slimes/Faces/innocence");
+
         sprite = "Sprites/slime_sprite";
 		currentSprite = GameObject.Find ("CurrentSprite").GetComponent<Image>();
 		sprite1 = GameObject.Find ("Sprite1").GetComponent<Image>();
@@ -70,12 +76,12 @@ public class SelectorController : MonoBehaviour {
         core2.overrideSprite = SpritesLoader.GetInstance().GetResource(corePaths[coreSelector[2]]);
         colors = new Queue<Color> ();
 		colors.Enqueue (new Color (1, 0, 0));
-		colors.Enqueue (new Color (0, 0, 1));
 		colors.Enqueue (new Color (0, 1, 0));
 		colors.Enqueue (new Color (1, 1, 0));
 		colors.Enqueue (new Color (0, 1, 1));
 		colors.Enqueue (new Color (1, 0, 1));
 		colors.Enqueue (new Color (1, 1, 1));
+		colors.Enqueue (new Color (1,190f/255f,0));
 		currentSprite.color = colors.Dequeue();
 		sprite1.color = currentSprite.color;
 		sprite2.color = colors.Dequeue();
@@ -143,7 +149,7 @@ public class SelectorController : MonoBehaviour {
 	}
 
 	public void toggleIAOn(int player){
-		GameSelection.playerIAs [player - 1] = true;
+		GameSelection.playerIAs [player - 1] = !GameSelection.playerIAs [player - 1];
 		/*if (player == 1)
 			GameSelection.player1IA = b;
 		else if (player == 2)
@@ -166,6 +172,16 @@ public class SelectorController : MonoBehaviour {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.SLOTH);
 		} else if (coreSelector [currentPlayer] == 2) {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
+		} else if (coreSelector [currentPlayer] == 3) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.ENVY);
+		} else if (coreSelector [currentPlayer] == 4) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.GREED);
+		} else if (coreSelector [currentPlayer] == 5) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.LUST);
+		} else if (coreSelector [currentPlayer] == 6) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.PRIDE);
+		} else if (coreSelector [currentPlayer] == 7) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.INNOCENCE);
 		} else {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
 		}
@@ -203,6 +219,16 @@ public class SelectorController : MonoBehaviour {
 			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.SLOTH;
 		} else if (coreSelector [currentPlayer] == 2) {
 			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.GLUTTONY;
+		} else if (coreSelector [currentPlayer] == 3) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.ENVY;
+		} else if (coreSelector [currentPlayer] == 4) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.GREED;
+		} else if (coreSelector [currentPlayer] == 5) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.LUST;
+		} else if (coreSelector [currentPlayer] == 6) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.PRIDE;
+		} else if (coreSelector [currentPlayer] == 7) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.INNOCENCE;
 		}	
 		/*else if (currentPlayer == 2)
 			GameSelection.player2Core = coreSelector[currentPlayer];

@@ -72,11 +72,13 @@ public class AIMurder : AIInterface{
             //Debug.Log("TOTAL AI MASS: " + totalPlayerMass);
             score += totalPlayerMass; // Ens interessa tenir molta massa.
             score += playerSlimes*5; // Si pot dividirse per arribar al objectiu, ho fara
+
             score -= totalEnemiesMass * 10; // Predileccio per atacar
-            score -= enemiesSlimes * 200; // slime morta
+            score -= enemiesSlimes * 100; // slime morta
             score -= distanceToEnemy; // Com menys distancia millor
             score -= enemiesThatCanAttackMe * 2; // Com menys enemics puguin atacarme, millor
             score -= minimumMass * 5; // Predileccio per atacar al que esta mes fluix
+            score -= enemies.Count * 200; // Predileccio per acabar amb un jugador.
         }
 
         return  score * GetAIError();

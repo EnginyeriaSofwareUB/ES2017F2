@@ -52,8 +52,8 @@ public abstract class AIInterface : ThreadedJob{
         if(playerSlimes > 2 ||
         (state.GetRemainingActions() <= 1 && state.GetNextPlayer().GetSlimes().Count > 3)) depth = 2;
 
-        if(playerSlimes > 3 ||
-        (state.GetRemainingActions() <= 1 && state.GetNextPlayer().GetSlimes().Count > 4)) depth = 1;
+        /*if(playerSlimes > 3 ||
+        (state.GetRemainingActions() <= 1 && state.GetNextPlayer().GetSlimes().Count > 4)) depth = 2;*/
         
         //Debug.Log("DEPTH: " + depth);
 
@@ -147,16 +147,14 @@ public abstract class AIInterface : ThreadedJob{
     }
 
     protected float GetAIError(){
-        return 1; //TODO delete this line
-
         int randomSign = (new System.Random()).Next(2);
         if(randomSign == 0) randomSign = -1;
-        float random = (new System.Random()).Next(10000) / 100;
-        if(random < 50) return 0;
-        else if(random < 80) return randomSign * 2 * random / 100;
-        else if(random < 90) return randomSign * 4 * random / 100;
-        else if(random < 95) return randomSign * 6 * random / 100;
-        else if(random < 98) return randomSign * 10 * random / 100;
-        else return randomSign * 20 * random / 100;
+        float random = (new System.Random()).Next(100);
+        if(random < 50) return 1;
+        else if(random < 80) return 1 - randomSign * (new System.Random()).Next(5) / 100;
+        else if(random < 90) return 1 - randomSign * (new System.Random()).Next(10) / 100;
+        else if(random < 95) return 1 - randomSign * (new System.Random()).Next(20) / 100;
+        else if(random < 98) return 1 - randomSign * (new System.Random()).Next(30) / 100;
+        else return 1 - randomSign * (new System.Random()).Next(40) / 100;
     }
 }

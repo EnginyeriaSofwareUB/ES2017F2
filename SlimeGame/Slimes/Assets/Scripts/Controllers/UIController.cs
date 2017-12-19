@@ -33,7 +33,8 @@ public class UIController : MonoBehaviour {
 	protected GameObject movementT;
 	protected GameObject attack;
 	protected GameObject attackT;
-
+	protected GameObject defense;
+	protected GameObject defenseT;
 
 	public GameObject turnPanel;
 	public GameObject roundPanel;
@@ -108,6 +109,8 @@ public class UIController : MonoBehaviour {
 		movementT = GameObject.Find ("MovementT");
 		attack = GameObject.Find ("Attack");
 		attackT = GameObject.Find ("AttackT");
+		defense = GameObject.Find ("Defense");
+		defenseT = GameObject.Find ("DefenseT");
 		turnPanel = GameObject.Find ("TurnPanel");
 		roundPanel = GameObject.Find ("RoundPanel");
 		infoPanel = GameObject.Find ("InfoPanel");
@@ -281,6 +284,10 @@ public class UIController : MonoBehaviour {
 	}
 
 
+	public bool infoPanelIsShown(){
+		return selected;
+	}
+
 
 	public void UpdateInfo(Slime slime, Tile terrain){
 
@@ -289,11 +296,13 @@ public class UIController : MonoBehaviour {
 			range.GetComponent<Text>().text = slime.GetAttackRange ().ToString();
 			movement.GetComponent<Text>().text = slime.GetMovementRange ().ToString();
 			attack.GetComponent<Text> ().text = slime.getDamage.ToString ()+" ("+slime.selfDamage+")";
+			defense.GetComponent<Text> ().text = Math.Round((slime.damageReduction*100)).ToString ();
 		} else {
 			health.GetComponent<Text>().text = "";
 			range.GetComponent<Text>().text = "";
 			movement.GetComponent<Text>().text = "";
 			attack.GetComponent<Text>().text = "";
+			defense.GetComponent<Text>().text = "";
 		}
 
 		if (terrain != null) {
@@ -301,11 +310,13 @@ public class UIController : MonoBehaviour {
 			rangeT.GetComponent<Text>().text = terrain.GetAttackRange ().ToString();
 			movementT.GetComponent<Text>().text = terrain.GetMovementRange ().ToString();
 			attackT.GetComponent<Text>().text = terrain.GetDamage().ToString();
+			defenseT.GetComponent<Text>().text = terrain.GetDamage().ToString();
 		} else {
 			healthT.GetComponent<Text>().text = "";
 			rangeT.GetComponent<Text>().text = "";
 			movementT.GetComponent<Text>().text = "";
 			attackT.GetComponent<Text>().text = "";
+			defenseT.GetComponent<Text>().text = "";
 		}
 	}
 	//Metode que mostra la info que li passis
@@ -323,14 +334,6 @@ public class UIController : MonoBehaviour {
 			canvasInfo.SetActive (false);
 		}
     }
-
-	public void DisableGrowButton(){
-		growButton.SetActive (false);
-	}
-
-	public void EnableGrowButton(){
-		growButton.SetActive (true);
-	}
 
 	public void markTiles(List<Tile> tiles,ActionType at){
 		foreach (Tile t in tiles) {

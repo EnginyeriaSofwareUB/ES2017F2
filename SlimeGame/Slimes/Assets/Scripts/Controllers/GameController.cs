@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour
         //panelTip.GetComponent<DialogInfo>().Active(false);
         //textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-
+		Time.timeScale = 1f;
         if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
             condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
         }else{
@@ -183,21 +183,19 @@ public class GameController : MonoBehaviour
 
 		//S'ha de posar despres de la comprovacio de ended
 		// Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
-		if (currentPlayer.isPlayerAI())
-		{
-			if(status == GameControllerStatus.WAITINGFORACTION){
-				status = GameControllerStatus.AILOGIC;
-				GetCurrentPlayer().ThinkAction();
-			}else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking()){
-				status = GameControllerStatus.PLAYINGACTION;
-				AISlimeAction action = currentPlayer.GetThoughtAction();
-				if(action != null){
-					SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
-					DoAction((SlimeAction)action); // Hacemos la accion.
-				}else {
-					Debug.Log("IA returned NULL action");
-					NextPlayer(); // No pot fer cap accio
-				}
+
+		if(status == GameControllerStatus.WAITINGFORACTION && currentPlayer.isPlayerAI()){
+			status = GameControllerStatus.AILOGIC;
+			GetCurrentPlayer().ThinkAction();
+		}else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking() && currentPlayer.isPlayerAI()){
+			status = GameControllerStatus.PLAYINGACTION;
+			AISlimeAction action = currentPlayer.GetThoughtAction();
+			if(action != null){
+				SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
+				DoAction((SlimeAction)action); // Hacemos la accion.
+			}else {
+				Debug.Log("IA returned NULL action");
+				NextPlayer(); // No pot fer cap accio
 			}
 		}
     }
@@ -257,8 +255,17 @@ public class GameController : MonoBehaviour
         }
         if(MAX_TURNS != 0 && currentTurn >= MAX_TURNS)
         {
-            return players[1];
+            return new Player("0", null);
         }
+		bool existsHumanPlayer = false;
+		foreach (Player player in players) {
+			if (!player.isPlayerAI ()) {
+				existsHumanPlayer = true;
+			}
+		}
+		if (!existsHumanPlayer) {
+			return players [0];
+		}
         //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
         switch(condicionVictoria){
             case ModosVictoria.CONQUISTA:
@@ -314,9 +321,9 @@ public class GameController : MonoBehaviour
 			status = GameControllerStatus.PLAYINGACTION;
 			uiController.NextPlayer(GetCurrentPlayer().GetColor(),playerActions,GetCurrentPlayer().actions);
 		}
-		camController.AllTilesInCamera(GetPossibleMovements(currentPlayer.GetSlimes()));
+		//camController.InitMaxZoom();
 		
-		//camController.GlobalCamera();
+		camController.GlobalCamera();
 		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 
@@ -406,6 +413,7 @@ public class GameController : MonoBehaviour
 			newSlime.InitMass(); //posem vida a 0, i a la seguent linia li posem la vida real, d'aquesta manera es veu el popup amb '+'
 			newSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f),true);
 			selectedSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f),true);
+			newSlime.ChangeElement (selectedSlime.GetElementType());
 			playerActions++;
 			status = GameControllerStatus.CHECKINGLOGIC;
 		}

@@ -9,6 +9,7 @@ Shader "Unlit/SeaShader"
         // Color property for material inspector, default to white
 		_MainTex ("Texture", 2D) = "white" {}
         _Color ("Main Color", Color) = (1,1,1,1)
+        _RandomOffset ("RandomOffset", float) = 1.0
 
     }
     SubShader
@@ -29,6 +30,7 @@ Shader "Unlit/SeaShader"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             uniform float4 _TexCoords;
+            fixed _RandomOffset;
             fixed4 _Color;
             float top;
             float bottom;
@@ -57,13 +59,18 @@ Shader "Unlit/SeaShader"
                 float2 screenPos = i.screenPos.xy / i.screenPos.w;
                 float _half = (top + bottom)*0.5;
                 float _diff = (bottom - top)*0.5;
-                float maxY = (-abs(sin(i.uv.x*60+_Time.w+screenPos.y)))*0.8;
+                //float maxY = (-abs(sin(i.uv.x*60+_Time.w/12.0+screenPos.y)))*0.8;
+                float maxY = (-abs(sin(i.uv.x*60+sin(_Time.w/8.0+_RandomOffset)+screenPos.y)))*0.8;
                 fixed4 sum = fixed4(0.0h,0.0h,0.0h,0.0h);
                 //sum = tex2D(_MainTex,float2(i.uv.x+(1-i.uv.y)*sin((_Time.w+i.uv.y)*2.3),i.uv.y))*screenPos.y;//*_SinTime.w
                 sum = tex2D(_MainTex,float2(i.uv.x,(1-maxY)*i.uv.y));//*_SinTime.w
                 if(sum.w<0.99){
                 	sum = fixed4(0.0h,0.0h,0.0h,0.0h);
+                }else{
+                	sum/=2.0;
+                	sum.w=1.0;
                 }
+
                	//sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*screenPos.y;
                 return sum;
             }
