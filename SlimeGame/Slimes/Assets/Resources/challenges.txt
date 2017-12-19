@@ -22,8 +22,8 @@
 	},
 	"3":{
 		"name":"DESAFIO DEL DOBLE DE MASA",
-		"description":"El objetivo es conseguir el doble de masa que tu oponente antes de 20 turnos",	
-		"maxTurns" : "20",
+		"description":"El objetivo es conseguir el doble de masa que la masa inicial de tu oponente antes de 15 turnos",	
+		"maxTurns" : "15",
 		"winCondition" : "2",
 		"map" : "0",
 	}

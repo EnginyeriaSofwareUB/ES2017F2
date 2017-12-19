@@ -65,6 +65,7 @@ public class ChallengeSelection : MonoBehaviour {
 
             GameSelection.modoVictoria = challenges[0].GetModo();
             GameSelection.map = challenges[0].GetMap();
+            GameSelection.MAX_TURNS = challenges[0].GetMaxTurns();
 
             //Debug.Log("primer repte");
         }
@@ -81,6 +82,7 @@ public class ChallengeSelection : MonoBehaviour {
 
             GameSelection.modoVictoria = challenges[1].GetModo();
             GameSelection.map = challenges[1].GetMap();
+            GameSelection.MAX_TURNS = challenges[1].GetMaxTurns();
             //Debug.Log("segon repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC3"))
@@ -111,6 +113,7 @@ public class ChallengeSelection : MonoBehaviour {
 
             GameSelection.modoVictoria = challenges[2].GetModo();
             GameSelection.map = challenges[2].GetMap();
+            GameSelection.MAX_TURNS = challenges[2].GetMaxTurns();
             //Debug.Log("tercer repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC4"))
@@ -123,6 +126,7 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerIAs.Add(true);
             GameSelection.modoVictoria = challenges[3].GetModo();
             GameSelection.map = challenges[3].GetMap();
+            GameSelection.MAX_TURNS = challenges[3].GetMaxTurns();
             //Debug.Log("quart repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC5"))
@@ -135,6 +139,7 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerIAs.Add(true);
             GameSelection.modoVictoria = challenges[4].GetModo();
             GameSelection.map = challenges[4].GetMap();
+            GameSelection.MAX_TURNS = challenges[4].GetMaxTurns();
             //Debug.Log("cinque repte");
         }
         SceneManager.LoadScene("Main");
