@@ -40,6 +40,8 @@ public class TutorialGameController: GameController
 		marker.SetParentTransform (playerSlime.transform);
 		marker.SetMarkerRelativeSize ();
 		marker.SetActive (false);
+		FloatingTextController.Initialize ();
+
 	}
 
 	private void InitDialogChains(){
