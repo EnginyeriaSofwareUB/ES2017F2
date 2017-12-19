@@ -136,6 +136,10 @@ public class Player {
 		return slimes;
 	}
 
+	public bool hasMaxSlimes(){
+		return statsCoreInfo.maxSlimes == slimes.Count;
+	}
+
     //Nomes usar per al tutorial
     public bool RightSlime(Slime whoActions)
     {

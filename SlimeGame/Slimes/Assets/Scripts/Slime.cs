@@ -448,7 +448,7 @@ public class Slime : MonoBehaviour {
 
 	public bool canSplit{
 		get{ 
-			return mass > 30;
+			return (mass > 30 && player.hasMaxSlimes());
 		}
 	}
 
