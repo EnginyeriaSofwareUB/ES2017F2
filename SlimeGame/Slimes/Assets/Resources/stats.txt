@@ -191,8 +191,8 @@
 	},
 	"Water":{
 		"name":"Water",
-		"picDirection":"Slimes/Elements/Water_",
-		"picCount":5,
+		"picDirection":"Slimes/Elements/water_slime",
+		"picCount":4,
 
 		"minBaseAttack":0,
 		"maxBaseAttack":0,
