@@ -94,7 +94,6 @@ public class InputController : MonoBehaviour
 						uiController.HideAndShowInfoPanel (s,t);
 					} else if (s != null && s != gameController.GetSelectedSlime () && !attackTiles.Contains (t)) {
 						uiController.HideAndShowInfoPanel (s, t);
-						uiController.DisableGrowButton ();
 						gameController.SetSelectedSlime (null);
 						ClearMarkedTiles ();
 					} else if (t != null) {
@@ -117,7 +116,6 @@ public class InputController : MonoBehaviour
 							uiController.HideInfoPanel ();
 						} else {
 							uiController.HideAndShowInfoPanel (s, t);
-							uiController.DisableGrowButton ();
 						}
 						gameController.SetSelectedSlime (null);
 						ClearMarkedTiles ();
@@ -185,7 +183,6 @@ public class InputController : MonoBehaviour
 						} else {
 							uiController.ShowInfoPanel (s,t);
 						}
-						uiController.DisableGrowButton ();
 					}
 				} else if (inputMaintained) {
 					CheckInputMovement ();
