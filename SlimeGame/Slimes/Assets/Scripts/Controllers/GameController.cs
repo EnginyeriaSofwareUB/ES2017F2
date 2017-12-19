@@ -183,21 +183,19 @@ public class GameController : MonoBehaviour
 
 		//S'ha de posar despres de la comprovacio de ended
 		// Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
-		if (currentPlayer.isPlayerAI())
-		{
-			if(status == GameControllerStatus.WAITINGFORACTION){
-				status = GameControllerStatus.AILOGIC;
-				GetCurrentPlayer().ThinkAction();
-			}else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking()){
-				status = GameControllerStatus.PLAYINGACTION;
-				AISlimeAction action = currentPlayer.GetThoughtAction();
-				if(action != null){
-					SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
-					DoAction((SlimeAction)action); // Hacemos la accion.
-				}else {
-					Debug.Log("IA returned NULL action");
-					NextPlayer(); // No pot fer cap accio
-				}
+
+		if(status == GameControllerStatus.WAITINGFORACTION && currentPlayer.isPlayerAI()){
+			status = GameControllerStatus.AILOGIC;
+			GetCurrentPlayer().ThinkAction();
+		}else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking() && currentPlayer.isPlayerAI()){
+			status = GameControllerStatus.PLAYINGACTION;
+			AISlimeAction action = currentPlayer.GetThoughtAction();
+			if(action != null){
+				SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
+				DoAction((SlimeAction)action); // Hacemos la accion.
+			}else {
+				Debug.Log("IA returned NULL action");
+				NextPlayer(); // No pot fer cap accio
 			}
 		}
     }
@@ -323,9 +321,9 @@ public class GameController : MonoBehaviour
 			status = GameControllerStatus.PLAYINGACTION;
 			uiController.NextPlayer(GetCurrentPlayer().GetColor(),playerActions,GetCurrentPlayer().actions);
 		}
-		camController.AllTilesInCamera(GetPossibleMovements(currentPlayer.GetSlimes()));
+		//camController.InitMaxZoom();
 		
-		//camController.GlobalCamera();
+		camController.GlobalCamera();
 		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 

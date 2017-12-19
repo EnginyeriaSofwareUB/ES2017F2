@@ -242,7 +242,7 @@ public class Slime : MonoBehaviour {
 			*/
 			break;
 		case ElementType.LAVA:
-			face.transform.localPosition = new Vector3 (0.5f, 0.45f, 0f);
+			face.transform.localPosition = new Vector3 (0f, -0.3f, 0f);
 			face.transform.localScale = new Vector3 (1f, 1f, 1f);
 			/*
 			controller.AddTransformTransition (new Vector3(face.transform.localPosition.x, 0f, 0f), 0f, 0f);
