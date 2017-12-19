@@ -99,7 +99,7 @@ public class GameController : MonoBehaviour
             players[i].SetColor(GameSelection.playerColors[i]);
         }
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-		if (matrix == null) matrix = new Matrix(8, 0.3f, Random.Range(0,10000));
+		if (matrix == null) matrix = new Matrix(20, 0.3f, Random.Range(0,10000));
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
@@ -406,7 +406,18 @@ public class GameController : MonoBehaviour
         projectile.GetComponent<SpriteRenderer>().sortingLayerName = "Slime";
 		//projectile.GetComponent<SpriteRenderer> ().color = selectedSlime.GetPlayer ().GetColor ();
         projectile.GetComponent<ProjectileTrajectory>().SetTrajectorySlimes(selectedSlime, toAttack);
-		projectile.transform.Rotate (new Vector3(0f, 0f, Vector3.Angle (new Vector3(1f,0f,0f), toAttack.transform.parent.position - selectedSlime.transform.parent.position)));
+		/*
+		Vector3 horizontal = new Vector3 (1f, 0f, 0f);
+		if (MathUtils.Vect3ScalarProduct(horizontal,(toAttack.transform.parent.position - selectedSlime.transform.parent.position)) >= 0) {
+			Debug.Log ("positive");
+			projectile.transform.Rotate (new Vector3 (0f, 0f, Vector3.Angle (horizontal, toAttack.transform.parent.position - selectedSlime.transform.parent.position)));
+		} else {
+			Debug.Log ("negative");
+			projectile.transform.Rotate (new Vector3 (0f, 0f, -Vector3.Angle (horizontal, toAttack.transform.parent.position - selectedSlime.transform.parent.position)));
+		}
+		*/
+		projectile.transform.Rotate (new Vector3 (0f, 0f, Vector3.SignedAngle (new Vector3(1f,0f,0f), (toAttack.transform.parent.position - selectedSlime.transform.parent.position),new Vector3(0f,0f,1f))));
+
 		status = GameControllerStatus.PLAYINGACTION;
         AudioClip clip = SoundsLoader.GetInstance().GetResource("Sounds/fireball");
         soundController.PlaySingle(clip);
@@ -474,6 +485,7 @@ public class GameController : MonoBehaviour
 		Color c = selectedSlime.GetPlayer ().GetColor ();
 		//c.a = 0.5f;
 		tile.tileConquerLayer.color = c;
+		tile.SetOwner (currentPlayer);
 		playerActions++;
 		selectedSlime.ChangeElement (tile.elementType);
 		tile.RemoveElement ();
@@ -635,7 +647,7 @@ public class GameController : MonoBehaviour
 
 	public void ApplyDamage(Slime attacker,Slime defender){
 		int damage = attacker.getDamage;
-		attacker.ChangeMass ((int)(-attacker.GetMass()*attacker.attackDrain));
+		attacker.ChangeMass (attacker.selfDamage);
 		defender.ChangeMass ((int)(-damage*(1-defender.damageReduction)));
 		//FloatingTextController.CreateFloatingText (((int)-damage).ToString(),defender.transform);
 	}

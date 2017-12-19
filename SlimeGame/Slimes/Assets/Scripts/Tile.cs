@@ -13,6 +13,8 @@ public class Tile : MonoBehaviour {
 	public SpriteRenderer tileElementLayerBack;
 	public SpriteRenderer tileElementLayerFront;
 
+	private Player player;
+
 	// Use this for initialization
 	void Start () {
 
@@ -199,6 +201,14 @@ public class Tile : MonoBehaviour {
 
 	public Slime GetSlimeOnTop(){
 		return data.GetSlimeOnTop ();
+	}
+
+	public Player GetOwner(){
+		return player;
+	}
+
+	public void SetOwner(Player p){
+		player = p;
 	}
 
 }

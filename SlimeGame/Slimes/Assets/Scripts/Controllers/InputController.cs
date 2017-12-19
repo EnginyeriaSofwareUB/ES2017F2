@@ -21,7 +21,9 @@ public class InputController : MonoBehaviour
 	protected bool SplitEnabled;
 	protected bool JoinEnabled;
 	protected bool InputEnabled;
-	
+
+	private Vector3 prevMousePosition;
+
     void Start()
     {
 		ConquerEnabled = true;
@@ -50,6 +52,10 @@ public class InputController : MonoBehaviour
 				Input.GetTouch(0).phase==TouchPhase.Ended,
 				Camera.main.ScreenToWorldPoint (Input.GetTouch(0).position)
 			);
+			//Variable para draggear el mapa
+			if(Input.touchCount>0){
+				prevMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y));
+			}
 		} else {
 			ManageInput (
 				Input.GetMouseButtonDown(0),
@@ -59,9 +65,9 @@ public class InputController : MonoBehaviour
 			);
 			CheckKeyBoardInputMovement ();
 			CheckScrollInputMovement();
+			//Variable para draggear el mapa
+			prevMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		}
-
-
 	}
 
 	private void ManageInput(bool inputStarted, bool inputMaintained, bool inputEnded,Vector3 position){
@@ -101,8 +107,12 @@ public class InputController : MonoBehaviour
 							uiController.HideInfoPanel ();
 						} else if (gameController.GetSelectedSlime ().actualTile == t) {
 							if (ConquerEnabled) {
-								gameController.DoAction (new SlimeAction (ActionType.CONQUER, gameController.GetSelectedSlime ().actualTile));
-								OnConquer ();
+								if (t.GetOwner () == gameController.GetCurrentPlayer ()) {
+									GrowSlime ();
+								} else {
+									gameController.DoAction (new SlimeAction (ActionType.CONQUER, gameController.GetSelectedSlime ().actualTile));
+									OnConquer ();
+								}
 							}
 							uiController.HideInfoPanel ();
 						} else {
@@ -189,8 +199,8 @@ public class InputController : MonoBehaviour
 
 	public void CheckInputMovement(){
 		if (Application.isMobilePlatform) {
-			if(Input.touchCount == 0 && gameController.GetSelectedSlime()){
-				Vector2 touchDelta = Input.GetTouch(0).deltaPosition*Time.deltaTime;
+			if(Input.touchCount == 1 && gameController.GetSelectedSlime()==null){
+				Vector3 touchDelta = (Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x,Input.GetTouch(0).position.y)) - prevMousePosition)*Time.deltaTime*50f;
 				Camera.main.transform.Translate(-touchDelta.x, -touchDelta.y, 0f);
 			} else if (Input.touchCount == 2) {
 				// Store both touches.
@@ -215,7 +225,10 @@ public class InputController : MonoBehaviour
 				}
 			}
 		}else{
-			
+			if(Input.GetMouseButton(0) && gameController.GetSelectedSlime()==null){
+				Vector3 touchDelta = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - prevMousePosition)*Time.deltaTime*50f;
+				Camera.main.transform.Translate(-touchDelta.x, -touchDelta.y, 0f);
+			}
 		}
 	}
 

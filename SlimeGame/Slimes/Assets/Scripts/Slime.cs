@@ -458,4 +458,10 @@ public class Slime : MonoBehaviour {
 		}
 	}
 
+	public int selfDamage{
+		get{ 
+			return (int)(Mathf.Min (-1f, -mass* attackDrain));
+		}
+	}
+
 }

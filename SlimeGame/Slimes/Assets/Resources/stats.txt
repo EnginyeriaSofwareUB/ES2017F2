@@ -22,7 +22,7 @@
 		"maxMass":150,
 		"movement":3,
 		"range":4,
-		"baseActions":3,
+		"baseActions":2,
 		"baseMass":50
 		
 
@@ -272,8 +272,8 @@
 	},
 	"Lava":{
 		"name":"Lava",
-		"picDirection":"Slimes/Elements/lavaSlime",
-		"picCount":12,
+		"picDirection":"Slimes/Elements/volcan",
+		"picCount":8,
 
 		"minBaseAttack":5,
 		"maxBaseAttack":10,

@@ -288,7 +288,7 @@ public class UIController : MonoBehaviour {
 			health.GetComponent<Text>().text = slime.GetMass().ToString();
 			range.GetComponent<Text>().text = slime.GetAttackRange ().ToString();
 			movement.GetComponent<Text>().text = slime.GetMovementRange ().ToString();
-			attack.GetComponent<Text> ().text = slime.getDamage.ToString ()+" ("+slime.attackDrain+")";
+			attack.GetComponent<Text> ().text = slime.getDamage.ToString ()+" ("+slime.selfDamage+")";
 		} else {
 			health.GetComponent<Text>().text = "";
 			range.GetComponent<Text>().text = "";
