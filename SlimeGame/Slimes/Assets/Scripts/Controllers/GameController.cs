@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour
         //panelTip.GetComponent<DialogInfo>().Active(false);
         //textTip.GetComponent<Text>().text = "Aquí es mostraran els diferents trucs que pot fer el jugador";
         players = new List<Player>();
-
+		Time.timeScale = 1f;
         if (ModosVictoria.IsDefined(typeof (ModosVictoria),GameSelection.modoVictoria)){
             condicionVictoria =  (ModosVictoria) GameSelection.modoVictoria;
         }else{

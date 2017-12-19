@@ -1,4 +1,148 @@
 ﻿{
+
+	"Lust":{
+		"name":"Lust",
+		"picDirection":"Slimes/Faces/lust",
+
+		"minBaseAttack":2,
+		"maxBaseAttack":10,
+		"minAttackDrain":0.02,
+		"maxAttackDrain":0.15,
+		"minAttackMultiplier":2.0,
+		"maxAttackMultiplier":5.0,
+		"splitDrain":0.5,
+		"maxSlimes":8,
+		"plainMassGain":10,
+		"scalingMassGain":0.05,
+		"conquerMassDrain":0.0,
+		"slimeCountActionGain":4,
+		"minCalcMass":15,
+		"maxCalcMass":110,
+		"minDamageReduction":0.05,
+		"maxDamageReduction":0.10,
+		"maxMass":150,
+		"movement":3,
+		"range":4,
+		"baseActions":2,
+		"baseMass":50
+		
+
+	},
+
+	"Greed":{
+		"name":"Greed",
+		"picDirection":"Slimes/Faces/greed",
+
+		"minBaseAttack":2,
+		"maxBaseAttack":10,
+		"minAttackDrain":0.02,
+		"maxAttackDrain":0.15,
+		"minAttackMultiplier":2.0,
+		"maxAttackMultiplier":5.0,
+		"splitDrain":0.5,
+		"maxSlimes":8,
+		"plainMassGain":10,
+		"scalingMassGain":0.05,
+		"conquerMassDrain":0.0,
+		"slimeCountActionGain":4,
+		"minCalcMass":15,
+		"maxCalcMass":110,
+		"minDamageReduction":0.05,
+		"maxDamageReduction":0.10,
+		"maxMass":150,
+		"movement":3,
+		"range":4,
+		"baseActions":2,
+		"baseMass":50
+		
+
+	},
+
+	"Pride":{
+		"name":"Pride",
+		"picDirection":"Slimes/Faces/pride",
+
+		"minBaseAttack":2,
+		"maxBaseAttack":10,
+		"minAttackDrain":0.02,
+		"maxAttackDrain":0.15,
+		"minAttackMultiplier":2.0,
+		"maxAttackMultiplier":5.0,
+		"splitDrain":0.5,
+		"maxSlimes":8,
+		"plainMassGain":10,
+		"scalingMassGain":0.05,
+		"conquerMassDrain":0.0,
+		"slimeCountActionGain":4,
+		"minCalcMass":15,
+		"maxCalcMass":110,
+		"minDamageReduction":0.05,
+		"maxDamageReduction":0.10,
+		"maxMass":150,
+		"movement":3,
+		"range":4,
+		"baseActions":2,
+		"baseMass":50
+		
+
+	},
+
+	"Envy":{
+		"name":"Envy",
+		"picDirection":"Slimes/Faces/envy",
+
+		"minBaseAttack":2,
+		"maxBaseAttack":10,
+		"minAttackDrain":0.02,
+		"maxAttackDrain":0.15,
+		"minAttackMultiplier":2.0,
+		"maxAttackMultiplier":5.0,
+		"splitDrain":0.5,
+		"maxSlimes":8,
+		"plainMassGain":10,
+		"scalingMassGain":0.05,
+		"conquerMassDrain":0.0,
+		"slimeCountActionGain":4,
+		"minCalcMass":15,
+		"maxCalcMass":110,
+		"minDamageReduction":0.05,
+		"maxDamageReduction":0.10,
+		"maxMass":150,
+		"movement":3,
+		"range":4,
+		"baseActions":2,
+		"baseMass":50
+		
+
+	},
+
+	"Innocence":{
+		"name":"Innocence",
+		"picDirection":"Slimes/Faces/innocence",
+
+		"minBaseAttack":2,
+		"maxBaseAttack":10,
+		"minAttackDrain":0.02,
+		"maxAttackDrain":0.15,
+		"minAttackMultiplier":2.0,
+		"maxAttackMultiplier":5.0,
+		"splitDrain":0.5,
+		"maxSlimes":8,
+		"plainMassGain":10,
+		"scalingMassGain":0.05,
+		"conquerMassDrain":0.0,
+		"slimeCountActionGain":4,
+		"minCalcMass":15,
+		"maxCalcMass":110,
+		"minDamageReduction":0.05,
+		"maxDamageReduction":0.10,
+		"maxMass":150,
+		"movement":3,
+		"range":4,
+		"baseActions":2,
+		"baseMass":50
+	},
+
 	"Wrath":{
 		"name":"Wrath",
 		"picDirection":"Slimes/Faces/wrath",
