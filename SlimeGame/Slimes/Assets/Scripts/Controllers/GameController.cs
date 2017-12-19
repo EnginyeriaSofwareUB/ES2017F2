@@ -251,7 +251,7 @@ public class GameController : MonoBehaviour
         Player ret = null; //si no trobem guanyador retornem null
         int index;
         bool find;
-        //sempre comprovem la condicio de asesinato
+        //sempre que no estiguem en un reto comprovem la condicio de asesinato
         if (players.Count == 1 && MAX_TURNS == 0){
             return players[0];
         }
@@ -282,6 +282,12 @@ public class GameController : MonoBehaviour
                         ret = players[index];
                     }
                     index++;
+                }
+                break;
+            case ModosVictoria.ASESINATO: //necessari per als retos de assassinat
+                if(players.Count == 1)
+                {
+                    ret = players[0];
                 }
                 break;
         }
