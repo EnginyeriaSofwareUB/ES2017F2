@@ -14,33 +14,34 @@ public class AIMasa : AIInterface{
     }
 
     protected override double GetStateEvaluation(AIGameState state){
-        RawPlayer player = state.GetPlayerById(playerId);
+        double score = 1000;
+        RawPlayer winner = state.IsGameEndedAndWinner();
+        if(winner != null && winner.GetId() == playerId) score += 10000; // if it wins
+        else if(winner != null) score -= 10000; // if it loses
+        else{
+            RawPlayer player = state.GetPlayerById(playerId);
 
-        // INFO sobre el JUGADOR
-        int playerSlimes = player.GetSlimes().Count;
-        double totalPlayerMass = 0;
-        int playerSlimesSplitable = 0;
+            // INFO sobre el JUGADOR
+            int playerSlimes = player.GetSlimes().Count;
+            double totalPlayerMass = 0;
+            int playerSlimesSplitable = 0;
 
-        foreach(RawSlime sl in player.GetSlimes()){
-            totalPlayerMass += sl.GetMass();
-            if(sl.canSplit) playerSlimesSplitable++;
+            foreach(RawSlime sl in player.GetSlimes()){
+                totalPlayerMass += sl.GetMass();
+                if(sl.canSplit) playerSlimesSplitable++;
+            }
+
+            score += playerSlimes * 100;
+            score += totalPlayerMass;
+            score += playerSlimesSplitable * 10;
+
+            // Contrincantes
+            List<RawPlayer> enemies = state.GetPlayers().FindAll(p => true);
+            enemies.Remove(player);
+            score -= 100 * (enemies.Count); // Cuanto menos jugadores, mejor.
         }
 
-        double score = 1000;
-        score += playerSlimes * 100;
-        score += totalPlayerMass;
-        score += playerSlimesSplitable * 10;
-
-        // Contrincantes
-        List<RawPlayer> enemies = state.GetPlayers().FindAll(p => true);
-        enemies.Remove(player);
-        score -= 100 * (enemies.Count); // Cuanto menos jugadores, mejor.
-
-        RawPlayer winner = state.IsGameEndedAndWinner();
-        if(winner != null && winner.GetId() == player.GetId()) score += 10000; // if it wins
-        else if(winner != null) score -= 10000; // if it loses
-
         Debug.Log(score);
-        return  score;
+        return  score * GetAIError();
     }
 }

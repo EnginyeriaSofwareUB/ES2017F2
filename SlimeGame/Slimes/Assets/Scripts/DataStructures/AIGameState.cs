@@ -91,8 +91,23 @@ public class AIGameState {
                 break;
 		}
 
+        
+        succ.UpdatePlayers();
+
         return succ;
 	}
+
+    public void UpdatePlayers(){
+        for (int i = players.Count-1;i>=0;i--){
+            if (players[i].GetSlimes().Count == 0)
+            {
+                //si li tocava al que ha mort i aquest era l'ultim de la llista, el torn es el del primer de la llista
+                if(currentPlayer==i && i==players.Count-1) currentPlayer = 0;
+                players.RemoveAt(i); //definitivament el borrem de la llista
+
+            }
+        }
+    }
 
     public void Attack(int actionSlimeId, int targetSlimeId){
         RawSlime actionSlime = FindSlimeById(actionSlimeId);

@@ -54,16 +54,6 @@ public class RawSlime{
 		return actualTile;
 	}
 
-    /*public int getDamage(){
-		StatsContainer core = player.statsCoreInfo;
-		float currentRatio = (((float)(mass - core.minCalcMass)) / (core.maxCalcMass - core.minCalcMass));
-		int baseDamage = (int) (currentRatio * (core.maxBaseAttack - core.minBaseAttack) + core.minBaseAttack);
-		float scalingDamage = currentRatio * (core.maxAttackDrain - core.minAttackDrain) + core.minAttackDrain;
-		float scalingRatio = currentRatio * (core.maxAttackMultiplier - core.minAttackMultiplier) + core.minAttackMultiplier;
-		int finalDamage = (int) (scalingRatio * (baseDamage + scalingDamage * mass));
-		return 10;
-	}*/
-
     public bool isAlive(){
 		return mass > 0.0f;
 	}
@@ -179,7 +169,7 @@ public class RawSlime{
 
 
     //Damage calculation methods
-	public float massRatio{
+public float massRatio{
 		get{
 			float ratio = ((float)(mass - (minCalcMass)) / ((maxCalcMass) - (minCalcMass)));
 			if (ratio > 1f) {
@@ -286,6 +276,12 @@ public class RawSlime{
 	private float minAttackMultiplier{
 		get{
 			return player.statsCoreInfo.minAttackMultiplier + element.minAttackMultiplier;
+		}
+	}
+
+	public float damageReduction{
+		get{ 
+			return (massRatio*(maxDamageReduction-minDamageReduction)+minDamageReduction);
 		}
 	}
 
