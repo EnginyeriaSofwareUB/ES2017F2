@@ -259,6 +259,15 @@ public class GameController : MonoBehaviour
         {
             return players[1];
         }
+		bool existsHumanPlayer = false;
+		foreach (Player player in players) {
+			if (!player.isPlayerAI ()) {
+				existsHumanPlayer = true;
+			}
+		}
+		if (!existsHumanPlayer) {
+			return players [0];
+		}
         //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
         switch(condicionVictoria){
             case ModosVictoria.CONQUISTA:
