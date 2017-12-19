@@ -59,7 +59,7 @@ public class AIGameState {
              legalActions.AddRange(GetConquerActions(slime));
              legalActions.AddRange(GetSplitActions(slime));
              legalActions.AddRange(GetFusionActions(slime));
-             legalActions.AddRange(GetGrowActions(slime));
+             //legalActions.AddRange(GetGrowActions(slime));
          }
 
          return legalActions;
@@ -207,7 +207,7 @@ public class AIGameState {
     private AIGameState GetCopy(){
         
         UpdatePlayers();
-        
+
         Matrix rawMatrix = matrix.GetRawCopy();
 
         List<RawPlayer> rawPlayers = new List<RawPlayer>();
@@ -335,6 +335,7 @@ public class AIGameState {
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
         // Si no l'ha conquerit ja, pot conquerirla.
         if(!slime.GetPlayer().GetConqueredTiles().Contains(slime.GetActualTile())) actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.CONQUER, slime.GetActualTile().getPosition()));
+        else actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.EAT, slime.GetId()));
         return actions;
     }
 
@@ -358,11 +359,11 @@ public class AIGameState {
         return actions;
     }
 
-    private List<AIRawSlimeAction> GetGrowActions(RawSlime slime){
+    /*private List<AIRawSlimeAction> GetGrowActions(RawSlime slime){
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
         if(slime.canGrow) actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.EAT, slime.GetId()));
         return actions;
-    }
+    }*/
 
     public RawPlayer GetPlayerById(int id){
         foreach(RawPlayer pl in players){
