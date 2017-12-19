@@ -121,7 +121,7 @@ public class Slime : MonoBehaviour {
 		if (mass > maxMass) {
 			mass = maxMass;
 		}
-		FloatingTextController.CreateFloatingText (printInteger((int)(this.mass-lastMass)),this.transform);
+		FloatingTextController.CreateFloatingText (printInteger((int)(this.mass-lastMass)),this.transform,Color.green);
 		changeScaleSlime ();
 	}
 
@@ -130,7 +130,13 @@ public class Slime : MonoBehaviour {
 	}
 
 	public void SetMass(int mass,bool popup){
-		if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform);
+		if ((int)(mass - this.mass) > 0) {
+			if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform,Color.green);
+		} else if ((int)(mass - this.mass) < 0) {
+			if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform,Color.red);
+		} else {
+			if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform,Color.black);
+		}
 		this.mass = mass;
 		changeScaleSlime ();
 	}

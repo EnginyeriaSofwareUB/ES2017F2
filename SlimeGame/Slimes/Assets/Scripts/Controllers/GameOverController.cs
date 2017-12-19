@@ -12,10 +12,12 @@ public class GameOverController : MonoBehaviour {
 		Player winner = GameOverInfo.GetWinner();
 		GameObject.Find("Background/Background Winner poster/Player").GetComponent<Text>().text+=" #"+winner.GetName().Substring(winner.GetName().Length-1, 1); 
 		GameObject go=GameObject.Find("Background/Background Island/WinnerBody");
-		go.GetComponent<Image>().color = winner.GetColor();
-		go = GameObject.Find("Background/Background Island/WinnerBody/WinnerFace");
-		go.GetComponent<Image>().sprite = SpritesLoader.GetInstance ().GetResource (winner.statsCoreInfo.picDirection);
-
+        if(!winner.GetName().Equals("0"))
+        {
+            go.GetComponent<Image>().color = winner.GetColor();
+            go = GameObject.Find("Background/Background Island/WinnerBody/WinnerFace");
+            go.GetComponent<Image>().sprite = SpritesLoader.GetInstance().GetResource(winner.statsCoreInfo.picDirection);
+        }
 		List<Player> losers = GameOverInfo.GetLosers();
 		//com a molt hi ha 5 losers
 		numberLosers = losers.Count;
