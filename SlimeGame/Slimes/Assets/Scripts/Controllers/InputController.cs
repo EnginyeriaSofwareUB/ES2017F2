@@ -103,11 +103,13 @@ public class InputController : MonoBehaviour
 							uiController.HideInfoPanel ();
 						} else if (attackTiles.Contains (t)) {
 							gameController.DoAction (new SlimeAction (ActionType.ATTACK, t.GetSlimeOnTop ()));
+							OnAttack ();
 							uiController.HideInfoPanel ();
 						} else if (gameController.GetSelectedSlime ().actualTile == t) {
 							if (ConquerEnabled) {
 								if (t.GetOwner () == gameController.GetCurrentPlayer ()) {
 									GrowSlime ();
+									OnGrow ();
 								} else {
 									gameController.DoAction (new SlimeAction (ActionType.CONQUER, gameController.GetSelectedSlime ().actualTile));
 									OnConquer ();
@@ -187,7 +189,9 @@ public class InputController : MonoBehaviour
 				} else if (inputMaintained) {
 					CheckInputMovement ();
 				} else if (inputEnded) {
-					
+					if (t == null && s == null && uiController.infoPanelIsShown()) {
+						uiController.HideInfoPanel ();
+					}
 				}
 			}
 		}
@@ -315,6 +319,10 @@ public class InputController : MonoBehaviour
 
 	protected virtual void OnAttack(){
 	
+	}
+
+	protected virtual void OnGrow(){
+		
 	}
 
 	public void GrowSlime(){

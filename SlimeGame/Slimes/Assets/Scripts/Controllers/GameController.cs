@@ -102,7 +102,7 @@ public class GameController : MonoBehaviour
             players[i].SetColor(GameSelection.playerColors[i]);
         }
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-		if (matrix == null) matrix = new Matrix(20, 0.3f, Random.Range(0,10000));
+		if (matrix == null) matrix = new Matrix(5*players.Count, 0.3f, Random.Range(0,10000));
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
@@ -183,21 +183,19 @@ public class GameController : MonoBehaviour
 
 		//S'ha de posar despres de la comprovacio de ended
 		// Si estamos en modo "espera accion" y el jugador es una IA, calculamos la accion.
-		if (currentPlayer.isPlayerAI())
-		{
-			if(status == GameControllerStatus.WAITINGFORACTION){
-				status = GameControllerStatus.AILOGIC;
-				GetCurrentPlayer().ThinkAction();
-			}else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking()){
-				status = GameControllerStatus.PLAYINGACTION;
-				AISlimeAction action = currentPlayer.GetThoughtAction();
-				if(action != null){
-					SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
-					DoAction((SlimeAction)action); // Hacemos la accion.
-				}else {
-					Debug.Log("IA returned NULL action");
-					NextPlayer(); // No pot fer cap accio
-				}
+
+		if(status == GameControllerStatus.WAITINGFORACTION && currentPlayer.isPlayerAI()){
+			status = GameControllerStatus.AILOGIC;
+			GetCurrentPlayer().ThinkAction();
+		}else if(status == GameControllerStatus.AILOGIC && !GetCurrentPlayer().IsThinking() && currentPlayer.isPlayerAI()){
+			status = GameControllerStatus.PLAYINGACTION;
+			AISlimeAction action = currentPlayer.GetThoughtAction();
+			if(action != null){
+				SetSelectedSlime(action.GetMainSlime()); // Simulamos la seleccion de la slime que hace la accion.
+				DoAction((SlimeAction)action); // Hacemos la accion.
+			}else {
+				Debug.Log("IA returned NULL action");
+				NextPlayer(); // No pot fer cap accio
 			}
 		}
     }
@@ -323,9 +321,9 @@ public class GameController : MonoBehaviour
 			status = GameControllerStatus.PLAYINGACTION;
 			uiController.NextPlayer(GetCurrentPlayer().GetColor(),playerActions,GetCurrentPlayer().actions);
 		}
-		camController.AllTilesInCamera(GetPossibleMovements(currentPlayer.GetSlimes()));
+		//camController.InitMaxZoom();
 		
-		//camController.GlobalCamera();
+		camController.GlobalCamera();
 		//Debug.Log("SLIMES: " + players [currentPlayer].GetSlimes ().Count);
     }
 

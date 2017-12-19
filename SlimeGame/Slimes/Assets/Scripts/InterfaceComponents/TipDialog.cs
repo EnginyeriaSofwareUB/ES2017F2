@@ -85,7 +85,7 @@ public class TipDialog
 
 	private void placeButton(){
 		RectTransform t = (RectTransform) button.transform;
-		t.sizeDelta = new Vector2 (60f, 20f);
+		t.sizeDelta = new Vector2 (100f, 40f);
 		t.anchorMin = new Vector2 (0.5f, 0.25f);
 		t.anchorMax = new Vector2 (0.5f, 0.25f);
 		t.pivot = new Vector2 (0.5f, 0.5f);
@@ -113,7 +113,7 @@ public class TipDialog
 		SetInfoTextText ("Default text");
 		text.GetComponent<Text> ().raycastTarget = false;
 		text.GetComponent<Text> ().alignment = TextAnchor.MiddleCenter;
-		text.GetComponent<Text> ().fontSize = 20;
+		text.GetComponent<Text> ().fontSize = 24;
 
 	}
 

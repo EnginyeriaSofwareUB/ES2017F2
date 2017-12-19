@@ -32,12 +32,16 @@ public class TutorialUIController: UIController
 		movementT = GameObject.Find ("MovementT");
 		attack = GameObject.Find ("Attack");
 		attackT = GameObject.Find ("AttackT");
+		defense = GameObject.Find ("Defense");
+		defenseT = GameObject.Find ("DefenseT");
 		turnPanel = GameObject.Find ("TurnPanel");
 		roundPanel = GameObject.Find ("RoundPanel");
 		infoPanel = GameObject.Find ("InfoPanel");
 		rectTransformT = turnPanel.GetComponent<RectTransform> ();
 		rectTransformR = roundPanel.GetComponent<RectTransform> ();
 		rectTransformI = infoPanel.GetComponent<RectTransform> ();
+		growButton = GameObject.Find ("GrowButton");
 		state = 0;
+		selected = false;
 	}
 }
