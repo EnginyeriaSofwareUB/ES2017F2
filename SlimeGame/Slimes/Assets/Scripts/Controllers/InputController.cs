@@ -187,7 +187,9 @@ public class InputController : MonoBehaviour
 				} else if (inputMaintained) {
 					CheckInputMovement ();
 				} else if (inputEnded) {
-					
+					if (t == null && s == null && uiController.infoPanelIsShown()) {
+						uiController.HideInfoPanel ();
+					}
 				}
 			}
 		}

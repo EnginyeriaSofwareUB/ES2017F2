@@ -284,6 +284,10 @@ public class UIController : MonoBehaviour {
 	}
 
 
+	public bool infoPanelIsShown(){
+		return selected;
+	}
+
 
 	public void UpdateInfo(Slime slime, Tile terrain){
 
