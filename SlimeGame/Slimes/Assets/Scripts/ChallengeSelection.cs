@@ -64,7 +64,7 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerIAs.Add(true);
 
             GameSelection.modoVictoria = challenges[0].GetModo();
-            GameSelection.map = challenges[0].GetMap();
+            GameSelection.map = new Matrix(9, 0.1f, Random.Range(0, 10000));
             GameSelection.MAX_TURNS = challenges[0].GetMaxTurns();
 
             //Debug.Log("primer repte");
@@ -93,7 +93,6 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerColors.Add(new Color(0, 1, 0));
             GameSelection.playerColors.Add(new Color(0, 1, 1));
             GameSelection.playerColors.Add(new Color(1, 1, 0));
-            GameSelection.playerColors.Add(new Color(1, 0, 1));
 
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
@@ -101,7 +100,7 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
             GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
-            GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
+
 
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
@@ -109,7 +108,7 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerIAs.Add(true);
             GameSelection.playerIAs.Add(true);
             GameSelection.playerIAs.Add(true);
-            GameSelection.playerIAs.Add(true);
+
 
             GameSelection.modoVictoria = challenges[2].GetModo();
             GameSelection.map = challenges[2].GetMap();
