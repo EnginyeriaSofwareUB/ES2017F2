@@ -406,6 +406,7 @@ public class GameController : MonoBehaviour
 			newSlime.InitMass(); //posem vida a 0, i a la seguent linia li posem la vida real, d'aquesta manera es veu el popup amb '+'
 			newSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f),true);
 			selectedSlime.SetMass ((int)(selectedSlime.GetMass () / 2.0f),true);
+			newSlime.ChangeElement (selectedSlime.GetElementType());
 			playerActions++;
 			status = GameControllerStatus.CHECKINGLOGIC;
 		}

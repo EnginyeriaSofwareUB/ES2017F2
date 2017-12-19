@@ -143,7 +143,7 @@ public class SelectorController : MonoBehaviour {
 	}
 
 	public void toggleIAOn(int player){
-		GameSelection.playerIAs [player - 1] = true;
+		GameSelection.playerIAs [player - 1] = !GameSelection.playerIAs [player - 1];
 		/*if (player == 1)
 			GameSelection.player1IA = b;
 		else if (player == 2)
