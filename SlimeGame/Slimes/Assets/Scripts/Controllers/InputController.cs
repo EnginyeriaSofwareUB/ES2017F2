@@ -111,6 +111,9 @@ public class InputController : MonoBehaviour
 						}
 						gameController.SetSelectedSlime (null);
 						ClearMarkedTiles ();
+					} else if (t==null && s==null) {
+						ClearMarkedTiles();
+						gameController.SetSelectedSlime (null);
 					} else {
 						uiController.HideInfoPanel ();
 						ClearMarkedTiles ();
