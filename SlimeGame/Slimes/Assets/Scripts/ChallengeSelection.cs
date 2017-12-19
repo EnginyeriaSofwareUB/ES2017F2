@@ -48,13 +48,21 @@ public class ChallengeSelection : MonoBehaviour {
         //Aqui canvies lo que es necessiti segons quin repte seleccionis
         if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC1"))
         {
-            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 1, 1));
             GameSelection.playerColors.Add(new Color(1, 0, 0));
-            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(0, 1, 0));
+
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
-            GameSelection.map = null;
+            GameSelection.playerIAs.Add(true);
+            GameSelection.playerIAs.Add(true);
+
             GameSelection.modoVictoria = challenges[0].GetModo();
             GameSelection.map = challenges[0].GetMap();
 
@@ -64,22 +72,43 @@ public class ChallengeSelection : MonoBehaviour {
         {
             GameSelection.playerColors.Add(new Color(0, 0, 1));
             GameSelection.playerColors.Add(new Color(1, 0, 0));
+
             GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
+
             GameSelection.modoVictoria = challenges[1].GetModo();
             GameSelection.map = challenges[1].GetMap();
             //Debug.Log("segon repte");
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC3"))
         {
-            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 1, 1));
             GameSelection.playerColors.Add(new Color(1, 0, 0));
-            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(0, 1, 0));
+            GameSelection.playerColors.Add(new Color(0, 1, 1));
+            GameSelection.playerColors.Add(new Color(1, 1, 0));
+            GameSelection.playerColors.Add(new Color(1, 0, 1));
+
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
+            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.SLOTH);
+
             GameSelection.playerIAs.Add(false);
             GameSelection.playerIAs.Add(true);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.playerIAs.Add(true);
+            GameSelection.playerIAs.Add(true);
+
             GameSelection.modoVictoria = challenges[2].GetModo();
             GameSelection.map = challenges[2].GetMap();
             //Debug.Log("tercer repte");

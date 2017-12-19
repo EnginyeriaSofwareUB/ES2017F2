@@ -79,6 +79,7 @@ public class GameController : MonoBehaviour
 
         
         int maxPlayers = GameSelection.playerColors.Count;
+
 		if (maxPlayers == 0) {
 			GameSelection.playerColors.Add (new Color (0, 0, 1));
 			GameSelection.playerColors.Add (new Color (1, 0, 0));
@@ -103,6 +104,7 @@ public class GameController : MonoBehaviour
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);
+        Debug.Log(positions);
         int j = 0;
         foreach(Player player in players){
             List<Vector2> positionsSlimes = positions[j];
