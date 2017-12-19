@@ -1,5 +1,10 @@
 public enum SlimeCoreTypes{
 	SLOTH,
 	WRATH,
-	GLUTTONY
+	GLUTTONY,
+	LUST,
+	GREED,
+	PRIDE,
+	ENVY,
+	INNOCENCE
 }
