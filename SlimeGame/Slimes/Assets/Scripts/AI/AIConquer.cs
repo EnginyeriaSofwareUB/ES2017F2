@@ -18,7 +18,7 @@ public class AIConquer : AIInterface{
         double score = 1000;
         RawPlayer winner = state.IsGameEndedAndWinner();
         if(winner != null && winner.GetId() == playerId) score += 10000; // if it wins
-        else if(winner != null) score -= 10000; // if it loses
+        else if(winner != null || state.GetPlayerById(playerId) == null) score -= 10000; // if it loses
         else{
             RawPlayer player = state.GetPlayerById(playerId);
             int plConquered = player.GetConqueredTiles().Count;

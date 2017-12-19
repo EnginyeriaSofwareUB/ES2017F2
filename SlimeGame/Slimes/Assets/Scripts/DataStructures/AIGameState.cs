@@ -105,6 +105,8 @@ public class AIGameState {
                 if(currentPlayer==i && i==players.Count-1) currentPlayer = 0;
                 players.RemoveAt(i); //definitivament el borrem de la llista
 
+                Debug.Log("PLAYERS: " + players.Count);
+
             }
         }
     }
@@ -119,6 +121,8 @@ public class AIGameState {
         }
 		if(targetSlime.changeMass ((int)-damage*targetSlime.GetDamageReduction()) <= 0){
             targetSlime.GetPlayer().RemoveSlime(targetSlime);
+            Debug.Log("DEAD");
+            Debug.Log(targetSlime.GetPlayer());
         }
 
         SpendActions(1);
@@ -171,7 +175,7 @@ public class AIGameState {
 
     public void SpendActions(int numActions){
         playerActions += numActions;
-		if (playerActions >= players [currentPlayer].GetActions ()) {
+		if (playerActions >= players [currentPlayer%players.Count].GetActions ()) {
 			currentPlayer++;
             playerActions = 0;
             if (currentPlayer >= players.Count)
@@ -201,6 +205,9 @@ public class AIGameState {
 
     // Deep copy of AIGameState
     private AIGameState GetCopy(){
+        
+        UpdatePlayers();
+        
         Matrix rawMatrix = matrix.GetRawCopy();
 
         List<RawPlayer> rawPlayers = new List<RawPlayer>();

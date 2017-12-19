@@ -33,7 +33,7 @@ public class AIMurder : AIInterface{
         if(winner != null && winner.GetId() == playerId) {
             score += 10000; // if it wins
         }
-        else if(winner != null) {
+        else if(winner != null || state.GetPlayerById(playerId) == null) {
             score -= 10000; // if it loses
         }
         else{

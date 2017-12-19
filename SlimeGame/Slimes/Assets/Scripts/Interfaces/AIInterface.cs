@@ -77,9 +77,12 @@ public abstract class AIInterface : ThreadedJob{
             double succValue;
 
             // Si aun es el turno del jugador de la IA, maximizamos, sino minimizamos.
-            if(successor.IsGameEndedAndWinner() != null) succValue = GetStateEvaluation(successor);
-            else if(playerId == successor.GetCurrentPlayer().GetId()) succValue = GetMaxValueAction(successor, succDepth, alpha, beta).Value;
-            else succValue = GetMinValueAction(successor, succDepth, alpha, beta).Value;
+            if(successor.IsGameEndedAndWinner() != null)
+                succValue = GetStateEvaluation(successor);
+            else if(playerId == successor.GetCurrentPlayer().GetId())
+                succValue = GetMaxValueAction(successor, succDepth, alpha, beta).Value;
+            else 
+                succValue = GetMinValueAction(successor, succDepth, alpha, beta).Value;
 
             // Actualizamos el maximo si el actual es mayor.
             if(succValue > bestValue){
@@ -117,7 +120,7 @@ public abstract class AIInterface : ThreadedJob{
             int succDepth = depth+1;//successor.GetCurrentTurn() - turn;
             double succValue;
 
-            // Si aun es el turno del jugador de la IA, maximizamos, sino minimizamos.
+            // Si aun es el turno del jugador de la IA, maximizamos, sino minimizamos.            
             if(successor.IsGameEndedAndWinner() != null) succValue = GetStateEvaluation(successor);
             else if(playerId == successor.GetCurrentPlayer().GetId()) succValue = GetMaxValueAction(successor, succDepth, alpha, beta).Value;
             else succValue = GetMinValueAction(successor, succDepth, alpha, beta).Value;
