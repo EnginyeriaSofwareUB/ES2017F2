@@ -79,6 +79,7 @@ public class GameController : MonoBehaviour
         }
 
         MAX_TURNS = GameSelection.MAX_TURNS;
+
         int maxPlayers = GameSelection.playerColors.Count;
 
 		if (maxPlayers == 0) {
@@ -251,10 +252,10 @@ public class GameController : MonoBehaviour
         int index;
         bool find;
         //sempre comprovem la condicio de asesinato
-        if (players.Count == 1){
+        if (players.Count == 1 && MAX_TURNS == 0){
             return players[0];
         }
-        if(MAX_TURNS != 0 && currentTurn > MAX_TURNS)
+        if(MAX_TURNS != 0 && currentTurn >= MAX_TURNS)
         {
             return players[1];
         }
