@@ -48,9 +48,9 @@ public class ChallengeSelection : MonoBehaviour {
         //Aqui canvies lo que es necessiti segons quin repte seleccionis
         if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC1"))
         {
-            GameSelection.playerColors.Add(new Color(1, 1, 1));
-            GameSelection.playerColors.Add(new Color(1, 0, 0));
             GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 0, 0));
+            GameSelection.playerColors.Add(new Color(1, 1, 1));
             GameSelection.playerColors.Add(new Color(0, 1, 0));
 
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
@@ -87,9 +87,9 @@ public class ChallengeSelection : MonoBehaviour {
         }
         else if (EventSystem.current.currentSelectedGameObject.name.Equals("ButtonC3"))
         {
-            GameSelection.playerColors.Add(new Color(1, 1, 1));
-            GameSelection.playerColors.Add(new Color(1, 0, 0));
             GameSelection.playerColors.Add(new Color(0, 0, 1));
+            GameSelection.playerColors.Add(new Color(1, 0, 0));
+            GameSelection.playerColors.Add(new Color(1, 1, 1));
             GameSelection.playerColors.Add(new Color(0, 1, 0));
             GameSelection.playerColors.Add(new Color(0, 1, 1));
             GameSelection.playerColors.Add(new Color(1, 1, 0));
