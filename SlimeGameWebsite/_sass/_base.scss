@@ -467,8 +467,18 @@ footer {
   padding-left: 0;
 }
 
-.btn-outline {
+.btn-outline-2 {
   color: white;
+  border-color: white;
+  border: 1px solid;
+  &:hover, &:focus, &:active, &.active {
+    color: white;
+    background-color: $theme-secondary;
+    border-color: $theme-secondary;
+  }
+}
+.btn-outline {
+  color: black;
   border-color: white;
   border: 1px solid;
   &:hover, &:focus, &:active, &.active {
