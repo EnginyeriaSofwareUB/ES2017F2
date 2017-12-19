@@ -14,9 +14,33 @@ public class AIConquer : AIInterface{
     }
 
     protected override double GetStateEvaluation(AIGameState state){
-        RawPlayer AIPlayer = state.GetPlayerById(playerId);
-        int plConquered = AIPlayer.GetConqueredTiles().Count;
-        int plSlimes = AIPlayer.GetSlimes().Count;
-        return  plConquered * 12 + plSlimes * 5;
+        
+        double score = 1000;
+        RawPlayer winner = state.IsGameEndedAndWinner();
+        if(winner != null && winner.GetId() == playerId) score += 10000; // if it wins
+        else if(winner != null) score -= 10000; // if it loses
+        else{
+            RawPlayer player = state.GetPlayerById(playerId);
+            int plConquered = player.GetConqueredTiles().Count;
+            int plSlimes = player.GetSlimes().Count;
+
+            double totalPlayerMass = 0;
+            int playerSlimesSplitable = 0;
+
+            foreach(RawSlime sl in player.GetSlimes()){
+                totalPlayerMass += sl.GetMass();
+                if(sl.canSplit) playerSlimesSplitable++;
+            }
+
+            score += plConquered * 6;
+            score += plSlimes * 5;
+            score += playerSlimesSplitable;
+
+            // Contrincantes
+            List<RawPlayer> enemies = state.GetPlayers().FindAll(p => true);
+            enemies.Remove(player);
+            score -= 100 * (enemies.Count); // Cuanto menos jugadores, mejor.
+        }
+        return  score * GetAIError();
     }
 }

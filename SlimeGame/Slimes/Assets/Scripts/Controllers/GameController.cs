@@ -91,9 +91,9 @@ public class GameController : MonoBehaviour
 		}
 		for (int i=0;i<maxPlayers;i++){
             if (GameSelection.playerIAs [i]) {
-				players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
+				//players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
 
-                //players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
+                players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
             } else {
                 players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
             }
@@ -114,7 +114,7 @@ public class GameController : MonoBehaviour
             j++;
         }
 		if(players.Count == 0){
-			players.Add(new Player("Jugador 1", StatsFactory.GetStat(SlimeCoreTypes.WRATH))); // Test with 2 players
+			players.Add(new Player("Jugador 1", StatsFactory.GetStat(SlimeCoreTypes.WRATH), AIManager.GetAIByVictoryCondition(this,condicionVictoria))); // Test with 2 players
 			players.Add(new Player("Jugador 2", StatsFactory.GetStat(SlimeCoreTypes.GLUTTONY)));
 			players[0].SetColor(Color.blue);
 			players[1].SetColor(Color.red);
@@ -278,7 +278,6 @@ public class GameController : MonoBehaviour
 	
     /*
 	Funció que avança al seguent jugador.
-    TODO no se usa
 	 */
     private void NextPlayer()
     {
@@ -361,18 +360,18 @@ public class GameController : MonoBehaviour
     private void MoveSlime(Tile tile)
     {
 		TileData tileTo = tile.GetTileData ();
-        if(tileTo.GetSlimeOnTop() != null) {
+        /*if(tileTo.GetSlimeOnTop() != null) {
             Debug.Log("WARNING: trying to move to tile with a slime");
             Debug.Log("ID:" + tileTo.GetSlimeOnTop().GetId());
         }
         if(tileTo.getTileType() == TileType.Null) Debug.Log("WARNING: trying to move to BLOCK");
         if(Matrix.GetDistance(selectedSlime.GetActualTile().getPosition(), tileTo.getPosition()) > selectedSlime.GetMovementRange())
-            Debug.Log("WARNING: trying to move to tile too far");
+            Debug.Log("WARNING: trying to move to tile too far");*/
 
 		Dictionary<TileData,List<TileData>> moves = matrix.possibleCoordinatesAndPath(
 			(int)selectedSlime.actualTile.getPosition().x, (int)selectedSlime.actualTile.getPosition().y, selectedSlime.GetMovementRange());
         
-        if(moves[tileTo] == null) Debug.Log("WARNING!!!\n" + moves.Keys);
+        //if(moves[tileTo] == null) Debug.Log("WARNING!!!\n" + moves.Keys);
 		List<TileData> path = moves[tileTo];
 		path [path.Count-1].SetSlimeOnTop (selectedSlime);
 		selectedSlime.SetActualTile (tile);
@@ -632,7 +631,14 @@ public class GameController : MonoBehaviour
             Debug.Log("MATRIX COPIED CORRECTLY");
         }*/
         
-        return new AIGameState(rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions);
+        switch(condicionVictoria){
+			case ModosVictoria.CONQUISTA:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions, percentageTilesToWin);
+			case ModosVictoria.MASA:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions, massToWin);
+			default:
+			return new AIGameState(condicionVictoria, rawMatrix, rawPlayers, currentTurn, players.IndexOf(currentPlayer), playerActions, 0);
+		} 
     }
 
 	public void ApplyDamage(Slime attacker,Slime defender){
@@ -655,7 +661,6 @@ public class GameController : MonoBehaviour
         foreach(Player pl in players){
             if(pl.isPlayerAI() && pl.IsThinking()) pl.StopThinking();
         }
-
     }
 
 }
