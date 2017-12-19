@@ -1,18 +1,30 @@
 {
 	"0":{
-		"name":"DUPLICATE CHALLENGE",
-		"description":"El objetivo es controlar 15 slimes durante 3 turnos antes de 30 turnos, cuidado con el enemigo si te duplicas demasiado",	
+		"name":"DEMASIADOS SLIMES",
+		"description":"Tu objetivo es derrotar a todos tus enemigos en menos de 30 turnos en un mapa diminuto",
+		"maxTurns": "30",
+		"winCondition": "0",
+		"map" : "0",
 	},
 	"1":{
-		"name":"CONQUEROR CHALLENGE",
-		"description":"Para ganar debes conquistar todas las casillas antes de 20 turnos, este mapa es para un solo jugador",
+		"name":"DESAFIO CONQUISTADOR",
+		"description":"Para ganar debes conquistar un 75% de las casillas antes de 20 turnos",
+		"maxTurns" : "20",
+		"winCondition": "1",
+		"map" : "2",
 	},
 	"2":{
-		"name":"ALL TYPES CHALLENGE",
-		"description":"Para ganar necesitas lograr un slime de cada tipo antes de 15 turnos",			
+		"name":"GRAN BATALLA",
+		"description":"Tu objetivo es derrotar a todos tus enemigos en menos de 60 turnos en un mapa enorme",	
+		"maxTurns" : "60",
+		"winCondition": "0",
+		"map" : "2",
 	},
 	"3":{
-		"name":"DOUBLE MASS CHALLENGE",
-		"description":"Empiezas con la mitad de masa que tu oponente y el objetivo es conseguir el doble de masa que tu oponente",			
+		"name":"DESAFIO DEL DOBLE DE MASA",
+		"description":"El objetivo es conseguir el doble de masa que la masa inicial de tu oponente antes de 15 turnos",	
+		"maxTurns" : "15",
+		"winCondition" : "2",
+		"map" : "0",
 	}
 }

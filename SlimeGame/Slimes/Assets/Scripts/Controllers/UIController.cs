@@ -25,8 +25,21 @@ public class UIController : MonoBehaviour {
 	protected GameObject playerColor;
 	protected GameObject actionsLeft;
 
+	protected GameObject health;
+	protected GameObject healthT;
+	protected GameObject range;
+	protected GameObject rangeT;
+	protected GameObject movement;
+	protected GameObject movementT;
+	protected GameObject attack;
+	protected GameObject attackT;
+
+
 	public GameObject turnPanel;
 	public GameObject roundPanel;
+	public GameObject infoPanel;
+
+	public GameObject growButton;
 
 	protected float currentTime;
 	protected float maxTime;
@@ -35,13 +48,18 @@ public class UIController : MonoBehaviour {
 	protected Vector3 endPosT;
 	protected Vector3 startPosR;
 	protected Vector3 endPosR;
+	protected Vector3 startPosI;
+	protected Vector3 endPosI;
 	protected RectTransform rectTransformT;
 	protected RectTransform rectTransformR;
+	protected RectTransform rectTransformI;
 
 	protected int tempRound;
 	protected Color tempColor;
 	protected int tempAct;
 	protected int tempMaxAct;
+	protected Slime tempSlime;
+	protected Tile tempTerrain;
 
 	protected int state;
 	/* state 0: do nothing
@@ -49,6 +67,9 @@ public class UIController : MonoBehaviour {
 	 * state 2: show turn panel
 	 * state 3: hide both panels
 	 * state 4: show both panels
+	 * state 5: show info panel
+	 * state 6: hide info panel
+	 * state 7: hide and show info panel
 	*/
 
 	public int xLimit;
@@ -57,17 +78,19 @@ public class UIController : MonoBehaviour {
     public int maxZoom;
     public int speed;
 
+	public bool selected;
+
     // Use this for initialization
     void Start () {
 		gameController = Camera.main.GetComponent<GameController>();
-        canvasInfo = GameObject.Find("Dialog");
-        DisableCanvas();
-		
+        //canvasInfo = GameObject.Find("Dialog");
+        //DisableCanvas();
+		/*
         RectTransform rt = canvasInfo.GetComponent(typeof(RectTransform)) as RectTransform;
         rt.sizeDelta =  new Vector2(200, 150); ;
 
         RectTransform rt2 = canvasInfo.GetComponentInChildren<Text>().GetComponent(typeof(RectTransform)) as RectTransform;
-        rt2.sizeDelta = new Vector2(200, 150);
+        rt2.sizeDelta = new Vector2(200, 150);*/
         //Si clica OK desactiva el canvas
 		if (canvasInfo != null) {
 			canvasInfo.GetComponentInChildren<Button> ().onClick.AddListener (DisableCanvas);
@@ -77,11 +100,23 @@ public class UIController : MonoBehaviour {
 		round = GameObject.Find ("RoundNum");
 		playerColor = GameObject.Find ("PlayerColor");
 		actionsLeft = GameObject.Find ("ActionsNum");
+		health = GameObject.Find ("Health");
+		healthT = GameObject.Find ("HealthT");
+		range = GameObject.Find ("Range");
+		rangeT = GameObject.Find ("RangeT");
+		movement = GameObject.Find ("Movement");
+		movementT = GameObject.Find ("MovementT");
+		attack = GameObject.Find ("Attack");
+		attackT = GameObject.Find ("AttackT");
 		turnPanel = GameObject.Find ("TurnPanel");
 		roundPanel = GameObject.Find ("RoundPanel");
+		infoPanel = GameObject.Find ("InfoPanel");
 		rectTransformT = turnPanel.GetComponent<RectTransform> ();
 		rectTransformR = roundPanel.GetComponent<RectTransform> ();
+		rectTransformI = infoPanel.GetComponent<RectTransform> ();
+		growButton = GameObject.Find ("GrowButton");
 		state = 0;
+		selected = false;
 	}
 	
 	// Update is called once per frame
@@ -98,7 +133,7 @@ public class UIController : MonoBehaviour {
 					ShowTurnPanel ();
 				} else {
 					state = 0;
-					gameController.updateStatus(GameControllerStatus.WAITINGFORACTION);
+					gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
 				}
 			}
 		} else if (state == 3 || state == 4) {
@@ -115,8 +150,36 @@ public class UIController : MonoBehaviour {
 					ShowBothPanels ();
 				} else {
 					state = 0;
-					gameController.updateStatus(GameControllerStatus.WAITINGFORACTION);
+					gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
 				}
+			}
+		} else if (state == 5 || state == 6 || state == 7) {
+			if (currentTime < maxTime) {
+				currentTime += Time.deltaTime;
+				normalizedValue = currentTime / maxTime;
+				rectTransformI.anchoredPosition = Vector3.Lerp (startPosI, endPosI, normalizedValue);
+			} else {
+				if (state == 7){
+					state = 5;
+					ShowInfoPanel(tempSlime, tempTerrain);
+				} else {
+					state = 0;
+				}
+
+				gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
+				/*if (state == 5) {
+					state = 0;
+					//UpdateInfo ();
+					//UpdateRound (tempRound);
+					//UpdatePlayer (tempColor);
+					//UpdateActions (tempAct, tempMaxAct);
+					//ShowInfoPanel ();
+				} else {
+					state = 0;
+					gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
+				}*/
+				//state = 0;
+				//gameController.updateStatus (GameControllerStatus.WAITINGFORACTION);
 			}
 		}
 	}
@@ -152,7 +215,7 @@ public class UIController : MonoBehaviour {
 	protected void HideTurnPanel(){
 		state = 1;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, -80, 0);
 		endPosT = new Vector3 (230, 120, 0);
 	}
@@ -160,7 +223,7 @@ public class UIController : MonoBehaviour {
 	protected void ShowTurnPanel(){
 		state = 2;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, 120, 0);
 		endPosT = new Vector3 (230, -80, 0);
 	}
@@ -168,7 +231,7 @@ public class UIController : MonoBehaviour {
 	protected void HideBothPanels(){
 		state = 3;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, -80, 0);
 		endPosT = new Vector3 (230, 120, 0);
 		startPosR = new Vector3 (0, -40, 0);
@@ -178,19 +241,79 @@ public class UIController : MonoBehaviour {
 	public void ShowBothPanels(){
 		state = 4;
 		currentTime = 0;
-		maxTime = 1;
+		maxTime = 0.25f;
 		startPosT = new Vector3 (230, 120, 0);
 		endPosT = new Vector3 (230, -80, 0);
 		startPosR = new Vector3 (0, 80, 0);
 		endPosR = new Vector3 (0, -40, 0);
 	}
 
+	public void HideInfoPanel(){
+		state = 5;
+		selected = false;
+		currentTime = 0;
+		maxTime = 0.25f;
+		startPosI = new Vector3 (-205, -200, 0);
+		endPosI = new Vector3 (10, -200, 0);
+	}
+
+	public void ShowInfoPanel(Slime slime, Tile terrain){
+		UpdateInfo (slime, terrain);
+		state = 6;
+		selected = true;
+		tempSlime = slime;
+		tempTerrain = terrain;
+		maxTime = 0.25f;
+		currentTime = 0;
+		startPosI = new Vector3 (10, -200, 0);
+		endPosI = new Vector3 (-205, -200, 0);
+	}
+
+	public void HideAndShowInfoPanel(Slime slime, Tile terrain){
+		state = 7;
+		selected = false;
+		tempSlime = slime;
+		tempTerrain = terrain;
+		currentTime = 0;
+		maxTime = 0.25f;
+		startPosI = new Vector3 (-205, -200, 0);
+		endPosI = new Vector3 (10, -200, 0);
+	}
+
+
+
+	public void UpdateInfo(Slime slime, Tile terrain){
+
+		if (slime != null) {
+			health.GetComponent<Text>().text = slime.GetMass().ToString();
+			range.GetComponent<Text>().text = slime.GetAttackRange ().ToString();
+			movement.GetComponent<Text>().text = slime.GetMovementRange ().ToString();
+			attack.GetComponent<Text> ().text = slime.getDamage.ToString ()+" ("+slime.attackDrain+")";
+		} else {
+			health.GetComponent<Text>().text = "";
+			range.GetComponent<Text>().text = "";
+			movement.GetComponent<Text>().text = "";
+			attack.GetComponent<Text>().text = "";
+		}
+
+		if (terrain != null) {
+			/*healthT.GetComponent<Text>().text = terrain.GetMass().ToString();
+			rangeT.GetComponent<Text>().text = terrain.GetAttackRange ().ToString();
+			movementT.GetComponent<Text>().text = terrain.GetMovementRange ().ToString();
+			attackT.GetComponent<Text>().text = terrain.getDamage.ToString();*/
+		} else {
+			healthT.GetComponent<Text>().text = "";
+			rangeT.GetComponent<Text>().text = "";
+			movementT.GetComponent<Text>().text = "";
+			attackT.GetComponent<Text>().text = "";
+		}
+	}
 	//Metode que mostra la info que li passis
     public void ShowCanvasInfo(string info)
     {
-        //canvasInfo.SetActive(true);
-        //Text t = canvasInfo.GetComponentInChildren<Text>();
-        //t.text = info;
+        canvasInfo.SetActive(true);
+        Text t = canvasInfo.GetComponentInChildren<Text>();
+        t.text = info;
     }
 	
     //Desactiva el canvas
@@ -200,6 +323,14 @@ public class UIController : MonoBehaviour {
 			canvasInfo.SetActive (false);
 		}
     }
+
+	public void DisableGrowButton(){
+		growButton.SetActive (false);
+	}
+
+	public void EnableGrowButton(){
+		growButton.SetActive (true);
+	}
 
 	public void markTiles(List<Tile> tiles,ActionType at){
 		foreach (Tile t in tiles) {

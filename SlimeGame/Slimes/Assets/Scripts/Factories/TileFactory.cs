@@ -6,6 +6,7 @@ public class TileFactory{
 	private static Vector2 horizontalOffset;
 	private static Vector2 diagonalOffset;
 	private static Sprite sprite;
+	private static Sprite belowTile;
 
 	public static float tileHeight=0.33f;
 	public static float tileWidth=0.5f;
@@ -22,6 +23,11 @@ public class TileFactory{
 
 		Vector2 tileWorldPosition = drawInternCoordenates(tile.getPosition());
 		GameObject newTile = new GameObject("Tile (" + x + "," + y + ")");
+		GameObject tile3DEffect = new GameObject ();
+		tile3DEffect.transform.SetParent (newTile.transform);
+		tile3DEffect.transform.localPosition = new Vector3 (0f, -2.8f, 0f);
+		tile3DEffect.AddComponent<SpriteRenderer> ().sprite = belowTile;
+		tile3DEffect.GetComponent<SpriteRenderer>().sortingLayerName = "TileBelow";
 		newTile.tag = "Tile";                           //Add tag
 		newTile.AddComponent<SpriteRenderer>();
 		newTile.AddComponent<Tile>();                   //Adding Script
@@ -36,7 +42,6 @@ public class TileFactory{
 		newTile.GetComponent<Tile>().SetTileData(tile);
 		//Vector3 localScale = new Vector3 (0.5f, 0.35f, 1f);
 		Vector3 localScale = new Vector3 (tileWidth, tileHeight, 1f);
-
 		newTile.transform.localScale = localScale;
 		//rotacion de 60
 		tile.SetTile(newTile.GetComponent<Tile>());
@@ -50,7 +55,7 @@ public class TileFactory{
 		newTile.GetComponent<Tile>().startUILayer (vec,localScale);
 		newTile.GetComponent<Tile> ().startConquerLayer (vec,localScale);
 		newTile.GetComponent<Tile>().startElementLayer (vec,localScale);
-
+		tile3DEffect.GetComponent<SpriteRenderer>().sortingOrder = (int) (1000-newTile.transform.position.y*4+2);
 		return newTile.GetComponent<Tile> ();
 
 	}
@@ -58,6 +63,7 @@ public class TileFactory{
 	private static void initValues(){
 		
 		sprite = SpritesLoader.GetInstance().GetResource("Tiles/sand_tile_1");
+		belowTile = SpritesLoader.GetInstance ().GetResource ("Tiles/sand_tile_effect_depth");
 		//Hashtable sprites = new Hashtable ();
 		//sprites.Add(TileType.Block, Resources.Load<Sprite>("Test/testTileFlat2"));
 		//sprites.Add(TileType.Sand, SpritesLoader.GetInstance().GetResource("Test/testTileFlat3"));

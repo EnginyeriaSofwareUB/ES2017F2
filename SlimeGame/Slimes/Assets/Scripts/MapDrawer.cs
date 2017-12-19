@@ -9,7 +9,7 @@ public class MapDrawer {
 	//private static Vector2 verticalOffset;
 
 	private static Tile[,] tiles;
-	private static int MAXMAPSIZE = 50;
+	private static int MAXMAPSIZE = 150;
 
 	public static void InitTest () {
 		testDrawer ();

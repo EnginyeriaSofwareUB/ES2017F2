@@ -73,7 +73,8 @@ Shader "Unlit/TileShader"
                 //sum = tex2D(_MainTex,float2(i.uv.x+(1-i.uv.y)*sin((_Time.w+i.uv.y)*2.3),i.uv.y))*screenPos.y;//*_SinTime.w
 
                 //sum = tex2D(_MainTex,float2(i.uv.x+i.uv.y/8*sin((_Time.z+(1-i.uv.y))*2.3+_RandomStart),i.uv.y));//*_SinTime.w
-               	sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*_SandColor*screenPos.y + _SkyColor*(1-screenPos.y);
+               	//sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*_SandColor*screenPos.y + _SkyColor*(1-screenPos.y);
+				sum = tex2D(_MainTex,float2(i.uv.x,i.uv.y))*_SandColor;
                	sum.w = 1.0h;
                 return sum;
             }

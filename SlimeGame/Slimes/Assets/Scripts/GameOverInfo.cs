@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameOverInfo {
+public static class GameOverInfo {
 
-    static List<Player> winners;
+    static Player winner;
     static List<Player> losers;
 
     public static void Init ()
     {
-        winners = new List<Player>();
+        winner=null;
         losers = new List<Player>();
     }
 
@@ -19,6 +19,14 @@ public class GameOverInfo {
     }
     public static void SetWinner (Player player)
     {
-        winners.Add(player);
+        winner=player;
+    }
+
+    public static Player GetWinner (){
+        return winner;
+    }
+
+    public static List<Player> GetLosers(){
+        return losers;
     }
 }

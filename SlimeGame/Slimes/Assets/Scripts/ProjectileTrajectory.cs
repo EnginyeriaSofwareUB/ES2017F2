@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileTrajectory : MonoBehaviour {
-    public float speed = 4;
+    public float speed = 8;
     private Vector2 direction;
     private Vector2 endPos;
 
     public bool moving;
-    private float damage;
-    private Slime toAttack;
+	private Slime source;
+    private Slime target;
 
 	// Use this for initialization
 	void Start () {
@@ -18,8 +18,8 @@ public class ProjectileTrajectory : MonoBehaviour {
 	}
 	
 	public void SetTrajectorySlimes(Slime shooter, Slime toAttack){
-        this.toAttack = toAttack;
-        damage = shooter.getDamage();
+		this.source = shooter;
+		this.target = toAttack;
         Vector2 startPosition = shooter.GetActualTile().GetTileData().GetRealWorldPosition();
         transform.position = startPosition;
         this.endPos = toAttack.GetActualTile().GetTileData().GetRealWorldPosition();
@@ -45,19 +45,17 @@ public class ProjectileTrajectory : MonoBehaviour {
     
     void OnDestroy(){
         //Es crida quan es produeix l'event que Destroy del gameobject
-        if (toAttack!=null){
-            FloatingTextController.CreateFloatingText ((-damage).ToString(),toAttack.transform);
-            toAttack.changeMass (-damage);
-            //Debug.Log(toAttack.GetMass());
-            //Debug.Log(!toAttack.isAlive ());
-            if (!toAttack.isAlive ()) {
-                toAttack.GetTileData ().SetSlimeOnTop ((Slime)null);
-                toAttack.GetPlayer ().GetSlimes ().Remove (toAttack);
-                Destroy(toAttack.gameObject);
-                GameObject.Find ("Main Camera").GetComponent<GameController> ().RemoveSlime(toAttack);
+		if (target!=null){
+			GameController gameController = GameObject.Find ("Main Camera").GetComponent<GameController> ();
+			gameController.ApplyDamage(source,target);
+			if (!target.isAlive ()) {
+				target.GetTileData ().SetSlimeOnTop ((Slime)null);
+				target.GetPlayer ().GetSlimes ().Remove (target);
+				Destroy(target.gameObject);
+				gameController.RemoveSlime(target);
 
             }
-            GameObject.Find ("Main Camera").GetComponent<GameController> ().OnProjectileAnimationEnded();
+			gameController.OnProjectileAnimationEnded();
         }
 
     }
