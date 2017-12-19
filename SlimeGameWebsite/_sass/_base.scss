@@ -451,7 +451,10 @@ footer {
     }
   }
 }
-
+.android-icon{
+  color:black;
+  
+}
 .bg-primary {
   background: $theme-primary;
   background: -webkit-linear-gradient($theme-primary, $theme-secondary);
@@ -482,6 +485,9 @@ footer {
   border-color: white;
   border: 1px solid;
   &:hover, &:focus, &:active, &.active {
+    .android-icon{
+      color:white;
+    }
     color: white;
     background-color: $theme-primary;
     border-color: $theme-primary;

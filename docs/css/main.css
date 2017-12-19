@@ -327,6 +327,9 @@ footer {
       footer ul li a:hover, footer ul li a:focus, footer ul li a:active, footer ul li a.active {
         text-decoration: none; }
 
+.android-icon {
+  color: black; }
+
 .bg-primary {
   background: #0032ec;
   background: -webkit-linear-gradient(#0032ec, #fdcc52);
@@ -356,6 +359,8 @@ footer {
     color: white;
     background-color: #0032ec;
     border-color: #0032ec; }
+    .btn-outline:hover .android-icon, .btn-outline:focus .android-icon, .btn-outline:active .android-icon, .btn-outline.active .android-icon {
+      color: white; }
 
 .btn {
   font-family: 'Open Sans', sans-serif;
