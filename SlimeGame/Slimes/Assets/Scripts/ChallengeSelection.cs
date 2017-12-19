@@ -74,7 +74,7 @@ public class ChallengeSelection : MonoBehaviour {
             GameSelection.playerColors.Add(new Color(0, 0, 1));
             GameSelection.playerColors.Add(new Color(1, 0, 0));
 
-            GameSelection.playerCores.Add(SlimeCoreTypes.GLUTTONY);
+            GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
             GameSelection.playerCores.Add(SlimeCoreTypes.WRATH);
 
             GameSelection.playerIAs.Add(false);

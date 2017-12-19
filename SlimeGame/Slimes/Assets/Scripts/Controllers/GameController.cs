@@ -257,7 +257,7 @@ public class GameController : MonoBehaviour
         }
         if(MAX_TURNS != 0 && currentTurn >= MAX_TURNS)
         {
-            return players[1];
+            return new Player("0", null);
         }
         //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
         switch(condicionVictoria){
