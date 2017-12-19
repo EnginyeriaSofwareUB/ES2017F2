@@ -102,7 +102,7 @@ public class GameController : MonoBehaviour
             players[i].SetColor(GameSelection.playerColors[i]);
         }
         matrix = GameSelection.map;//new Matrix(11, 0.3f, 1234567);
-		if (matrix == null) matrix = new Matrix(20, 0.3f, Random.Range(0,10000));
+		if (matrix == null) matrix = new Matrix(5*players.Count, 0.3f, Random.Range(0,10000));
         MapDrawer.instantiateMap(matrix.getIterable());
         int numSlimesPerPlayer = 2;
         List<List<Vector2>> positions = matrix.GetPositions(players.Count,numSlimesPerPlayer);

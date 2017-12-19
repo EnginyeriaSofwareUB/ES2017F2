@@ -95,6 +95,7 @@ public class SelectorController : MonoBehaviour {
 		GameSelection.playerIAs.Add (true);
 		GameSelection.modoVictoria = modoVictoria;
 
+		GameSelection.map = null;
 		}
 	
 	// Update is called once per frame

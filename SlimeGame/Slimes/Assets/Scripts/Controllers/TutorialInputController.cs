@@ -74,4 +74,10 @@ public class TutorialInputController: InputController
 			tgc.tutorialFSMCheck ();
 		}
 	}
+
+	protected override void OnGrow() {
+		if (tgc.GetTutorialStatus () == TutorialGameController.TutorialFSMStatus.ATTACKWITHFIRE) {
+			tgc.tutorialFSMCheck ();
+		}
+	}
 }

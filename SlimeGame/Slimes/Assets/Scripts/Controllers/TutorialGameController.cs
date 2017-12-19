@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class TutorialGameController: GameController
 {
@@ -20,7 +21,6 @@ public class TutorialGameController: GameController
 		TileFactory.tileMaterial = tileMaterial;
 		matrix = new Matrix (MapParser.ReadMap("Maps/tutorial"));
 		MapDrawer.instantiateMap (matrix.getIterable());
-
 		players = new List<Player> ();
 		players.Add(new Player("Jugador", StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
 		//players.Add(new Player("IA Tutorial", 1, StatsFactory.GetStat(SlimeCoreTypes.SLOTH))); // Test with 2 players
@@ -226,6 +226,7 @@ public class TutorialGameController: GameController
 			chainTextDialog.Show ();
 			chainTextDialog.SetOnClickFunction (() => {
 				inputController.SetActiveInput (true);
+				inputController.SetActiveJoin(true);
 				marker.SetActive (true);
 				marker.SetParentTransform (MapDrawer.GetTileAt (1, -2).transform);
 			});
@@ -233,28 +234,85 @@ public class TutorialGameController: GameController
 			break;
 		case TutorialFSMStatus.JOINSLIME:
 			texts.Add ("¡Cuidado! Un slime enemigo ha aparecido, prueba a atacarle");
-			texts.Add ("Mmmmm. Parece que tu ataque no le ha hecho mucho daño");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				inputController.SetActiveAttack (true);
+				inputController.SetActiveInput (true);
+				marker.SetActive (true);
+				marker.SetParentTransform (MapDrawer.GetTileAt (0, 0).transform);
+			});
+			Player p = new Player ("Sida", StatsFactory.GetStat (SlimeCoreTypes.INNOCENCE));
+			p.SetColor (new Color (1, 0, 0));
+			SlimeFactory.instantiateSlime (p, 0, 0);
+			inputController.SetActiveJoin (false);
+			inputController.SetActiveInput (false);
+			marker.SetActive (false);
+			inputController.SetActiveInput (false);
 			tutorialStatus = TutorialFSMStatus.ATTACKSLIME;
 			break;
 		case TutorialFSMStatus.ATTACKSLIME:
-			texts.Add ("¿Por que no conviertes a tu slime en un slime de fuego, a ver si así haces mas daño?");
-			texts.Add ("Para ello, primero mueve tu slime a esta casilla de fuego");
+			texts.Add ("¿Por que no conviertes conquistas una casilla y te curas?");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				inputController.SetActiveMove (true);
+				inputController.SetActiveInput (true);
+				marker.SetActive (true);
+				marker.SetParentTransform (MapDrawer.GetTileAt (-1, -1).transform);
+			});
+			inputController.SetActiveJoin (false);
+			inputController.SetActiveInput (false);
+			inputController.SetActiveMove (false);
+			marker.SetActive (false);
 			tutorialStatus = TutorialFSMStatus.MOVETOCONQUER;
 			break;
 		case TutorialFSMStatus.MOVETOCONQUER:
 			texts.Add ("Ahora selecciona tu slime y vuelve a hacer click en el");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				inputController.SetActiveConquer (true);
+				inputController.SetActiveInput (true);
+				marker.SetActive (true);
+				marker.SetParentTransform (MapDrawer.GetTileAt (-1, -1).transform);
+			});
+			inputController.SetActiveInput (false);
+			inputController.SetActiveConquer (false);
+			inputController.SetActiveMove (false);
+			marker.SetActive (false);
 			tutorialStatus = TutorialFSMStatus.CONQUERTILE;
 			break;
 		case TutorialFSMStatus.CONQUERTILE:
-			texts.Add ("Así se hace, ahora tu slime tiene el <b>recubrimiento<b> de fuego");
-			texts.Add ("Ahora vuelve a atacar al slime enemigo");
+			texts.Add ("Vuelve a tocar la casilla conquistada para curarte");
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				inputController.SetActiveEat (true);
+				inputController.SetActiveConquer(true);
+				inputController.SetActiveInput (true);
+				marker.SetActive (true);
+				marker.SetParentTransform (MapDrawer.GetTileAt (-1, -1).transform);
+			});
+			inputController.SetActiveInput (false);
+			inputController.SetActiveEat (false);
+			inputController.SetActiveConquer (false);
+			marker.SetActive (false);
 			tutorialStatus = TutorialFSMStatus.ATTACKWITHFIRE;
 			break;
 		case TutorialFSMStatus.ATTACKWITHFIRE:
-			texts.Add ("Has conseguido acabar con él");
-			texts.Add ("Ahora ya conoces las bases de <b>Slimers<b>");
+			texts.Add ("Te has curado");
+			texts.Add ("Ahora ya conoces las bases de SLIMERS");
 			texts.Add ("Explora los diferentes retos para descubrir sus verdaderos límites, si es que los tienen");
-			tutorialStatus = TutorialFSMStatus.TUTORIALENDED;
+			chainTextDialog.SetTextList (texts);
+			chainTextDialog.Show ();
+			chainTextDialog.SetOnClickFunction (() => {
+				SceneManager.LoadScene (0);
+			});
+			inputController.SetActiveInput (false);
+			inputController.SetActiveEat (false);
+			inputController.SetActiveConquer (false);
+			marker.SetActive (false);
 			break;
 		}
 	}
@@ -298,6 +356,9 @@ public class TutorialGameController: GameController
 	public override List<Tile> GetSlimesInAttackRange(Slime slime){
 		List<Tile> tiles = new List<Tile> ();
 		switch (tutorialStatus) {
+		case TutorialFSMStatus.ATTACKSLIME:
+			tiles.Add (MapDrawer.GetTileAt (0, 0));
+			break;
 		default:
 			break;
 		}
