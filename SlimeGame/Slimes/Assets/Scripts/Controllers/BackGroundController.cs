@@ -9,7 +9,7 @@ public class BackGroundController : MonoBehaviour {
 	public List<GameObject> sea1;
 	public List<GameObject> sea2;
 
-	private int layers = 3;
+	private int layers = 12;
 
 	public List<Sprite> spriteList;
 
@@ -29,17 +29,20 @@ public class BackGroundController : MonoBehaviour {
 			GameObject s1 = new GameObject ("S1 "+i);
 			GameObject s2 = new GameObject ("S2 "+i);
 
-			s1.transform.position = pos-i*(new Vector3(0f,1f,0f));
-			s2.transform.position = pos-(new Vector3(0f,5f,0f))+i*(new Vector3(0f,1f,0f));
+			s1.transform.position = pos-i*(new Vector3(0f,5f,0f));
+			s2.transform.position = pos-(new Vector3(0f,0.5f,0f))+i*(new Vector3(0f,5f,0f));
 
-			s1.transform.localScale = new Vector3 (2f*(1+Random.Range(0,5)/5.0f), 1f,1f);
-			s2.transform.localScale = new Vector3 (2f*(1+Random.Range(0,5)/5.0f), 1f,1f);
+			s1.transform.localScale = new Vector3 (5f*(1+Random.Range(0,5)/5.0f), 5f,1f);
+			s2.transform.localScale = new Vector3 (5f*(1+Random.Range(0,5)/5.0f), 5f,1f);
 
 			s1.AddComponent<SpriteRenderer> ().sprite = spriteList[Random.Range(0,spriteList.Count)];
 			s2.AddComponent<SpriteRenderer> ().sprite = spriteList[Random.Range(0,spriteList.Count)];
 
 			s1.GetComponent<SpriteRenderer> ().material = seaMaterial;
 			s2.GetComponent<SpriteRenderer> ().material = seaMaterial;
+
+			s1.GetComponent<SpriteRenderer> ().material.SetFloat("RandomOffset",Random.Range(0.1f,5.0f));
+			s2.GetComponent<SpriteRenderer> ().material.SetFloat("RandomOffset",Random.Range(0.1f,5.0f));
 
 			s1.GetComponent<SpriteRenderer> ().sortingOrder = 1000 - (int)(s1.transform.position.y*10);
 			s2.GetComponent<SpriteRenderer> ().sortingOrder = 1000 - (int)(s2.transform.position.y*10);
