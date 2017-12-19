@@ -24,10 +24,20 @@ public class TutorialUIController: UIController
 		round = GameObject.Find ("RoundNum");
 		playerColor = GameObject.Find ("PlayerColor");
 		actionsLeft = GameObject.Find ("ActionsNum");
+		health = GameObject.Find ("Health");
+		healthT = GameObject.Find ("HealthT");
+		range = GameObject.Find ("Range");
+		rangeT = GameObject.Find ("RangeT");
+		movement = GameObject.Find ("Movement");
+		movementT = GameObject.Find ("MovementT");
+		attack = GameObject.Find ("Attack");
+		attackT = GameObject.Find ("AttackT");
 		turnPanel = GameObject.Find ("TurnPanel");
 		roundPanel = GameObject.Find ("RoundPanel");
+		infoPanel = GameObject.Find ("InfoPanel");
 		rectTransformT = turnPanel.GetComponent<RectTransform> ();
 		rectTransformR = roundPanel.GetComponent<RectTransform> ();
+		rectTransformI = infoPanel.GetComponent<RectTransform> ();
 		state = 0;
 	}
 }
