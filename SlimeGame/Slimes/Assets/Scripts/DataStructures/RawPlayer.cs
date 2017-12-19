@@ -86,4 +86,8 @@ public class RawPlayer{
     public int GetId(){
         return this.id;
     }
+
+    public bool hasMaxSlimes(){
+		return statsCoreInfo.maxSlimes == slimes.Count;
+	}
 }

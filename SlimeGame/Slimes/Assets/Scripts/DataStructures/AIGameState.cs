@@ -121,8 +121,8 @@ public class AIGameState {
         }
 		if(targetSlime.changeMass ((int)-damage*targetSlime.GetDamageReduction()) <= 0){
             targetSlime.GetPlayer().RemoveSlime(targetSlime);
-            Debug.Log("DEAD");
-            Debug.Log(targetSlime.GetPlayer());
+            /*Debug.Log("DEAD");
+            Debug.Log(targetSlime.GetPlayer());*/
         }
 
         SpendActions(1);
@@ -335,7 +335,7 @@ public class AIGameState {
         List<AIRawSlimeAction> actions = new List<AIRawSlimeAction>();
         // Si no l'ha conquerit ja, pot conquerirla.
         if(!slime.GetPlayer().GetConqueredTiles().Contains(slime.GetActualTile())) actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.CONQUER, slime.GetActualTile().getPosition()));
-        else actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.EAT, slime.GetId()));
+        else if(slime.canGrow) actions.Add(new AIRawSlimeAction(slime.GetId(), ActionType.EAT, slime.GetId()));
         return actions;
     }
 

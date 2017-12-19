@@ -153,10 +153,10 @@ public abstract class AIInterface : ThreadedJob{
         if(randomSign == 0) randomSign = -1;
         float random = (new System.Random()).Next(10000) / 100;
         if(random < 50) return 0;
-        else if(random < 80) return randomSign * 1 * random / 100;
-        else if(random < 95) return randomSign * 2 * random / 100;
-        else if(random < 98) return randomSign * 3 * random / 100;
-        else if(random < 99.5) return randomSign * 5 * random / 100;
-        else return randomSign * 10 * random / 100;
+        else if(random < 80) return randomSign * 2 * random / 100;
+        else if(random < 90) return randomSign * 4 * random / 100;
+        else if(random < 95) return randomSign * 6 * random / 100;
+        else if(random < 98) return randomSign * 10 * random / 100;
+        else return randomSign * 20 * random / 100;
     }
 }
