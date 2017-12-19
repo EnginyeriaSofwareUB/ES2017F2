@@ -29,6 +29,7 @@ public class TutorialGameController: GameController
 		playerSlime = SlimeFactory.instantiateSlime(players[0], new Vector2(0f,-2f));
 		//SlimeFactory.instantiateSlime(players[1], new Vector2(0f,2f));
 		status = GameControllerStatus.WAITINGFORACTION;
+		currentPlayer = players [0];
 		uiController.UpdateRound(currentTurn+1);
 		uiController.UpdatePlayer(GetCurrentPlayer().GetColor());
 		uiController.UpdateActions(playerActions,GetCurrentPlayer().actions);

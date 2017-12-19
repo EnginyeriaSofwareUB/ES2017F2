@@ -78,7 +78,7 @@ public class Slime : MonoBehaviour {
 
 	public void setPlayer(Player player){
 		this.player = player;
-		SetMass(player.statsCoreInfo.baseMass);
+		SetMass(player.statsCoreInfo.baseMass,false);
 		initSpriteAnimation ();
 		gameObject.GetComponent<SpriteRenderer> ().color = player.GetColor ();
 	}
@@ -96,11 +96,11 @@ public class Slime : MonoBehaviour {
 	}
 
 	public void ChangeMass(float q){
-		SetMass ((int)(mass + q));
+		SetMass ((int)(mass + q),true);
 	}
 
 	public void ChangeMass(int q){
-		SetMass ((int)(mass + q));
+		SetMass ((int)(mass + q),true);
 	}
 
     public bool CheckId(int id){
@@ -116,10 +116,12 @@ public class Slime : MonoBehaviour {
 
 	public void GrowSlime(){
 		StatsContainer core = player.statsCoreInfo;
+		int lastMass = mass;
 		mass += (int)(mass * (scalingGrowth) + plainGrowth);
 		if (mass > maxMass) {
 			mass = maxMass;
 		}
+		FloatingTextController.CreateFloatingText (printInteger((int)(this.mass-lastMass)),this.transform);
 		changeScaleSlime ();
 	}
 
@@ -127,14 +129,24 @@ public class Slime : MonoBehaviour {
 		return mass > 0.0f ? true : false;
 	}
 
-	public void SetMass(int mass){
+	public void SetMass(int mass,bool popup){
+		if(popup) FloatingTextController.CreateFloatingText (printInteger((int)(mass-this.mass)),this.transform);
 		this.mass = mass;
 		changeScaleSlime ();
+	}
 
+	private string printInteger(int number){
+		if (number>=0) return "+"+number.ToString();
+		else return number.ToString();
 	}
 
 	public float GetMass(){
 		return mass;
+	}
+
+	//Funcio per determinar la funcio dels nous slimes splitejats, i despres s'actualitza a gamecontroller
+	public void InitMass(){
+		mass = 0;
 	}
 
 	public void changeScaleSlime(){
@@ -407,6 +419,12 @@ public class Slime : MonoBehaviour {
 	private float minAttackMultiplier{
 		get{
 			return player.statsCoreInfo.minAttackMultiplier + element.minAttackMultiplier;
+		}
+	}
+
+	public float damageReduction{
+		get{ 
+			return (massRatio*(maxDamageReduction-minDamageReduction)+minDamageReduction);
 		}
 	}
 
