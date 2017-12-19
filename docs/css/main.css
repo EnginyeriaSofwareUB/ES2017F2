@@ -24,7 +24,7 @@ a {
   -webkit-transition: all 0.35s;
   -moz-transition: all 0.35s;
   transition: all 0.35s;
-  color: #fdcc52; }
+  color: #0032ec; }
   a:hover, a:focus {
     color: #fcbd20; }
 
@@ -59,7 +59,7 @@ p {
     font-family: 'Bangers', 'Helvetica';
     font-weight: 200;
     letter-spacing: 1px;
-    color: #fdcc52; }
+    color: #0032ec; }
   .navbar-default .navbar-header .navbar-toggle {
     font-size: 12px;
     padding: 8px 10px; }
@@ -74,12 +74,12 @@ p {
     .navbar-default .nav > li > a:focus {
       color: #222222; }
     .navbar-default .nav > li > a:hover, .navbar-default .nav > li > a:focus:hover {
-      color: #fdcc52; }
+      color: #0032ec; }
   .navbar-default .nav > li.active > a {
-    color: #fdcc52 !important;
+    color: #0032ec !important;
     background-color: transparent; }
     .navbar-default .nav > li.active > a:focus {
-      color: #fdcc52 !important;
+      color: #0032ec !important;
       background-color: transparent; }
     .navbar-default .nav > li.active > a:hover, .navbar-default .nav > li.active > a:focus:hover {
       background-color: transparent; }
@@ -104,23 +104,23 @@ p {
       .navbar-default.affix .navbar-header .navbar-brand {
         color: #222222; }
         .navbar-default.affix .navbar-header .navbar-brand:hover, .navbar-default.affix .navbar-header .navbar-brand:focus {
-          color: #fdcc52; }
+          color: #0032ec; }
       .navbar-default.affix .nav > li > a {
         color: #222222; }
         .navbar-default.affix .nav > li > a:focus {
           color: #222222; }
         .navbar-default.affix .nav > li > a:hover, .navbar-default.affix .nav > li > a:focus:hover {
-          color: #fdcc52; } }
+          color: #0032ec; } }
 header {
   position: relative;
   width: 100%;
   min-height: auto;
   overflow-y: hidden;
-  background: url("../img/bg-pattern.png"), #cbb78d;
+  background: url("../img/bg-pattern.png"), #0032ec;
   /* fallback for old browsers */
-  background: url("../img/bg-pattern.png"), -webkit-linear-gradient(to top, #cbb78d, #3b107b);
+  background: url("../img/bg-pattern.png"), -webkit-linear-gradient(to top, #0032ec, #fdcc52);
   /* Chrome 10-25, Safari 5.1-6 */
-  background: url("../img/bg-pattern.png"), linear-gradient(to top, #cbb78d, #3b107b);
+  background: url("../img/bg-pattern.png"), linear-gradient(to top, #0032ec, #fdcc52);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color: white; }
   header .header-content {
@@ -211,8 +211,8 @@ section {
       font-size: 30px; }
     section.features .feature-item i {
       font-size: 80px;
-      background: -webkit-linear-gradient(to left, #cbb78d, #3b107b);
-      background: linear-gradient(to left, #cbb78d, #3b107b);
+      background: -webkit-linear-gradient(to left, #0032ec, #fdcc52);
+      background: linear-gradient(to left, #0032ec, #fdcc52);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent; }
   section.cta {
@@ -328,25 +328,34 @@ footer {
         text-decoration: none; }
 
 .bg-primary {
-  background: #fdcc52;
-  background: -webkit-linear-gradient(#fdcc52, #3b107b);
-  background: linear-gradient(#fdcc52, #3b107b); }
+  background: #0032ec;
+  background: -webkit-linear-gradient(#0032ec, #fdcc52);
+  background: linear-gradient(#0032ec, #fdcc52); }
 
 .text-primary {
-  color: #fdcc52; }
+  color: #0032ec; }
 
 .no-gutter > [class*='col-'] {
   padding-right: 0;
   padding-left: 0; }
 
-.btn-outline {
+.btn-outline-2 {
   color: white;
+  border-color: white;
+  border: 1px solid; }
+  .btn-outline-2:hover, .btn-outline-2:focus, .btn-outline-2:active, .btn-outline-2.active {
+    color: white;
+    background-color: #fdcc52;
+    border-color: #fdcc52; }
+
+.btn-outline {
+  color: black;
   border-color: white;
   border: 1px solid; }
   .btn-outline:hover, .btn-outline:focus, .btn-outline:active, .btn-outline.active {
     color: white;
-    background-color: #fdcc52;
-    border-color: #fdcc52; }
+    background-color: #0032ec;
+    border-color: #0032ec; }
 
 .btn {
   font-family: 'Open Sans', sans-serif;
@@ -382,7 +391,7 @@ body {
     color: white;
     opacity: 0;
     display: block;
-    background: rgba(253, 204, 82, 0.9);
+    background: rgba(0, 50, 236, 0.9);
     position: absolute;
     bottom: 0;
     text-align: center;
