@@ -21,4 +21,6 @@ public class GameSelection
 	public static Matrix map=null;
 
 	public static int modoVictoria;
+
+    public static int MAX_TURNS = 0;
 }

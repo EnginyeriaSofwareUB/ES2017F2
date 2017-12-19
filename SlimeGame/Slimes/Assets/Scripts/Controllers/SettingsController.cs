@@ -16,6 +16,12 @@ public class SettingsController : MonoBehaviour {
 		jsonData = PlayerPrefs.GetString ("SettingsVolume");
 		PlayerPrefs.SetString ("SettingsVolume", jsonData);
 		loadSet ();
+		GameObject.Find ("Background Not 1").GetComponent<RectTransform> ().localScale = new Vector3 (music, music, 0);
+		GameObject.Find ("Background Not 2").GetComponent<RectTransform> ().localScale = new Vector3 (music, music, 0);
+		GameObject.Find ("Background Not 3").GetComponent<RectTransform> ().localScale = new Vector3 (music, music, 0);
+		GameObject.Find ("Background Exc 1").GetComponent<RectTransform> ().localScale = new Vector3 (effects,effects,0);
+		GameObject.Find ("Background Exc 2").GetComponent<RectTransform> ().localScale = new Vector3 (effects,effects,0);
+		GameObject.Find ("Background Exc 3").GetComponent<RectTransform> ().localScale = new Vector3 (effects,effects,0);
 		onValueChange (true);
 		//GameObject.Find(Languages.GetLanguage()).GetComponent<Button>().Select();
 	}
@@ -30,9 +36,19 @@ public class SettingsController : MonoBehaviour {
 			if (!modifyingBar) {
 				effects = GameObject.Find ("Effects").GetComponent<Slider> ().value;
 				music = GameObject.Find ("Music").GetComponent<Slider> ().value;
+				resizeImages ();
 				saveSet ();
 			}
 		}
+	}
+
+	private void resizeImages(){
+		GameObject.Find ("Background Not 1").GetComponent<RectTransform> ().localScale = new Vector3 (music, music, 0);
+		GameObject.Find ("Background Not 2").GetComponent<RectTransform> ().localScale = new Vector3 (music, music, 0);
+		GameObject.Find ("Background Not 3").GetComponent<RectTransform> ().localScale = new Vector3 (music, music, 0);
+		GameObject.Find ("Background Exc 1").GetComponent<RectTransform> ().localScale = new Vector3 (effects,effects,0);
+		GameObject.Find ("Background Exc 2").GetComponent<RectTransform> ().localScale = new Vector3 (effects,effects,0);
+		GameObject.Find ("Background Exc 3").GetComponent<RectTransform> ().localScale = new Vector3 (effects,effects,0);
 	}
 
 	private void loadSet(){

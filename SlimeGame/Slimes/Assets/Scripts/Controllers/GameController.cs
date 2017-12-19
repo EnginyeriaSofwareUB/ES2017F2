@@ -30,6 +30,7 @@ public class GameController : MonoBehaviour
 	protected float massToWin;
 	protected int totalTiles;
 	protected float percentageTilesToWin;
+    protected int MAX_TURNS;
 
     // Use this for initialization
     void Start()
@@ -77,8 +78,10 @@ public class GameController : MonoBehaviour
             condicionVictoria = ModosVictoria.ASESINATO; //por defecto
         }
 
-        
+        MAX_TURNS = GameSelection.MAX_TURNS;
+
         int maxPlayers = GameSelection.playerColors.Count;
+
 		if (maxPlayers == 0) {
 			GameSelection.playerColors.Add (new Color (0, 0, 1));
 			GameSelection.playerColors.Add (new Color (1, 0, 0));
@@ -140,7 +143,15 @@ public class GameController : MonoBehaviour
         switch(condicionVictoria){
             case ModosVictoria.CONQUISTA:
                 //define percentage tiles to win
-                percentageTilesToWin = 0.25f;
+                if(MAX_TURNS == 0)
+                {
+                    percentageTilesToWin = 0.25f;
+                }
+                else
+                {
+                    percentageTilesToWin = 0.75f;
+                }
+                
                 //Debug.Log("Porcentaje de conquista para ganar: "+percentageTilesToWin);
                 break;
             case ModosVictoria.MASA:
@@ -240,9 +251,13 @@ public class GameController : MonoBehaviour
         Player ret = null; //si no trobem guanyador retornem null
         int index;
         bool find;
-        //sempre comprovem la condicio de asesinato
-        if (players.Count == 1){
+        //sempre que no estiguem en un reto comprovem la condicio de asesinato
+        if (players.Count == 1 && MAX_TURNS == 0){
             return players[0];
+        }
+        if(MAX_TURNS != 0 && currentTurn >= MAX_TURNS)
+        {
+            return players[1];
         }
         //return currentTurn >= MAX_TURNS || players.Count == 1; //Player who wins
         switch(condicionVictoria){
@@ -267,6 +282,12 @@ public class GameController : MonoBehaviour
                         ret = players[index];
                     }
                     index++;
+                }
+                break;
+            case ModosVictoria.ASESINATO: //necessari per als retos de assassinat
+                if(players.Count == 1)
+                {
+                    ret = players[0];
                 }
                 break;
         }
