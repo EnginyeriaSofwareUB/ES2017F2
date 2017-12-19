@@ -94,7 +94,7 @@ public class GameController : MonoBehaviour
 		for (int i=0;i<maxPlayers;i++){
             if (GameSelection.playerIAs [i]) {
 				//players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));
-
+				Debug.Log("Ia true");
                 players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i]),AIManager.GetAIByVictoryCondition(this,condicionVictoria)));
             } else {
                 players.Add(new Player("Jugador "+(i+1),StatsFactory.GetStat(GameSelection.playerCores[i])));

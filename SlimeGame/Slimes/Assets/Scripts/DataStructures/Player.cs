@@ -39,7 +39,7 @@ public class Player {
 		conqueredTiles = new List<Tile>();
 		this.statsCoreInfo = coreInfo;
 		SetBrain(brain);
-
+		isAI = true;
 		this.id = ID;
 		ID++;
 	}

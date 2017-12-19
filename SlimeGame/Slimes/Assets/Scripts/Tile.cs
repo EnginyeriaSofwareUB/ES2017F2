@@ -211,4 +211,33 @@ public class Tile : MonoBehaviour {
 		player = p;
 	}
 
+	public string GetMass(){
+		return "";
+	}
+
+	public int GetAttackRange(){
+		if (elementType != null) {
+			return StatsFactory.GetStat (elementType).range;
+		} else {
+			return 0;
+		}
+
+	}
+
+	public int GetMovementRange(){
+		if (elementType != null) {
+			return StatsFactory.GetStat (elementType).movement;
+		} else {
+			return 0;
+		}
+	}
+
+	public int GetDamage(){
+		if (elementType != null) {
+			return StatsFactory.GetStat (elementType).maxBaseAttack;
+		} else {
+			return 0;
+		}
+	}
+
 }
