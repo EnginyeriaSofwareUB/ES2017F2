@@ -328,10 +328,6 @@ public class UIController : MonoBehaviour {
 		growButton.SetActive (false);
 	}
 
-	public void EnableGrowButton(){
-		growButton.SetActive (true);
-	}
-
 	public void markTiles(List<Tile> tiles,ActionType at){
 		foreach (Tile t in tiles) {
 			t.tileUILayer.sprite = TileSprite;

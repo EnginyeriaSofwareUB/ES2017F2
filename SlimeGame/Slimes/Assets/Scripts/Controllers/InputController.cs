@@ -179,7 +179,6 @@ public class InputController : MonoBehaviour
 						} else {
 							uiController.ShowInfoPanel (s,t);
 						}
-						uiController.EnableGrowButton ();
 					} else if (s != null || t != null){
 						if (uiController.selected) {
 							uiController.HideAndShowInfoPanel (s, t);

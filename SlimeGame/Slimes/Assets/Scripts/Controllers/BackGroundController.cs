@@ -9,7 +9,7 @@ public class BackGroundController : MonoBehaviour {
 	public List<GameObject> sea1;
 	public List<GameObject> sea2;
 
-	private int layers = 20;
+	private int layers = 3;
 
 	public List<Sprite> spriteList;
 
@@ -30,7 +30,7 @@ public class BackGroundController : MonoBehaviour {
 			GameObject s2 = new GameObject ("S2 "+i);
 
 			s1.transform.position = pos-i*(new Vector3(0f,1f,0f));
-			s2.transform.position = pos-(new Vector3(0f,0.5f,0f))+i*(new Vector3(0f,1f,0f));
+			s2.transform.position = pos-(new Vector3(0f,5f,0f))+i*(new Vector3(0f,1f,0f));
 
 			s1.transform.localScale = new Vector3 (2f*(1+Random.Range(0,5)/5.0f), 1f,1f);
 			s2.transform.localScale = new Vector3 (2f*(1+Random.Range(0,5)/5.0f), 1f,1f);
