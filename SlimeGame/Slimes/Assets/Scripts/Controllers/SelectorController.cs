@@ -188,6 +188,8 @@ public class SelectorController : MonoBehaviour {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.PRIDE);
 		} else if (coreSelector [currentPlayer] == 7) {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.INNOCENCE);
+		} else if (coreSelector [currentPlayer] == 8) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.ULTIMATE); // Por ahora peta
 		} else {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
 		}
@@ -235,6 +237,8 @@ public class SelectorController : MonoBehaviour {
 			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.PRIDE;
 		} else if (coreSelector [currentPlayer] == 7) {
 			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.INNOCENCE;
+		} else if (coreSelector [currentPlayer] == 8) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.ULTIMATE;
 		}	
 		/*else if (currentPlayer == 2)
 			GameSelection.player2Core = coreSelector[currentPlayer];

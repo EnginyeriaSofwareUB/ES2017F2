@@ -1,5 +1,32 @@
 ﻿{
+	"Ultimate":{
+		"name":"Ultimate",
+		"picDirection":"Slimes/Faces/ultimateSlime",
 
+		"minBaseAttack":100,
+		"maxBaseAttack":100,
+		"minAttackDrain":0.00,
+		"maxAttackDrain":0.00,
+		"minAttackMultiplier":10.0,
+		"maxAttackMultiplier":10.0,
+		"splitDrain":0.0,
+		"maxSlimes":12,
+		"plainMassGain":50,
+		"scalingMassGain":0.5,
+		"conquerMassDrain":0.0,
+		"slimeCountActionGain":4,
+		"minCalcMass":110,
+		"maxCalcMass":110,
+		"minDamageReduction":0.95,
+		"maxDamageReduction":0.95,
+		"maxMass":150,
+		"movement":10,
+		"range":10,
+		"baseActions":2,
+		"baseMass":100
+		
+
+	},
 	"Lust":{
 		"name":"Lust",
 		"picDirection":"Slimes/Faces/lust",
