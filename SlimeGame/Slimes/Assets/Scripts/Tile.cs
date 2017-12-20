@@ -240,4 +240,12 @@ public class Tile : MonoBehaviour {
 		}
 	}
 
+	public int GetDamageReduction(){
+		if (elementType != null) {
+			return (int)(StatsFactory.GetStat (elementType).maxDamageReduction*100f);
+		} else {
+			return 0;
+		}
+	}
+
 }

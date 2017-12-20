@@ -49,12 +49,17 @@ public class ProjectileTrajectory : MonoBehaviour {
 			GameController gameController = GameObject.Find ("Main Camera").GetComponent<GameController> ();
 			gameController.ApplyDamage(source,target);
 			if (!target.isAlive ()) {
+				if ((gameController.GetCurrentPlayer ().statsCoreInfo.name == "Pride")) {
+					source.ChangeMass (2f * source.plainGrowth);
+				}
 				target.GetTileData ().SetSlimeOnTop ((Slime)null);
 				target.GetPlayer ().GetSlimes ().Remove (target);
-				Destroy(target.gameObject);
-				gameController.RemoveSlime(target);
+				Destroy (target.gameObject);
+				gameController.RemoveSlime (target);
 
-            }
+			} else {
+				source.ChangeMass (source.selfDamage);
+			}
 			gameController.OnProjectileAnimationEnded();
         }
 
