@@ -31,6 +31,8 @@ public class SelectorController : MonoBehaviour {
 	private Image core3;
 	private Image core4;
 
+	private bool ultimateSlime;
+
 	// Use this for initialization
 	void Start () {
 		maxPlayers = 2;
@@ -50,7 +52,10 @@ public class SelectorController : MonoBehaviour {
 		corePaths.Add ("Slimes/Faces/lust");
 		corePaths.Add ("Slimes/Faces/pride");
 		corePaths.Add ("Slimes/Faces/innocence");
-
+		loadSet ();
+		if (ultimateSlime) {
+			corePaths.Add ("Slimes/Faces/ultimateSlime");
+		}
         sprite = "Sprites/slime_sprite";
 		currentSprite = GameObject.Find ("CurrentSprite").GetComponent<Image>();
 		sprite1 = GameObject.Find ("Sprite1").GetComponent<Image>();
@@ -183,6 +188,8 @@ public class SelectorController : MonoBehaviour {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.PRIDE);
 		} else if (coreSelector [currentPlayer] == 7) {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.INNOCENCE);
+		} else if (coreSelector [currentPlayer] == 8) {
+			stats = StatsFactory.GetStat (SlimeCoreTypes.ULTIMATE); // Por ahora peta
 		} else {
 			stats = StatsFactory.GetStat (SlimeCoreTypes.GLUTTONY);
 		}
@@ -230,6 +237,8 @@ public class SelectorController : MonoBehaviour {
 			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.PRIDE;
 		} else if (coreSelector [currentPlayer] == 7) {
 			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.INNOCENCE;
+		} else if (coreSelector [currentPlayer] == 8) {
+			GameSelection.playerCores [currentPlayer - 1] = SlimeCoreTypes.ULTIMATE;
 		}	
 		/*else if (currentPlayer == 2)
 			GameSelection.player2Core = coreSelector[currentPlayer];
@@ -323,6 +332,11 @@ public class SelectorController : MonoBehaviour {
 			break;
 		}
 		GameObject.Find ("Pin").GetComponent<RectTransform> ().anchoredPosition = new Vector3 (140, yPos, 0);
+	}
+
+	private void loadSet(){
+		int data = PlayerPrefs.GetInt ("ultimate");
+		ultimateSlime = data == 1;
 	}
 }
 /* enum MapTypeSelectionTypes{

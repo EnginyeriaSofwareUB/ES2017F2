@@ -6,6 +6,7 @@ public class StatsContainer
 	public string picDirection;
 	public int picCount;
 
+	public string name;
 	public int minBaseAttack;
 	public int maxBaseAttack;
 	public float minAttackDrain;
@@ -30,7 +31,7 @@ public class StatsContainer
 
 	public StatsContainer (SimpleJSON.JSONNode data)
 	{
-		
+		name = data["name"];
 		picDirection = data ["picDirection"];
 		picCount = data ["picCount"];
 

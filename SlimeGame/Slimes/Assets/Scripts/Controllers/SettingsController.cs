@@ -9,7 +9,9 @@ public class SettingsController : MonoBehaviour {
 	private bool firstTime;
 	private int previousScene;
 	private string jsonData;
+	private string jsonData2;
 	private bool modifyingBar;
+	public bool ultimateSlime;
 	// Use this for initialization
 	void Start () {
 		
@@ -41,6 +43,10 @@ public class SettingsController : MonoBehaviour {
 			}
 		}
 	}
+	public void toggleUltimate(){
+		ultimateSlime = !ultimateSlime;
+		saveSet ();
+	}
 
 	private void resizeImages(){
 		GameObject.Find ("Background Not 1").GetComponent<RectTransform> ().localScale = new Vector3 (music, music, 0);
@@ -54,19 +60,30 @@ public class SettingsController : MonoBehaviour {
 	private void loadSet(){
 		if (jsonData != null && !jsonData.Equals ("")) {
 			Vector2 data = JsonUtility.FromJson<Vector2> (jsonData);
+			int intData = PlayerPrefs.GetInt ("ultimate");
 			music = data.x;
 			effects = data.y;
+			ultimateSlime = intData==1;
 		} else {
 			music = 1.0f;
 			effects = 1.0f;
+			ultimateSlime = false;
 			saveSet ();
 		}
 	}
-
+		
 	private void saveSet(){
+		int intData;
+		if (ultimateSlime) {
+			intData = 1;
+		} else {
+			intData = 0;
+		}
 		Vector2 data = new Vector2 (music, effects);
 		jsonData = JsonUtility.ToJson (data);
+
 		PlayerPrefs.SetString ("SettingsVolume", jsonData);
+		PlayerPrefs.SetInt ("ultimate", intData);
 		PlayerPrefs.Save ();
 	}
 
