@@ -22,6 +22,8 @@ public class InputController : MonoBehaviour
 	protected bool JoinEnabled;
 	protected bool InputEnabled;
 
+	protected bool gamePaused;
+
 	private Vector3 prevMousePosition;
 
     void Start()
@@ -33,6 +35,7 @@ public class InputController : MonoBehaviour
 		SplitEnabled = true;
 		JoinEnabled = true;
 		InputEnabled = true;
+		gamePaused = false;
 
         gameController = Camera.main.GetComponent<GameController>();
         uiController = Camera.main.GetComponent<UIController>();
@@ -74,7 +77,7 @@ public class InputController : MonoBehaviour
 		bool selectedSlime = gameController.GetSelectedSlime()!=null;
 
 		if (InputEnabled && gameController.getStatus () == GameControllerStatus.WAITINGFORACTION &&
-			(inputStarted || inputMaintained || inputEnded)) {
+			(inputStarted || inputMaintained || inputEnded) && !gamePaused) {
 			Collider2D[] colliders = Physics2D.OverlapPointAll (position);
 			Slime s=null;
 			Tile t=null;
@@ -343,4 +346,11 @@ public class InputController : MonoBehaviour
 		joinTiles = new List<Tile> ();
 	}
 
+	public void NotifyPaused(){
+		gamePaused = true;
+	}
+
+	public void NotifyResumed(){
+		gamePaused = false;
+	}
 }

@@ -6,5 +6,6 @@ public enum SlimeCoreTypes{
 	GREED,
 	PRIDE,
 	ENVY,
-	INNOCENCE
+	INNOCENCE,
+	ULTIMATE
 }

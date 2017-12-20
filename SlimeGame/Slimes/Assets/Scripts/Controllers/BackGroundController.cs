@@ -41,8 +41,12 @@ public class BackGroundController : MonoBehaviour {
 			s1.GetComponent<SpriteRenderer> ().material = seaMaterial;
 			s2.GetComponent<SpriteRenderer> ().material = seaMaterial;
 
-			s1.GetComponent<SpriteRenderer> ().material.SetFloat("RandomOffset",Random.Range(0.1f,5.0f));
-			s2.GetComponent<SpriteRenderer> ().material.SetFloat("RandomOffset",Random.Range(0.1f,5.0f));
+			s1.GetComponent<SpriteRenderer> ().material.SetFloat("_RandomOffset",Random.Range(0.1f,5.0f));
+			s2.GetComponent<SpriteRenderer> ().material.SetFloat("_RandomOffset",Random.Range(0.1f,5.0f));
+
+			s1.GetComponent<SpriteRenderer> ().material.SetInt("_Background",1);
+			s2.GetComponent<SpriteRenderer> ().material.SetInt("_Background",1);
+
 
 			s1.GetComponent<SpriteRenderer> ().sortingOrder = 1000 - (int)(s1.transform.position.y*10);
 			s2.GetComponent<SpriteRenderer> ().sortingOrder = 1000 - (int)(s2.transform.position.y*10);

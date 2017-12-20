@@ -54,6 +54,8 @@ public class StatsFactory
 			return (StatsContainer) statsContainer["Lust"];
 		case SlimeCoreTypes.PRIDE:
 			return (StatsContainer) statsContainer["Pride"];
+		case SlimeCoreTypes.ULTIMATE:
+			return (StatsContainer) statsContainer["Ultimate"];
 		default:
 			return null;
 		}

@@ -310,7 +310,7 @@ public class UIController : MonoBehaviour {
 			rangeT.GetComponent<Text>().text = terrain.GetAttackRange ().ToString();
 			movementT.GetComponent<Text>().text = terrain.GetMovementRange ().ToString();
 			attackT.GetComponent<Text>().text = terrain.GetDamage().ToString();
-			defenseT.GetComponent<Text>().text = terrain.GetDamage().ToString();
+			defenseT.GetComponent<Text>().text = terrain.GetDamageReduction().ToString ();
 		} else {
 			healthT.GetComponent<Text>().text = "";
 			rangeT.GetComponent<Text>().text = "";

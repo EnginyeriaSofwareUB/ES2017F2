@@ -514,7 +514,9 @@ public class GameController : MonoBehaviour
 		//c.a = 0.5f;
 		tile.tileConquerLayer.color = c;
 		tile.SetOwner (currentPlayer);
-		playerActions++;
+		if (!(currentPlayer.statsCoreInfo.name == "Greed")) {
+			playerActions++;
+		}
 		selectedSlime.ChangeElement (tile.elementType);
 		tile.RemoveElement ();
 		status = GameControllerStatus.CHECKINGLOGIC;
@@ -682,8 +684,17 @@ public class GameController : MonoBehaviour
 
 	public void ApplyDamage(Slime attacker,Slime defender){
 		int damage = attacker.getDamage;
-		attacker.ChangeMass (attacker.selfDamage);
-		defender.ChangeMass ((int)(-damage*(1-defender.damageReduction)));
+		if (currentPlayer.statsCoreInfo.name == "Lust") {
+			attacker.ChangeMass (attacker.selfDamage/3f);
+		} else if (currentPlayer.statsCoreInfo.name == "Pride") {
+		} else {
+			attacker.ChangeMass (attacker.selfDamage);
+		}
+		if (currentPlayer.statsCoreInfo.name == "Envy") {
+			defender.ChangeMass ((int)(-damage));
+		} else {
+			defender.ChangeMass ((int)(-damage*(1-defender.damageReduction)));
+		}
 		//FloatingTextController.CreateFloatingText (((int)-damage).ToString(),defender.transform);
 	}
 
